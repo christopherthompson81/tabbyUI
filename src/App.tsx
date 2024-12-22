@@ -6,6 +6,7 @@ function App() {
   const [response, setResponse] = useState('');
   const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000');
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '5b60f806eabc44ba87a96d6c400307dd');
+  const [showSettings, setShowSettings] = useState(false);
   const fetchTagline = useCallback(async () => {
     try {
       const res = await fetch(`${serverUrl}/v1/chat/completions`, {
@@ -26,30 +27,35 @@ function App() {
     <>
       <img src={tabbyImage} width="250"/>
       <h1>tabbyUI</h1>
-      <div>
-        <label>
-          Server URL:
-          <input
-            type="text"
-            value={serverUrl}
-            onChange={(e) => setServerUrl(e.target.value)}
-          />
-        </label>
-        <label>
-          API Key:
-          <input
-            type="text"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-          />
-        </label>
-        <button onClick={() => {
-          localStorage.setItem('serverUrl', serverUrl);
-          localStorage.setItem('apiKey', apiKey);
-        }}>
-          Save Settings
-        </button>
-      </div>
+      <button onClick={() => setShowSettings(!showSettings)}>
+        {showSettings ? 'Close Settings' : 'Open Settings'}
+      </button>
+      {showSettings && (
+        <div>
+          <label>
+            Server URL:
+            <input
+              type="text"
+              value={serverUrl}
+              onChange={(e) => setServerUrl(e.target.value)}
+            />
+          </label>
+          <label>
+            API Key:
+            <input
+              type="text"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+            />
+          </label>
+          <button onClick={() => {
+            localStorage.setItem('serverUrl', serverUrl);
+            localStorage.setItem('apiKey', apiKey);
+          }}>
+            Save Settings
+          </button>
+        </div>
+      )}
       <div className="card">
         <button onClick={fetchTagline}>
           Get Ice Cream Shop Tagline
