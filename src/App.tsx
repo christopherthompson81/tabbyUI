@@ -11,6 +11,19 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [userInput, setUserInput] = useState('');
   const conversationNameRef = useRef<HTMLInputElement>(null);
+
+  const messages = currentConversationId !== null ? conversations.find(conv => conv.id === currentConversationId)?.messages || [] : [];
+
+  const saveConversation = useCallback(() => {
+    if (currentConversationId !== null) {
+      const updatedConversations = conversations.map(conv => 
+        conv.id === currentConversationId ? { ...conv, messages } : conv
+      );
+      setConversations(updatedConversations);
+      localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+    }
+  }, [conversations, currentConversationId, messages]);
+
   const fetchTagline = useCallback(async (userMessage: string) => {
     try {
       const updatedMessages = [...messages, { role: "user", content: userMessage }];
@@ -29,17 +42,7 @@ function App() {
       console.error('Error fetching tagline:', error);
     }
   }, [messages, serverUrl, apiKey, saveConversation]);
-  const messages = currentConversationId !== null ? conversations.find(conv => conv.id === currentConversationId)?.messages || [] : [];
-
-  const saveConversation = useCallback(() => {
-    if (currentConversationId !== null) {
-      const updatedConversations = conversations.map(conv => 
-        conv.id === currentConversationId ? { ...conv, messages } : conv
-      );
-      setConversations(updatedConversations);
-      localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-    }
-  }, [conversations, currentConversationId, messages]);
+  
 
   const addNewConversation = () => {
     const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
