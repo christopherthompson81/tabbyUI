@@ -5,7 +5,7 @@ import './App.css'
 function App() {
   const [response, setResponse] = useState('');
   const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000');
-  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '5b60f806eabc44ba87a96d6c400307dd');
+  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
   const fetchTagline = useCallback(async () => {
     try {
@@ -13,7 +13,7 @@ function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': apiKey,
+          'x-api-key': apiKey || '',
         },
         body: JSON.stringify({ messages: [{ role: "user", content: "Write a tag line for an ice cream shop." }] }),
       });
