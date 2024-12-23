@@ -21,7 +21,14 @@ function App() {
     localStorage.setItem('conversations', JSON.stringify(conversations));
   }, [conversations]);
 
-  const [messages, setMessages] = useState(currentConversationId !== null ? conversations.find(conv => conv.id === currentConversationId)?.messages || [] : []);
+  const [messages, setMessages] = useState<{ role: string, content: string }[]>([]);
+
+  useEffect(() => {
+    if (currentConversationId !== null) {
+      const currentConversation = conversations.find(conv => conv.id === currentConversationId);
+      setMessages(currentConversation?.messages || []);
+    }
+  }, [currentConversationId, conversations]);
 
   const saveConversation = useCallback(() => {
     if (currentConversationId !== null) {
