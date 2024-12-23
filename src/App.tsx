@@ -3,26 +3,28 @@ import tabbyImage from './assets/tabby.jpeg'
 import './App.css'
 
 function App() {
-  const [response, setResponse] = useState('');
+  const [messages, setMessages] = useState<{ role: string, content: string }[]>([]);
   const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000');
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
-  const fetchTagline = useCallback(async () => {
+  const [userInput, setUserInput] = useState('');
+  const fetchTagline = useCallback(async (userMessage: string) => {
     try {
+      const updatedMessages = [...messages, { role: "user", content: userMessage }];
       const res = await fetch(`${serverUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey || '',
         },
-        body: JSON.stringify({ messages: [{ role: "user", content: "Write a tag line for an ice cream shop." }] }),
+        body: JSON.stringify({ messages: updatedMessages }),
       });
       const data = await res.json();
-      setResponse(data.choices[0].message.content); // Assuming the response is in a field called 'response'
+      setMessages([...updatedMessages, data.choices[0].message]);
     } catch (error) {
       console.error('Error fetching tagline:', error);
     }
-  }, [serverUrl, apiKey]);
+  }, [messages, serverUrl, apiKey]);
   return (
     <>
       <img src={tabbyImage} width="250"/>
@@ -57,10 +59,26 @@ function App() {
         </div>
       )}
       <div className="card">
-        <button onClick={fetchTagline}>
-          Get Ice Cream Shop Tagline
+        <div>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.role}>
+              <strong>{msg.role === 'user' ? 'You:' : 'Assistant:'}</strong> {msg.content}
+            </div>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+        />
+        <button onClick={() => {
+          if (userInput.trim()) {
+            fetchTagline(userInput);
+            setUserInput('');
+          }
+        }}>
+          Send
         </button>
-        {response && <p>{response}</p>}
       </div>
     </>
   )
