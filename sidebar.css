@@ -1,0 +1,25 @@
+.sidebar {
+  width: 250px;
+  float: left;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.main-content {
+  margin-left: 260px;
+  padding: 10px;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+.sidebar div {
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.sidebar div.active {
+  background-color: #f0f0f0;
+}
