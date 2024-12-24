@@ -85,11 +85,7 @@ function App() {
             {conv.name}
           </div>
         ))}
-      </div>
-      <div className="main-content">
-        <img src={tabbyImage} width="250"/>
-        <h1>tabbyUI</h1>
-        <button onClick={() => setShowSettings(!showSettings)}>
+      <button onClick={() => setShowSettings(!showSettings)}>
           {showSettings ? 'Close Settings' : 'Open Settings'}
         </button>
         {showSettings && (
@@ -118,6 +114,10 @@ function App() {
             </button>
           </div>
         )}
+      </div>
+      <div className="main-content">
+        <img src={tabbyImage} width="250" />
+        <h1>tabbyUI</h1>
         <div className="card">
           <div>
             {messages.map((msg, index) => (
@@ -142,7 +142,7 @@ function App() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
