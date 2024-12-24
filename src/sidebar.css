@@ -6,7 +6,9 @@ body {
 }
 
 .sidebar {
-  float: left;
+  position: fixed; /* Anchor the sidebar */
+  top: 0; /* Align to the top edge */
+  left: 0; /* Align to the left edge */
   padding: 10px;
   border-right: 1px solid #ccc;
   height: 100%; /* Sidebar takes full height */
