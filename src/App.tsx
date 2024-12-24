@@ -86,32 +86,43 @@ function App() {
           </div>
         ))}
       <button onClick={() => setShowSettings(!showSettings)}>
-          {showSettings ? 'Close Settings' : 'Open Settings'}
+          {/* Gear icon SVG */}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M19.44 13.94c.32.52.56 1.1.72 1.76l1.45-1.05c.14.55.22 1.12.22 1.71 0 .59-.08 1.16-.22 1.71l-1.45-1.05c-.16.66-.4 1.24-.72 1.76l1.45 1.05c.14.55.22 1.12.22 1.71 0 1.69-1.37 3.06-3.06 3.06-1.69 0-3.06-1.37-3.06-3.06 0-.59.08-1.16.22-1.71l-1.45 1.05c.16-.66.4-1.24.72-1.76l-1.45-1.05c-.14-.55-.22-1.12-.22-1.71 0-.59.08-1.16.22-1.71l1.45 1.05c.16-.66.4-1.24.72-1.76l-1.45-1.05c-.14-.55-.22-1.12-.22-1.71 0-1.69 1.37-3.06 3.06-3.06 1.69 0 3.06 1.37 3.06 3.06 0 .59-.08 1.16-.22 1.71l1.45-1.05c-.16.66-.4 1.24-.72 1.76l-1.45 1.05zm-7.44 1.56c1.39 0 2.5-1.11 2.5-2.5s-1.11-2.5-2.5-2.5-2.5 1.11-2.5 2.5 1.11 2.5 2.5 2.5z"/>
+          </svg>
         </button>
+        {/* Settings Dialog */}
         {showSettings && (
-          <div>
-            <label>
-              Server URL:
-              <input
-                type="text"
-                value={serverUrl}
-                onChange={(e) => setServerUrl(e.target.value)}
-              />
-            </label>
-            <label>
-              API Key:
-              <input
-                type="text"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
-            </label>
-            <button onClick={() => {
-              localStorage.setItem('serverUrl', serverUrl);
-              localStorage.setItem('apiKey', apiKey);
-            }}>
-              Save Settings
-            </button>
+          <div className="modal-backdrop">
+            <div className="modal">
+              <h2>Settings</h2>
+              <label>
+                Server URL:
+                <input
+                  type="text"
+                  value={serverUrl}
+                  onChange={(e) => setServerUrl(e.target.value)}
+                />
+              </label>
+              <label>
+                API Key:
+                <input
+                  type="text"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+              </label>
+              <button onClick={() => {
+                localStorage.setItem('serverUrl', serverUrl);
+                localStorage.setItem('apiKey', apiKey);
+                setShowSettings(false); // Close the dialog after saving
+              }}>
+                Save Settings
+              </button>
+              <button onClick={() => setShowSettings(false)}>
+                Close
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -146,3 +157,12 @@ function App() {
 }
 
 export default App;
+```
+
+src/sidebar.css
+```css
+<<<<<<< SEARCH
+.sidebar div.active {
+  background-color: #007bff; /* A blue color that contrasts well with white text */
+  color: white; /* Ensures text is white */
+}
