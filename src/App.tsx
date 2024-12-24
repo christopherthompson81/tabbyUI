@@ -4,12 +4,13 @@ import './App.css'
 import './sidebar.css'
 
 function App() {
-  const [conversations, setConversations] = useState<{ id: number, name: string, messages: { role: string, content: string }[] }[]>(JSON.parse(localStorage.getItem('conversations') || '[]'));
+  const [conversations, setConversations] = useState<any[]>(JSON.parse(localStorage.getItem('conversations') || '[]'));
   const [currentConversationId, setCurrentConversationId] = useState<number | null>(null);
   const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000');
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
   const [userInput, setUserInput] = useState('');
+  const [messages, setMessages] = useState<any[]>([]);
   const conversationNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -21,20 +22,16 @@ function App() {
     localStorage.setItem('conversations', JSON.stringify(conversations));
   }, [conversations]);
 
-  const [messages, setMessages] = useState<{ role: string, content: string }[]>([]);
-
-  useEffect(() => {
+  const saveConversation = useCallback((v) => {
     if (currentConversationId !== null) {
-      const currentConversation = conversations.find(conv => conv.id === currentConversationId);
-      setMessages(currentConversation?.messages || []);
-    }
-  }, [currentConversationId, conversations]);
-
-  const saveConversation = useCallback(() => {
-    if (currentConversationId !== null) {
-      const updatedConversations = conversations.map(conv => 
-        conv.id === currentConversationId ? { ...conv, messages } : conv
-      );
+      let updatedConversations = [...conversations];
+      for (let conv of updatedConversations) {
+        if (conv.id === currentConversationId) {
+          console.log(`Updating ${conv.id} with `, v)
+          conv.messages = v;
+        }
+      }
+      console.log("saveConversation1", currentConversationId, messages, updatedConversations);
       setConversations(updatedConversations);
       localStorage.setItem('conversations', JSON.stringify(updatedConversations));
     }
@@ -42,7 +39,7 @@ function App() {
 
   const fetchTagline = useCallback(async (userMessage: string) => {
     try {
-      const updatedMessages = [...messages, { role: "user", content: userMessage }];
+      let updatedMessages = [...messages, { role: "user", content: userMessage }];
       const res = await fetch(`${serverUrl}/v1/chat/completions`, {
         method: 'POST',
         headers: {
@@ -52,8 +49,10 @@ function App() {
         body: JSON.stringify({ messages: updatedMessages }),
       });
       const data = await res.json();
-      setMessages([...updatedMessages, data.choices[0].message]);
-      saveConversation();
+      updatedMessages.push({role: data.choices[0].message.role, content: data.choices[0].message.content});
+      setMessages(updatedMessages);
+      console.log("fetchTagline1", currentConversationId, updatedMessages, data.choices[0].message, [...messages]);
+      saveConversation(updatedMessages);
     } catch (error) {
       console.error('Error fetching tagline:', error);
     }
@@ -70,6 +69,9 @@ function App() {
 
   const switchConversation = (id: number) => {
     setCurrentConversationId(id);
+    let conversation = conversations.find(conv => conv.id === id);
+    console.log(conversation.messages);
+    setMessages(conversation.messages);
   };
 
   return (
