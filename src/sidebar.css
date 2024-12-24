@@ -1,24 +1,24 @@
 body {
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  height: 100vh; /* Make body take full viewport height */
-  display: flex; /* Use flexbox for layout */
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
 }
 
 .sidebar {
-  position: fixed; /* Anchor the sidebar */
-  top: 0; /* Align to the top edge */
-  left: 0; /* Align to the left edge */
+  position: fixed;
+  top: 0;
+  left: 0;
   padding: 10px;
   border-right: 1px solid #ccc;
-  height: 100%; /* Sidebar takes full height */
-  overflow-y: auto; /* Allow sidebar to scroll if content overflows */
+  height: 100%;
+  overflow-y: auto;
 }
 
 .main-content {
   padding: 10px;
-  flex-grow: 1; /* Allow main content to take up remaining space */
-  overflow-y: auto; /* Allow main content to scroll if content overflows */
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .sidebar h2 {
@@ -32,11 +32,6 @@ body {
 }
 
 .sidebar div.active {
-  background-color: #007bff; /* A blue color that contrasts well with white text */
-  color: white; /* Ensures text is white */
-}
-
-.sidebar div.active {
-  background-color: #007bff; /* A blue color that contrasts well with white text */
-  color: white; /* Ensures text is white */
+  background-color: #007bff;
+  color: white;
 }

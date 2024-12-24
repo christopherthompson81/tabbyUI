@@ -1,12 +1,25 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
-import tabbyImage from './assets/tabby.jpeg'
-import './App.css'
-import './sidebar.css'
+import { useState, useEffect, useCallback, useRef } from 'react';
+import tabbyImage from './assets/tabby.jpeg';
+import './App.css';
+import './sidebar.css';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 function App() {
-  const [conversations, setConversations] = useState<any[]>(JSON.parse(localStorage.getItem('conversations') || '[]'));
-  const [currentConversationId, setCurrentConversationId] = useState<number | null>(null);
-  const [serverUrl, setServerUrl] = useState(localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000');
+  const [conversations, setConversations] = useState<any[]>(
+    JSON.parse(localStorage.getItem('conversations') || '[]')
+  );
+  const [currentConversationId, setCurrentConversationId] =
+    useState<number | null>(null);
+  const [serverUrl, setServerUrl] = useState(
+    localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000'
+  );
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
   const [userInput, setUserInput] = useState('');
@@ -78,78 +91,99 @@ function App() {
     <>
       <div className="sidebar">
         <h2>Conversations</h2>
-        <button onClick={addNewConversation}>New Conversation</button>
-        <input ref={conversationNameRef} type="text" placeholder="Conversation Name" />
-        {conversations.map(conv => (
-          <div key={conv.id} onClick={() => switchConversation(conv.id)} className={conv.id === currentConversationId ? 'active' : ''}>
+        <Button variant="contained" onClick={addNewConversation}>
+          New Conversation
+        </Button>
+        <TextField
+          inputRef={conversationNameRef}
+          label="Conversation Name"
+          variant="outlined"
+          size="small"
+          margin="normal"
+        />
+        {conversations.map((conv) => (
+          <div
+            key={conv.id}
+            onClick={() => switchConversation(conv.id)}
+            className={conv.id === currentConversationId ? 'active' : ''}
+          >
             {conv.name}
           </div>
         ))}
-      <button onClick={() => setShowSettings(!showSettings)}>
-          {/* Gear icon SVG */}
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M19.44 13.94c.32.52.56 1.1.72 1.76l1.45-1.05c.14.55.22 1.12.22 1.71 0 .59-.08 1.16-.22 1.71l-1.45-1.05c-.16.66-.4 1.24-.72 1.76l1.45 1.05c.14.55.22 1.12.22 1.71 0 1.69-1.37 3.06-3.06 3.06-1.69 0-3.06-1.37-3.06-3.06 0-.59.08-1.16.22-1.71l-1.45 1.05c.16-.66.4-1.24.72-1.76l-1.45-1.05c-.14-.55-.22-1.12-.22-1.71 0-.59.08-1.16.22-1.71l1.45 1.05c.16-.66.4-1.24.72-1.76l-1.45-1.05c-.14-.55-.22-1.12-.22-1.71 0-1.69 1.37-3.06 3.06-3.06 1.69 0 3.06 1.37 3.06 3.06 0 .59-.08 1.16-.22 1.71l1.45-1.05c-.16.66-.4 1.24-.72 1.76l-1.45 1.05zm-7.44 1.56c1.39 0 2.5-1.11 2.5-2.5s-1.11-2.5-2.5-2.5-2.5 1.11-2.5 2.5 1.11 2.5 2.5 2.5z"/>
-          </svg>
-        </button>
+        <IconButton onClick={() => setShowSettings(true)}>
+          <SettingsIcon />
+        </IconButton>
+
         {/* Settings Dialog */}
-        {showSettings && (
-          <div className="modal-backdrop">
-            <div className="modal">
-              <h2>Settings</h2>
-              <label>
-                Server URL:
-                <input
-                  type="text"
-                  value={serverUrl}
-                  onChange={(e) => setServerUrl(e.target.value)}
-                />
-              </label>
-              <label>
-                API Key:
-                <input
-                  type="text"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </label>
-              <button onClick={() => {
+        <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
+          <DialogTitle>Settings</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="Server URL"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={serverUrl}
+              onChange={(e) => setServerUrl(e.target.value)}
+            />
+            <TextField
+              label="API Key"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
                 localStorage.setItem('serverUrl', serverUrl);
                 localStorage.setItem('apiKey', apiKey);
-                setShowSettings(false); // Close the dialog after saving
-              }}>
-                Save Settings
-              </button>
-              <button onClick={() => setShowSettings(false)}>
-                Close
-              </button>
-            </div>
-          </div>
-        )}
+                setShowSettings(false);
+              }}
+            >
+              Save Settings
+            </Button>
+            <Button onClick={() => setShowSettings(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </div>
       <div className="main-content">
-        <img src={tabbyImage} width="250" />
+        <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
-        <div className="card">
-          <div>
-            {messages.map((msg, index) => (
-              <div key={index} className={msg.role}>
-                <strong>{msg.role === 'user' ? 'You:' : 'Assistant:'}</strong> {msg.content}
-              </div>
-            ))}
-          </div>
-          <input
-            type="text"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-          />
-          <button onClick={() => {
+        <div>
+          {messages.map((msg, index) => (
+            <div key={index} className={msg.role}>
+              <strong>{msg.role === 'user' ? 'You:' : 'Assistant:'}</strong>{' '}
+              {msg.content}
+            </div>
+          ))}
+        </div>
+        <TextField
+          label="Enter your message"
+          variant="outlined"
+          fullWidth
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && userInput.trim()) {
+              fetchTagline(userInput);
+              setUserInput('');
+            }
+          }}
+        />
+        <Button
+          variant="contained"
+          onClick={() => {
             if (userInput.trim()) {
               fetchTagline(userInput);
               setUserInput('');
             }
-          }}>
-            Send
-          </button>
+          }}
+        >
+          Send
+        </Button>
         </div>
       </div>
     </>
