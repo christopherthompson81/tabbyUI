@@ -157,12 +157,3 @@ function App() {
 }
 
 export default App;
-```
-
-src/sidebar.css
-```css
-<<<<<<< SEARCH
-.sidebar div.active {
-  background-color: #007bff; /* A blue color that contrasts well with white text */
-  color: white; /* Ensures text is white */
-}
