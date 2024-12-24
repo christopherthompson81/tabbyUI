@@ -1,13 +1,22 @@
+body {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  height: 100vh; /* Make body take full viewport height */
+  display: flex; /* Use flexbox for layout */
+}
+
 .sidebar {
-  width: 250px;
   float: left;
   padding: 10px;
   border-right: 1px solid #ccc;
+  height: 100%; /* Sidebar takes full height */
+  overflow-y: auto; /* Allow sidebar to scroll if content overflows */
 }
 
 .main-content {
-  margin-left: 260px;
   padding: 10px;
+  flex-grow: 1; /* Allow main content to take up remaining space */
+  overflow-y: auto; /* Allow main content to scroll if content overflows */
 }
 
 .sidebar h2 {
