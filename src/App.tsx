@@ -184,7 +184,6 @@ function App() {
         >
           Send
         </Button>
-        </div>
       </div>
     </>
   );
