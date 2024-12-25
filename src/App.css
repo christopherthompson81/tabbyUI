@@ -2,7 +2,27 @@
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+}
+
+.message {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 80%;
+}
+
+.message.user {
+  background-color: #e0f7fa; /* Light blue-green */
+  align-self: flex-end;
+}
+
+.message.assistant {
+  background-color: #f1f0f0; /* Light gray */
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 5px;
 }
 
 .logo {

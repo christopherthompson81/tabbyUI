@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import tabbyImage from './assets/tabby.jpeg';
-import './App.css';
-import './sidebar.css';
+import { useState, useEffect, useCallback, useRef } from "react";
+import tabbyImage from "./assets/tabby.jpeg";
+import "./App.css";
+import "./sidebar.css";
+import Message from "./Message";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -152,14 +153,9 @@ function App() {
       <div className="main-content">
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
-        <div>
-          {messages.map((msg, index) => (
-            <div key={index} className={msg.role}>
-              <strong>{msg.role === 'user' ? 'You:' : 'Assistant:'}</strong>{' '}
-              {msg.content}
-            </div>
-          ))}
-        </div>
+        {messages.map((msg, index) => (
+          <Message key={index} role={msg.role} content={msg.content} />
+        ))}
         <TextField
           label="Enter your message"
           variant="outlined"
