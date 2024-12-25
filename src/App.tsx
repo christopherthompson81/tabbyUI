@@ -3,14 +3,23 @@ import tabbyImage from "./assets/tabby.jpeg";
 import "./App.css";
 import "./sidebar.css";
 import Message from "./Message";
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import IconButton from '@mui/material/IconButton';
-import SettingsIcon from '@mui/icons-material/Settings';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+} from "@mui/material";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import IconButton from "@mui/material/IconButton";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 function App() {
   const [conversations, setConversations] = useState<any[]>(
@@ -90,31 +99,42 @@ function App() {
 
   return (
     <>
-      <div className="sidebar">
-        <h2>Conversations</h2>
-        <Button variant="contained" onClick={addNewConversation}>
-          New Conversation
-        </Button>
-        <TextField
-          inputRef={conversationNameRef}
-          label="Conversation Name"
-          variant="outlined"
-          size="small"
-          margin="normal"
-        />
-        {conversations.map((conv) => (
-          <div
-            key={conv.id}
-            onClick={() => switchConversation(conv.id)}
-            className={conv.id === currentConversationId ? 'active' : ''}
-          >
-            {conv.name}
-          </div>
-        ))}
-        <IconButton onClick={() => setShowSettings(true)}>
-          <SettingsIcon />
-        </IconButton>
+      <Drawer variant="permanent" anchor="left">
+        <List>
+          <ListItem>
+            <h2>Conversations</h2>
+          </ListItem>
+          <ListItem>
+            <Button variant="contained" onClick={addNewConversation}>
+              New Conversation
+            </Button>
+          </ListItem>
+          <ListItem>
+            <TextField
+              inputRef={conversationNameRef}
+              label="Conversation Name"
+              variant="outlined"
+              size="small"
+              margin="normal"
+            />
+          </ListItem>
+          {conversations.map((conv) => (
+            <ListItemButton
+              key={conv.id}
+              onClick={() => switchConversation(conv.id)}
+              selected={conv.id === currentConversationId}
+            >
+              <ListItemText primary={conv.name} />
+            </ListItemButton>
+          ))}
+          <ListItem>
+            <IconButton onClick={() => setShowSettings(true)}>
+              <SettingsIcon />
+            </IconButton>
+          </ListItem>
+        </List>
 
+        {/* Settings Dialog */}
         {/* Settings Dialog */}
         <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
           <DialogTitle>Settings</DialogTitle>
@@ -139,8 +159,8 @@ function App() {
           <DialogActions>
             <Button
               onClick={() => {
-                localStorage.setItem('serverUrl', serverUrl);
-                localStorage.setItem('apiKey', apiKey);
+                localStorage.setItem("serverUrl", serverUrl);
+                localStorage.setItem("apiKey", apiKey);
                 setShowSettings(false);
               }}
             >
@@ -149,8 +169,11 @@ function App() {
             <Button onClick={() => setShowSettings(false)}>Close</Button>
           </DialogActions>
         </Dialog>
-      </div>
-      <div className="main-content" style={{ width: '100%' }}>
+      </Drawer>
+      <div
+        className="main-content"
+        style={{ width: "100%", marginLeft: "240px" }}
+      >
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
         {messages.map((msg, index) => (
@@ -163,9 +186,9 @@ function App() {
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && userInput.trim()) {
+            if (e.key === "Enter" && userInput.trim()) {
               fetchTagline(userInput);
-              setUserInput('');
+              setUserInput("");
             }
           }}
         />
@@ -174,7 +197,7 @@ function App() {
           onClick={() => {
             if (userInput.trim()) {
               fetchTagline(userInput);
-              setUserInput('');
+              setUserInput("");
             }
           }}
         >
@@ -184,5 +207,7 @@ function App() {
     </>
   );
 }
+
+export default App;
 
 export default App;
