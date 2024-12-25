@@ -1,17 +1,16 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import tabbyImage from "./assets/tabby.jpeg";
-import "./App.css";
-import "./sidebar.css";
-import Message from "./Message";
+import { useState, useEffect, useCallback, useRef } from 'react';
+import tabbyImage from './assets/tabby.jpeg';
+import './App.css';
+import './sidebar.css';
+import Message from './Message';
 import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-} from "@mui/material";
+    Box,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+} from '@mui/material';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -98,7 +97,7 @@ function App() {
   };
 
   return (
-    <>
+    <Box sx={{ display: 'flex' }}>
       <Drawer variant="permanent" anchor="left">
         <List>
           <ListItem>
@@ -119,11 +118,7 @@ function App() {
             />
           </ListItem>
           {conversations.map((conv) => (
-            <ListItemButton
-              key={conv.id}
-              onClick={() => switchConversation(conv.id)}
-              selected={conv.id === currentConversationId}
-            >
+            <ListItemButton key={conv.id} onClick={() => switchConversation(conv.id)} selected={conv.id === currentConversationId}>
               <ListItemText primary={conv.name} />
             </ListItemButton>
           ))}
@@ -135,45 +130,25 @@ function App() {
         </List>
 
         {/* Settings Dialog */}
-        {/* Settings Dialog */}
         <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
           <DialogTitle>Settings</DialogTitle>
           <DialogContent>
-            <TextField
-              label="Server URL"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={serverUrl}
-              onChange={(e) => setServerUrl(e.target.value)}
-            />
-            <TextField
-              label="API Key"
-              variant="outlined"
-              fullWidth
-              margin="normal"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-            />
+            <TextField label="Server URL" variant="outlined" fullWidth margin="normal" value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} />
+            <TextField label="API Key" variant="outlined" fullWidth margin="normal" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
           </DialogContent>
           <DialogActions>
-            <Button
-              onClick={() => {
-                localStorage.setItem("serverUrl", serverUrl);
-                localStorage.setItem("apiKey", apiKey);
-                setShowSettings(false);
-              }}
-            >
+            <Button onClick={() => {
+              localStorage.setItem('serverUrl', serverUrl);
+              localStorage.setItem('apiKey', apiKey);
+              setShowSettings(false);
+            }}>
               Save Settings
             </Button>
             <Button onClick={() => setShowSettings(false)}>Close</Button>
           </DialogActions>
         </Dialog>
       </Drawer>
-      <div
-        className="main-content"
-        style={{ width: "100%", marginLeft: "240px" }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: '240px' }}>
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
         {messages.map((msg, index) => (
@@ -186,9 +161,9 @@ function App() {
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && userInput.trim()) {
+            if (e.key === 'Enter' && userInput.trim()) {
               fetchTagline(userInput);
-              setUserInput("");
+              setUserInput('');
             }
           }}
         />
@@ -197,17 +172,15 @@ function App() {
           onClick={() => {
             if (userInput.trim()) {
               fetchTagline(userInput);
-              setUserInput("");
+              setUserInput('');
             }
           }}
         >
           Send
         </Button>
-      </div>
-    </>
+      </Box>
+    </Box>
   );
 }
-
-export default App;
 
 export default App;
