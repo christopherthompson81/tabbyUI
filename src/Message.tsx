@@ -1,5 +1,5 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 
 interface MessageProps {
   role: string;
@@ -9,6 +9,9 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ role, content }) => {
   return (
     <div className={`message ${role}`}>
+      <div className="message-role">
+        <strong>{role === "user" ? "You" : "Assistant"}</strong>
+      </div>
       <div className="message-content">{content}</div>
     </div>
   );
