@@ -150,7 +150,7 @@ function App() {
           </DialogActions>
         </Dialog>
       </div>
-      <div className="main-content">
+      <div className="main-content" style={{ width: '100%' }}>
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
         {messages.map((msg, index) => (
