@@ -148,7 +148,7 @@ function App() {
           </DialogActions>
         </Dialog>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3, ml: '240px' }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
         {messages.map((msg, index) => (
