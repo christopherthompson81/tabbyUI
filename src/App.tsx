@@ -51,11 +51,10 @@ function App() {
       let updatedConversations = [...conversations];
       for (let conv of updatedConversations) {
         if (conv.id === currentConversationId) {
-          console.log(`Updating ${conv.id} with `, v)
           conv.messages = v;
         }
       }
-      console.log("saveConversation1", currentConversationId, messages, updatedConversations);
+      //console.log("saveConversation1", currentConversationId, messages, updatedConversations);
       setConversations(updatedConversations);
       localStorage.setItem('conversations', JSON.stringify(updatedConversations));
     }
@@ -71,34 +70,70 @@ function App() {
         setOriginalUserInput(userMessage); // Store the original user input
       }
       setMessages(updatedMessages);
-      const eventSource = new EventSource(`${serverUrl}/v1/chat/completions?stream=true`, {
+      fetch(`${serverUrl}/v1/chat/completions?stream=true`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey || '',
         },
-        method: 'POST',
-        body: JSON.stringify({ messages: updatedMessages }),
-      });
-
-      eventSource.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) {
-          const newContent = data.choices[0].delta.content;
-          setMessages((prevMessages) => {
-            const lastMessage = prevMessages[prevMessages.length - 1];
-            const updatedLastMessage = {
-              ...lastMessage,
-              content: lastMessage.content + newContent,
-            };
-            return [...prevMessages.slice(0, -1), updatedLastMessage];
-          });
+        body: JSON.stringify({
+          messages: updatedMessages,
+          stream: true
+        }),
+      })
+      .then(response => {
+        console.log(response);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-      };
-
-      eventSource.onerror = (error) => {
-        console.error('EventSource failed:', error);
-        eventSource.close();
-      };
+        const stream = response.body;
+        const reader = stream.getReader();
+        const decoder = new TextDecoder('utf-8');
+        updatedMessages.push({role: "assistant", content: ""});
+        setMessages(updatedMessages);
+        function processText({ done, value }) {
+            if (done) {
+                console.log('Stream complete');
+                return;
+            }
+            //console.log('Chunk: ', decoder.decode(value));
+            let chunk = decoder.decode(value);
+            const separateLines = chunk.split(/data: /g);
+            separateLines.forEach(line => {
+              if (line.trim() === "[DONE]") {
+                console.log("Finished Streaming");
+              }
+              else if (line.trim()) {
+                //console.log(line);
+                try {
+                  const data = JSON.parse(line);
+                  //console.log(data);
+                  if (data.choices[0].delta.content) {
+                    updatedMessages[updatedMessages.length - 1].content += data.choices[0].delta.content;
+                  }
+                }
+                catch (error) {
+                  console.log(error, chunk.substring(6));
+                }
+              }
+            });
+            setMessages(updatedMessages);
+            saveConversation(updatedMessages);
+            return reader.read().then(processText);
+        }
+        return reader.read().then(processText);
+        /*
+          const data = JSON.parse(value);
+          console.log(data);
+          if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+            const newMessage = data.choices[0].message;
+            updatedMessages.push(newMessage);
+            setMessages(updatedMessages);
+            
+          }
+        */
+      });
+      
     } catch (error) {
       console.error('Error fetching tagline:', error);
     }
@@ -115,7 +150,6 @@ function App() {
   const switchConversation = (id: number) => {
     setCurrentConversationId(id);
     let conversation = conversations.find(conv => conv.id === id);
-    console.log(conversation.messages);
     setMessages(conversation.messages);
   };
 
