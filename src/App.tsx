@@ -137,16 +137,6 @@ function App() {
             return reader.read().then(processText);
         }
         return reader.read().then(processText);
-        /*
-          const data = JSON.parse(value);
-          console.log(data);
-          if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
-            const newMessage = data.choices[0].message;
-            updatedMessages.push(newMessage);
-            setMessages(updatedMessages);
-            
-          }
-        */
       });
       
     } catch (error) {
