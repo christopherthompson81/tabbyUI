@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import tabbyImage from './assets/tabby.jpeg';
 import './styles.css';
 import Message from './Message';
