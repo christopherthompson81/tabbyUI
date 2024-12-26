@@ -1,4 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+
+const scrollToBottom = () => {
+  if (messagesEndRef.current) {
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
+};
 import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
@@ -36,6 +42,11 @@ function App() {
   const [userInput, setUserInput] = useState('');
   const [originalUserInput, setOriginalUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
  
   useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
@@ -242,6 +253,7 @@ function App() {
             <Message key={index} role={msg.role} content={msg.content} />
           ))}
         </div>
+        <div ref={messagesEndRef} />
         <TextField
           label="Enter your message"
           variant="outlined"
