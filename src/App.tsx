@@ -63,24 +63,39 @@ function App() {
   const fetchTagline = useCallback(async (userMessage: string) => {
     try {
       let updatedMessages = [...messages, { role: "user", content: userMessage }];
-      const res = await fetch(`${serverUrl}/v1/chat/completions`, {
-        method: 'POST',
+      setMessages(updatedMessages);
+      const eventSource = new EventSource(`${serverUrl}/v1/chat/completions?stream=true`, {
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': apiKey || '',
         },
+        method: 'POST',
         body: JSON.stringify({ messages: updatedMessages }),
       });
-      const data = await res.json();
-      updatedMessages.push({role: data.choices[0].message.role, content: data.choices[0].message.content});
-      setMessages(updatedMessages);
-      console.log("fetchTagline1", currentConversationId, updatedMessages, data.choices[0].message, [...messages]);
-      saveConversation(updatedMessages);
+
+      eventSource.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) {
+          const newContent = data.choices[0].delta.content;
+          setMessages((prevMessages) => {
+            const lastMessage = prevMessages[prevMessages.length - 1];
+            const updatedLastMessage = {
+              ...lastMessage,
+              content: lastMessage.content + newContent,
+            };
+            return [...prevMessages.slice(0, -1), updatedLastMessage];
+          });
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        console.error('EventSource failed:', error);
+        eventSource.close();
+      };
     } catch (error) {
       console.error('Error fetching tagline:', error);
     }
-  }, [messages, serverUrl, apiKey, saveConversation]);
-  
+  }, [messages, serverUrl, apiKey]);
 
   const addNewConversation = () => {
     const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
