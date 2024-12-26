@@ -86,10 +86,10 @@ function App() {
 
   const addNewConversation = () => {
     const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
-    const newConversation = { id: newId, name: conversationNameRef.current?.value || `Conversation ${newId}`, messages: [] };
+    const newConversationName = new Date().toISOString();
+    const newConversation = { id: newId, name: newConversationName, messages: [] };
     setConversations([...conversations, newConversation]);
     setCurrentConversationId(newId);
-    conversationNameRef.current!.value = '';
   };
 
   const switchConversation = (id: number) => {
@@ -138,15 +138,6 @@ function App() {
             <Button variant="contained" onClick={addNewConversation}>
               New Conversation
             </Button>
-          </ListItem>
-          <ListItem>
-            <TextField
-              inputRef={conversationNameRef}
-              label="Conversation Name"
-              variant="outlined"
-              size="small"
-              margin="normal"
-            />
           </ListItem>
           {conversations.map((conv) => (
             <ListItemButton key={conv.id} onClick={() => switchConversation(conv.id)} selected={conv.id === currentConversationId}>
