@@ -1,0 +1,37 @@
+#root {
+  min-width: 1280px;
+  margin: 0px 240px;
+  padding: 2rem;
+}
+
+.message {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  width: calc(100% - 20px); /* Adjust for margin */
+}
+
+.message.user {
+  background-color: #e0f7fa; /* Light blue-green */
+  align-self: flex-end;
+}
+
+.message.assistant {
+  background-color: #f1f0f0; /* Light gray */
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 5px;
+}
+
+.main-content {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.MuiDrawer-paper {
+  width: 240px;
+  box-sizing: border-box;
+}

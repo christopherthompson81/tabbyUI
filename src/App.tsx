@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import tabbyImage from './assets/tabby.jpeg';
-import './App.css';
-import './sidebar.css';
+import './styles.css';
 import Message from './Message';
 import {
     Box,
