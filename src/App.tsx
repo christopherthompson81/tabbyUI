@@ -10,7 +10,14 @@ import {
     ListItem,
     ListItemButton,
     ListItemText,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    TextField,
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -31,6 +38,8 @@ function App() {
   );
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
+  const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
+  const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
   const conversationNameRef = useRef<HTMLInputElement>(null);
@@ -103,6 +112,34 @@ function App() {
           <ListItem>
             <h2>Conversations</h2>
           </ListItem>
+          <Dialog open={editingConversationId !== null} onClose={() => setEditingConversationId(null)}>
+            <DialogTitle>Edit Conversation Name</DialogTitle>
+            <DialogContent>
+              <TextField
+                label="Conversation Name"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={newConversationName}
+                onChange={(e) => setNewConversationName(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {
+                if (editingConversationId !== null) {
+                  const updatedConversations = conversations.map(conv =>
+                    conv.id === editingConversationId ? { ...conv, name: newConversationName } : conv
+                  );
+                  setConversations(updatedConversations);
+                  localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+                }
+                setEditingConversationId(null);
+              }}>
+                Save
+              </Button>
+              <Button onClick={() => setEditingConversationId(null)}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
           <ListItem>
             <Button variant="contained" onClick={addNewConversation}>
               New Conversation
@@ -120,6 +157,16 @@ function App() {
           {conversations.map((conv) => (
             <ListItemButton key={conv.id} onClick={() => switchConversation(conv.id)} selected={conv.id === currentConversationId}>
               <ListItemText primary={conv.name} />
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditingConversationId(conv.id);
+                  setNewConversationName(conv.name);
+                }}
+                style={{ marginLeft: 'auto' }}
+              >
+                <EditIcon />
+              </IconButton>
             </ListItemButton>
           ))}
           <ListItem>
