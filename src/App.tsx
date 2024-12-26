@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
@@ -37,6 +37,12 @@ function App() {
   const [originalUserInput, setOriginalUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
     useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
@@ -242,6 +248,7 @@ function App() {
           {messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
           ))}
+          <div ref={messagesEndRef} />
         </div>
         {/* Removed messagesEndRef div */}
         <TextField
