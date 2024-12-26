@@ -34,6 +34,7 @@ function App() {
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
+  const [originalUserInput, setOriginalUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
   
   useEffect(() => {
@@ -60,9 +61,15 @@ function App() {
     }
   }, [conversations, currentConversationId, messages]);
 
-  const fetchTagline = useCallback(async (userMessage: string) => {
+  const fetchTagline = useCallback(async (userMessage: string, regenerate: boolean = false) => {
     try {
-      let updatedMessages = [...messages, { role: "user", content: userMessage }];
+      let updatedMessages: any[];
+      if (regenerate) {
+        updatedMessages = messages.slice(0, -1); // Remove the last response
+      } else {
+        updatedMessages = [...messages, { role: "user", content: userMessage }];
+        setOriginalUserInput(userMessage); // Store the original user input
+      }
       setMessages(updatedMessages);
       const eventSource = new EventSource(`${serverUrl}/v1/chat/completions?stream=true`, {
         headers: {
@@ -222,6 +229,16 @@ function App() {
           }}
         >
           Send
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => {
+            if (messages.length > 0) {
+              fetchTagline(originalUserInput, true);
+            }
+          }}
+        >
+          Regenerate
         </Button>
       </Box>
     </Box>
