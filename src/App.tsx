@@ -237,9 +237,11 @@ function App() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
-        {messages.map((msg, index) => (
-          <Message key={index} role={msg.role} content={msg.content} />
-        ))}
+        <div className="main-content">
+          {messages.map((msg, index) => (
+            <Message key={index} role={msg.role} content={msg.content} />
+          ))}
+        </div>
         <TextField
           label="Enter your message"
           variant="outlined"
