@@ -36,18 +36,7 @@ function App() {
   const [userInput, setUserInput] = useState('');
   const [originalUserInput, setOriginalUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  
+ 
   useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
     setConversations(storedConversations);
@@ -286,7 +275,6 @@ function App() {
           Regenerate
         </Button>
       </Box>
-      <div ref={messagesEndRef} />
     </Box>
   );
 }
