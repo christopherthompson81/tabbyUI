@@ -41,8 +41,7 @@
   flex-grow: 1;
   overflow-y: auto;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  flex-direction: column-reverse; /* Reverse the direction to make new messages appear at the top */
 }
 
 .MuiDrawer-paper {

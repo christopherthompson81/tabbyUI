@@ -243,7 +243,7 @@ function App() {
             <Message key={index} role={msg.role} content={msg.content} />
           ))}
         </div>
-        <div ref={messagesEndRef} />
+        {/* Removed messagesEndRef div */}
         <TextField
           label="Enter your message"
           variant="outlined"
