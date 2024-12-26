@@ -38,13 +38,20 @@ function App() {
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  };
+  
   useLayoutEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-    useEffect(() => {
+  useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
     setConversations(storedConversations);
   }, []);
@@ -126,6 +133,7 @@ function App() {
             });
             setMessages(updatedMessages);
             saveConversation(updatedMessages);
+            scrollToBottom();
             return reader.read().then(processText);
         }
         return reader.read().then(processText);
