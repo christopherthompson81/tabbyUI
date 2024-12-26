@@ -1,10 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-
-const scrollToBottom = () => {
-  if (messagesEndRef.current) {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-  }
-};
 import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
@@ -44,11 +38,7 @@ function App() {
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
- 
-  useEffect(() => {
+    useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
     setConversations(storedConversations);
   }, []);
