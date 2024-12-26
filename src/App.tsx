@@ -35,8 +35,7 @@ function App() {
   const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
   const [messages, setMessages] = useState<any[]>([]);
-  const conversationNameRef = useRef<HTMLInputElement>(null);
-
+  
   useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
     setConversations(storedConversations);
