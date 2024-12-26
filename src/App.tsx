@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import tabbyImage from './assets/tabby.jpeg';
+import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
 import {
