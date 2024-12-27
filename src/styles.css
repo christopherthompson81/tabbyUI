@@ -19,6 +19,22 @@
   padding: 10px;
   border-radius: 10px;
   width: calc(100% - 20px); /* Adjust for margin */
+  position: relative;
+}
+
+.message:hover .edit-icon {
+  display: block;
+}
+
+.edit-icon {
+  display: none;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
 }
 
 .message.user {

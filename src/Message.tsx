@@ -3,6 +3,7 @@ import "./styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import EditIcon from '@mui/icons-material/Edit';
 
 interface MessageProps {
   role: string;
@@ -12,6 +13,9 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ role, content }) => {
   return (
     <div className={`message ${role}`}>
+      <div className="edit-icon">
+        <EditIcon fontSize="small" />
+      </div>
       <div className="message-role">
         <strong>{role === "user" ? "You" : "Assistant"}</strong>
       </div>
