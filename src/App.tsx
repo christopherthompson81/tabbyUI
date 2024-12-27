@@ -15,8 +15,13 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    AppBar,
+    Toolbar,
+    Typography,
+    CssBaseline,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import MenuIcon from '@mui/icons-material/Menu';
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -160,7 +165,33 @@ function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Drawer variant="permanent" anchor="left">
+      <CssBaseline />
+      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            edge="start"
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            tabbyUI
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        anchor="left"
+        sx={{
+          width: 240,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: 240,
+            boxSizing: 'border-box',
+          },
+        }}
+      >
         <List>
           <ListItem>
             <h2>Conversations</h2>
@@ -239,7 +270,7 @@ function App() {
           </DialogActions>
         </Dialog>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <img src={tabbyImage} width="250" alt="Tabby" />
         <h1>tabbyUI</h1>
         <div className="main-content">

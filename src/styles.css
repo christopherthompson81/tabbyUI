@@ -10,9 +10,8 @@
 }
 
 #root {
-  min-width: 1280px;
-  margin: 0px 240px;
-  padding: 2rem;
+  min-width: 320px;
+  padding: 1rem;
 }
 
 .message {
