@@ -41,7 +41,6 @@ function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [conversationAnchorEl, setConversationAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
@@ -267,8 +266,8 @@ function App() {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  setConversationAnchorEl(e.currentTarget);
                   setEditingConversationId(conv.id);
+                  setNewConversationName(conv.name);
                 }}
                 style={{ marginLeft: 'auto' }}
               >
