@@ -31,8 +31,7 @@ function App() {
   const [conversations, setConversations] = useState<any[]>(
     JSON.parse(localStorage.getItem('conversations') || '[]')
   );
-  const [currentConversationId, setCurrentConversationId] =
-    useState<string>(
+  const [currentConversationId, setCurrentConversationId] = useState<string>(
       JSON.parse(localStorage.getItem('currentConversationId') || '1')
     );
     
@@ -171,7 +170,7 @@ function App() {
     setCurrentConversationId(id);
     let conversation = conversations.find(conv => conv.id === id);
     setMessages(conversation.messages);
-    localStorage.setItem('currentConversationId', JSON.stringify(currentConversationId));
+    localStorage.setItem('currentConversationId', JSON.stringify(id));
   };
 
   return (
