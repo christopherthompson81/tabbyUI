@@ -22,7 +22,7 @@ import {
     Menu,
     MenuItem,
 } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
 import Button from "@mui/material/Button";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -225,7 +225,34 @@ function App() {
           <ListItem>
             <h2>Conversations</h2>
           </ListItem>
-          <Dialog open={editingConversationId !== null} onClose={() => setEditingConversationId(null)}>
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={() => setMenuAnchorEl(null)}
+          >
+            <MenuItem onClick={() => {
+              setMenuAnchorEl(null);
+              setEditingConversationId(editingConversationId);
+            }}>
+              Edit
+            </MenuItem>
+            <MenuItem onClick={() => {
+              setMenuAnchorEl(null);
+              const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
+              setConversations(updatedConversations);
+              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+              if (currentConversationId === editingConversationId) {
+                setCurrentConversationId(updatedConversations[0]?.id || null);
+                setMessages(updatedConversations[0]?.messages || []);
+              }
+            }}>
+              Delete
+            </MenuItem>
+          </Menu>
+          <Dialog open={editingConversationId !== null} onClose={() => {
+            setEditingConversationId(null);
+            setMenuAnchorEl(null);
+          }}>
             <DialogTitle>Edit Conversation Name</DialogTitle>
             <DialogContent>
               <TextField
@@ -264,12 +291,13 @@ function App() {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
+                  setMenuAnchorEl(e.currentTarget);
                   setEditingConversationId(conv.id);
                   setNewConversationName(conv.name);
                 }}
                 style={{ marginLeft: 'auto' }}
               >
-                <EditIcon />
+                <MoreVertIcon fontSize="small" />
               </IconButton>
             </ListItemButton>
           ))}
