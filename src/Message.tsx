@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 interface MessageProps {
   role: string;
@@ -11,11 +11,35 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ role, content }) => {
+  const [showMenu, setShowMenu] = useState(false);
   return (
     <div className={`message ${role}`}>
-      <div className="edit-icon">
-        <EditIcon fontSize="small" />
+      <div className="menu-icon" onClick={(e) => {
+        e.stopPropagation();
+        setShowMenu(!showMenu);
+      }}>
+        <MoreVertIcon fontSize="small" />
       </div>
+      {showMenu && (
+        <div className="menu">
+          <div className="menu-item" onClick={(e) => {
+            e.stopPropagation();
+            setShowMenu(false);
+            // TODO: Implement edit functionality
+            console.log('Edit message:', content);
+          }}>
+            Edit
+          </div>
+          <div className="menu-item" onClick={(e) => {
+            e.stopPropagation();
+            setShowMenu(false);
+            // TODO: Implement delete functionality
+            console.log('Delete message');
+          }}>
+            Delete
+          </div>
+        </div>
+      )}
       <div className="message-role">
         <strong>{role === "user" ? "You" : "Assistant"}</strong>
       </div>
