@@ -32,7 +32,10 @@ function App() {
     JSON.parse(localStorage.getItem('conversations') || '[]')
   );
   const [currentConversationId, setCurrentConversationId] =
-    useState<number | null>(null);
+    useState<string>(
+      JSON.parse(localStorage.getItem('currentConversationId') || '1')
+    );
+    
   const [serverUrl, setServerUrl] = useState(
     localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000'
   );
@@ -63,6 +66,8 @@ function App() {
   useEffect(() => {
     const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
     setConversations(storedConversations);
+    let conversation = conversations.find(conv => conv.id === currentConversationId);
+    setMessages(conversation.messages);
   }, []);
 
   useEffect(() => {
@@ -165,6 +170,7 @@ function App() {
     setCurrentConversationId(id);
     let conversation = conversations.find(conv => conv.id === id);
     setMessages(conversation.messages);
+    localStorage.setItem('currentConversationId', JSON.stringify(currentConversationId));
   };
 
   return (
