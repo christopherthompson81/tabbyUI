@@ -19,6 +19,8 @@ import {
     Toolbar,
     Typography,
     CssBaseline,
+    Menu,
+    MenuItem,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -36,6 +38,7 @@ function App() {
   );
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
@@ -173,10 +176,28 @@ function App() {
             color="inherit"
             edge="start"
             sx={{ mr: 2 }}
-            onClick={() => setShowAbout(true)}
+            onClick={(e) => setMenuAnchorEl(e.currentTarget)}
           >
             <MenuIcon />
           </IconButton>
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={() => setMenuAnchorEl(null)}
+          >
+            <MenuItem onClick={() => {
+              setMenuAnchorEl(null);
+              setShowSettings(true);
+            }}>
+              Settings
+            </MenuItem>
+            <MenuItem onClick={() => {
+              setMenuAnchorEl(null);
+              setShowAbout(true);
+            }}>
+              About
+            </MenuItem>
+          </Menu>
           <Typography variant="h6" noWrap component="div">
             tabbyUI
           </Typography>
@@ -246,11 +267,6 @@ function App() {
               </IconButton>
             </ListItemButton>
           ))}
-          <ListItem>
-            <IconButton onClick={() => setShowSettings(true)}>
-              <SettingsIcon />
-            </IconButton>
-          </ListItem>
         </List>
 
         {/* Settings Dialog */}
