@@ -42,6 +42,7 @@ function App() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [conversationAnchorEl, setConversationAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
@@ -226,19 +227,19 @@ function App() {
             <h2>Conversations</h2>
           </ListItem>
           <Menu
-            anchorEl={menuAnchorEl}
-            open={Boolean(menuAnchorEl)}
-            onClose={() => setMenuAnchorEl(null)}
+            anchorEl={conversationAnchorEl}
+            open={Boolean(conversationAnchorEl)}
+            onClose={() => setConversationAnchorEl(null)}
           >
             <MenuItem onClick={() => {
-              setMenuAnchorEl(null);
+              setConversationAnchorEl(null);
               setNewConversationName(conversations.find(conv => conv.id === editingConversationId)?.name || '');
               setEditingConversationId(editingConversationId);
             }}>
               Edit
             </MenuItem>
             <MenuItem onClick={() => {
-              setMenuAnchorEl(null);
+              setConversationAnchorEl(null);
               const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
               setConversations(updatedConversations);
               localStorage.setItem('conversations', JSON.stringify(updatedConversations));
@@ -250,7 +251,7 @@ function App() {
               Delete
             </MenuItem>
           </Menu>
-          <Dialog open={editingConversationId !== null && newConversationName !== ''} onClose={() => {
+          <Dialog open={editingConversationId !== null} onClose={() => {
             setEditingConversationId(null);
             setNewConversationName('');
           }}>
@@ -292,7 +293,7 @@ function App() {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  setMenuAnchorEl(e.currentTarget);
+                  setConversationAnchorEl(e.currentTarget);
                   setEditingConversationId(conv.id);
                 }}
                 style={{ marginLeft: 'auto' }}
