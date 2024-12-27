@@ -240,6 +240,26 @@ function App() {
               />
             </DialogContent>
             <DialogActions>
+              <Button 
+                color="error"
+                onClick={() => {
+                  if (editingConversationId !== null) {
+                    const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
+                    setConversations(updatedConversations);
+                    localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+                    if (currentConversationId === editingConversationId && updatedConversations.length > 0) {
+                      setCurrentConversationId(updatedConversations[0].id);
+                      setMessages(updatedConversations[0].messages);
+                    } else if (updatedConversations.length === 0) {
+                      setCurrentConversationId(1);
+                      setMessages([]);
+                    }
+                  }
+                  setEditingConversationId(null);
+                }}
+              >
+                Delete
+              </Button>
               <Button onClick={() => {
                 if (editingConversationId !== null) {
                   const updatedConversations = conversations.map(conv =>
