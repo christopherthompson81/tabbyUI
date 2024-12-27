@@ -36,6 +36,7 @@ function App() {
   );
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
   const [showSettings, setShowSettings] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
@@ -172,6 +173,7 @@ function App() {
             color="inherit"
             edge="start"
             sx={{ mr: 2 }}
+            onClick={() => setShowAbout(true)}
           >
             <MenuIcon />
           </IconButton>
@@ -269,10 +271,25 @@ function App() {
             <Button onClick={() => setShowSettings(false)}>Close</Button>
           </DialogActions>
         </Dialog>
+
+        {/* About Dialog */}
+        <Dialog open={showAbout} onClose={() => setShowAbout(false)}>
+          <DialogTitle>About tabbyUI</DialogTitle>
+          <DialogContent>
+            <img src={tabbyImage} width="250" alt="Tabby" style={{ display: 'block', margin: '0 auto' }} />
+            <Typography variant="h4" align="center" sx={{ mt: 2 }}>
+              tabbyUI
+            </Typography>
+            <Typography variant="body1" align="center" sx={{ mt: 2 }}>
+              A simple chat interface for Tabby
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowAbout(false)}>Close</Button>
+          </DialogActions>
+        </Dialog>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
-        <img src={tabbyImage} width="250" alt="Tabby" />
-        <h1>tabbyUI</h1>
         <div className="main-content">
           {messages.map((msg, index) => (
             <Message key={index} role={msg.role} content={msg.content} />
