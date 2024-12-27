@@ -232,6 +232,7 @@ function App() {
           >
             <MenuItem onClick={() => {
               setMenuAnchorEl(null);
+              setNewConversationName(conversations.find(conv => conv.id === editingConversationId)?.name || '');
               setEditingConversationId(editingConversationId);
             }}>
               Edit
@@ -249,9 +250,9 @@ function App() {
               Delete
             </MenuItem>
           </Menu>
-          <Dialog open={editingConversationId !== null} onClose={() => {
+          <Dialog open={editingConversationId !== null && newConversationName !== ''} onClose={() => {
             setEditingConversationId(null);
-            setMenuAnchorEl(null);
+            setNewConversationName('');
           }}>
             <DialogTitle>Edit Conversation Name</DialogTitle>
             <DialogContent>
@@ -293,7 +294,6 @@ function App() {
                   e.stopPropagation();
                   setMenuAnchorEl(e.currentTarget);
                   setEditingConversationId(conv.id);
-                  setNewConversationName(conv.name);
                 }}
                 style={{ marginLeft: 'auto' }}
               >
