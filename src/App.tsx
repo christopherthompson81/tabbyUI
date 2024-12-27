@@ -226,31 +226,6 @@ function App() {
           <ListItem>
             <h2>Conversations</h2>
           </ListItem>
-          <Menu
-            anchorEl={conversationAnchorEl}
-            open={Boolean(conversationAnchorEl)}
-            onClose={() => setConversationAnchorEl(null)}
-          >
-            <MenuItem onClick={() => {
-              setConversationAnchorEl(null);
-              setNewConversationName(conversations.find(conv => conv.id === editingConversationId)?.name || '');
-              setEditingConversationId(editingConversationId);
-            }}>
-              Edit
-            </MenuItem>
-            <MenuItem onClick={() => {
-              setConversationAnchorEl(null);
-              const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
-              setConversations(updatedConversations);
-              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-              if (currentConversationId === editingConversationId) {
-                setCurrentConversationId(updatedConversations[0]?.id || null);
-                setMessages(updatedConversations[0]?.messages || []);
-              }
-            }}>
-              Delete
-            </MenuItem>
-          </Menu>
           <Dialog open={editingConversationId !== null} onClose={() => {
             setEditingConversationId(null);
             setNewConversationName('');
