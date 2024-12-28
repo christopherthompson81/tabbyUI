@@ -39,6 +39,24 @@ function App() {
     localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000'
   );
   const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
+  const [generationParams, setGenerationParams] = useState({
+    maxTokens: localStorage.getItem('maxTokens') || 150,
+    temperature: localStorage.getItem('temperature') || 1,
+    topP: localStorage.getItem('topP') || 1,
+    topK: localStorage.getItem('topK') || -1,
+    frequencyPenalty: localStorage.getItem('frequencyPenalty') || 0,
+    presencePenalty: localStorage.getItem('presencePenalty') || 0,
+    repetitionPenalty: localStorage.getItem('repetitionPenalty') || 1,
+    typicalP: localStorage.getItem('typicalP') || 1,
+    minTokens: localStorage.getItem('minTokens') || 0,
+    generateWindow: localStorage.getItem('generateWindow') || 512,
+    tokenHealing: localStorage.getItem('tokenHealing') || 'true',
+    mirostatMode: localStorage.getItem('mirostatMode') || 0,
+    mirostatTau: localStorage.getItem('mirostatTau') || 1.5,
+    mirostatEta: localStorage.getItem('mirostatEta') || 0.3,
+    addBosToken: localStorage.getItem('addBosToken') || 'true',
+    banEosToken: localStorage.getItem('banEosToken') || 'false',
+  });
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
@@ -303,11 +321,48 @@ function App() {
           <DialogContent>
             <TextField label="Server URL" variant="outlined" fullWidth margin="normal" value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} />
             <TextField label="API Key" variant="outlined" fullWidth margin="normal" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+            
+            <Typography variant="h6" sx={{ mt: 2 }}>Generation Parameters</Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+              <TextField label="Max Tokens" type="number" variant="outlined" />
+              <TextField label="Temperature" type="number" variant="outlined" />
+              <TextField label="Top P" type="number" variant="outlined" />
+              <TextField label="Top K" type="number" variant="outlined" />
+              <TextField label="Frequency Penalty" type="number" variant="outlined" />
+              <TextField label="Presence Penalty" type="number" variant="outlined" />
+              <TextField label="Repetition Penalty" type="number" variant="outlined" />
+              <TextField label="Typical P" type="number" variant="outlined" />
+            </Box>
+
+            <Typography variant="h6" sx={{ mt: 2 }}>Advanced Parameters</Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
+              <TextField label="Min Tokens" type="number" variant="outlined" />
+              <TextField label="Generate Window" type="number" variant="outlined" />
+              <TextField label="Token Healing" select variant="outlined">
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </TextField>
+              <TextField label="Mirostat Mode" type="number" variant="outlined" />
+              <TextField label="Mirostat Tau" type="number" variant="outlined" />
+              <TextField label="Mirostat Eta" type="number" variant="outlined" />
+              <TextField label="Add BOS Token" select variant="outlined">
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </TextField>
+              <TextField label="Ban EOS Token" select variant="outlined">
+                <MenuItem value="true">True</MenuItem>
+                <MenuItem value="false">False</MenuItem>
+              </TextField>
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => {
               localStorage.setItem('serverUrl', serverUrl);
               localStorage.setItem('apiKey', apiKey);
+              // Save generation parameters
+              Object.entries(generationParams).forEach(([key, value]) => {
+                localStorage.setItem(key, value);
+              });
               setShowSettings(false);
             }}>
               Save Settings
