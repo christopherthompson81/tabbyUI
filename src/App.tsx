@@ -44,6 +44,7 @@ function App() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
+  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
@@ -80,8 +81,14 @@ function App() {
   useEffect(() => {
     const checkStatus = async () => {
       setServerStatus('checking');
-      const isOnline = await checkServerStatus(serverUrl, apiKey);
-      setServerStatus(isOnline ? 'online' : 'offline');
+      const model = await getModelInfo(serverUrl, apiKey);
+      if (model) {
+        setServerStatus('online');
+        setModelInfo(model);
+      } else {
+        setServerStatus('offline');
+        setModelInfo(null);
+      }
     };
 
     checkStatus();
@@ -187,7 +194,7 @@ function App() {
                              serverStatus === 'offline' ? 'red' : 'orange'
             }} />
             <Typography variant="caption">
-              {serverStatus === 'online' ? 'Online' : 
+              {serverStatus === 'online' ? `Online (${modelInfo?.id || 'Unknown'})` : 
                serverStatus === 'offline' ? 'Offline' : 'Checking...'}
             </Typography>
           </Box>

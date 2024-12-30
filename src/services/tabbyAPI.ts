@@ -8,14 +8,14 @@ interface TabbyAPIResponse {
   }[];
 }
 
-interface ModelInfo {
+export interface ModelInfo {
   id: string;
   object: string;
   created: number;
   owned_by: string;
 }
 
-export async function checkServerStatus(serverUrl: string, apiKey: string): Promise<boolean> {
+export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | null> {
   try {
     const response = await fetch(`${serverUrl}/v1/model`, {
       method: 'GET',
@@ -29,8 +29,7 @@ export async function checkServerStatus(serverUrl: string, apiKey: string): Prom
       return false;
     }
 
-    const data: ModelInfo = await response.json();
-    return !!data.id;
+    return await response.json();
   } catch (error) {
     console.error('Error checking server status:', error);
     return false;
