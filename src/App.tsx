@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
-import { Message } from './Message';
+import Message from './Message';
+import { MessageProps } from './Message';
 import {
   getPersistedConversations,
   persistConversations,
@@ -65,14 +66,16 @@ function App() {
     const storedConversations = getPersistedConversations();
     setConversations(storedConversations);
     let conversation = conversations.find(conv => conv.id === currentConversationId);
-    setMessages(conversation.messages);
+    if (conversation) {
+      setMessages(conversation.messages);
+    }
   }, []);
 
   useEffect(() => {
     persistConversations(conversations);
   }, [conversations]);
 
-  const saveConversation = useCallback((v: Message[]) => {
+  const saveConversation = useCallback((v: MessageProps[]) => {
     if (currentConversationId !== null) {
       let updatedConversations = [...conversations];
       for (let conv of updatedConversations) {
@@ -120,7 +123,7 @@ function App() {
   };
 
   const switchConversation = (id: number) => {
-    setCurrentConversationId(id);
+    setCurrentConversationId(id.toString());
     let conversation = conversations.find(conv => conv.id === id);
     setMessages(conversation.messages);
     persistCurrentConversationId(id);
@@ -179,7 +182,7 @@ function App() {
           currentConversationId={currentConversationId}
           onAddConversation={addNewConversation}
           onSwitchConversation={switchConversation}
-          onEditConversation={(id) => {
+          onEditConversation={(id:number) => {
             setEditingConversationId(id);
             setNewConversationName(conversations.find(conv => conv.id === id).name);
           }}
@@ -188,7 +191,7 @@ function App() {
         <ConversationEditor
           editingConversationId={editingConversationId}
           newConversationName={newConversationName}
-          onNameChange={(e) => setNewConversationName(e.target.value)}
+          onNameChange={(e:any) => setNewConversationName(e.target.value)}
           onSave={() => {
             if (editingConversationId !== null) {
               const updatedConversations = conversations.map(conv =>
@@ -204,11 +207,11 @@ function App() {
               const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
               setConversations(updatedConversations);
               localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-              if (currentConversationId === editingConversationId && updatedConversations.length > 0) {
+              if (currentConversationId === editingConversationId.toString() && updatedConversations.length > 0) {
                 setCurrentConversationId(updatedConversations[0].id);
                 setMessages(updatedConversations[0].messages);
               } else if (updatedConversations.length === 0) {
-                setCurrentConversationId(1);
+                setCurrentConversationId("1");
                 setMessages([]);
               }
               setEditingConversationId(null);
@@ -223,7 +226,7 @@ function App() {
             persistServerUrl(serverUrl);
             persistApiKey(apiKey);
             Object.entries(generationParams).forEach(([key, value]) => {
-              persistGenerationParam(key, value);
+              persistGenerationParam(key, value.toString());
             });
             setShowSettings(false);
           }}
@@ -250,7 +253,7 @@ function App() {
         
         <ChatInput
           value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
+          onChange={(e:any) => setUserInput(e.target.value)}
           onSend={() => {
             if (userInput.trim()) {
               sendConversation(userInput);

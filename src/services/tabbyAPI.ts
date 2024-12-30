@@ -1,4 +1,4 @@
-import { Message } from '../Message';
+import { MessageProps } from '../Message';
 
 interface TabbyAPIResponse {
   choices: {
@@ -11,14 +11,14 @@ interface TabbyAPIResponse {
 export async function sendConversation(
   serverUrl: string,
   apiKey: string,
-  messages: Message[],
+  messages: MessageProps[],
   userMessage: string,
   regenerate: boolean = false,
-  onUpdate: (updatedMessages: Message[]) => void,
-  onComplete: (finalMessages: Message[]) => void
+  onUpdate: (updatedMessages: MessageProps[]) => void,
+  onComplete: (finalMessages: MessageProps[]) => void
 ) {
   try {
-    let updatedMessages: Message[];
+    let updatedMessages: MessageProps[];
     if (regenerate) {
       updatedMessages = messages.slice(0, -1); // Remove the last response
     } else {
