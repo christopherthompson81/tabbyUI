@@ -3,20 +3,27 @@ import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
 import {
-    Box,
-    Drawer,
-    AppBar,
-    Toolbar,
-    Typography,
-    CssBaseline,
-    Menu,
-    MenuItem,
+  AppBar,  
+  Box,
+  Button,
+  CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Drawer,
+  IconButton,
+  Menu,
+  MenuItem,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import ChatInput from './components/ChatInput';
 import ConversationList from './components/ConversationList';
 import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
-import ChatInput from './components/ChatInput';
+
 
 function App() {
   const [conversations, setConversations] = useState<any[]>(
