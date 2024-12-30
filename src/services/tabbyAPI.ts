@@ -15,7 +15,7 @@ export interface ModelInfo {
   owned_by: string;
 }
 
-export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | null> {
+export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | boolean> {
   try {
     const response = await fetch(`${serverUrl}/v1/model`, {
       method: 'GET',

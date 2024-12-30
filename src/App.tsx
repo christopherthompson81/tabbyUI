@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
-import { checkServerStatus } from './services/tabbyAPI';
+import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
 import { MessageProps } from './Message';
 import {
@@ -190,7 +190,7 @@ function App() {
               width: 10,
               height: 10,
               borderRadius: '50%',
-              backgroundColor: serverStatus === 'online' ? 'green' : 
+              backgroundColor: serverStatus === 'online' ? 'lime' : 
                              serverStatus === 'offline' ? 'red' : 'orange'
             }} />
             <Typography variant="caption">
