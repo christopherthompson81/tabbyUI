@@ -13,7 +13,6 @@ import {
   persistGenerationParam
 } from './utils/persistence';
 import './styles.css';
-import Message from './Message';
 import {
   AppBar,  
   Box,
@@ -32,7 +31,6 @@ import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
 import { sendConversation as sendConversationToAPI } from './services/tabbyAPI';
-
 
 function App() {
   const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
