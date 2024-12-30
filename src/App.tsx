@@ -24,6 +24,7 @@ import ConversationList from './components/ConversationList';
 import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
+import { sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 
 function App() {
@@ -105,74 +106,29 @@ function App() {
   }, [conversations, currentConversationId, messages]);
 
   const sendConversation = useCallback(async (userMessage: string, regenerate: boolean = false) => {
-    try {
-      let updatedMessages: any[];
-      if (regenerate) {
-        updatedMessages = messages.slice(0, -1); // Remove the last response
-      } else {
-        updatedMessages = [...messages, { role: "user", content: userMessage }];
-        setOriginalUserInput(userMessage); // Store the original user input
-      }
-      setMessages(updatedMessages);
-      fetch(`${serverUrl}/v1/chat/completions?stream=true`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey || '',
-        },
-        body: JSON.stringify({
-          messages: updatedMessages,
-          stream: true
-        }),
-      })
-      .then(response => {
-        console.log(response);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const stream = response.body;
-        const reader = stream.getReader();
-        const decoder = new TextDecoder('utf-8');
-        updatedMessages.push({role: "assistant", content: ""});
-        setMessages(updatedMessages);
-        function processText({ done, value }) {
-            if (done) {
-                console.log('Stream complete');
-                return;
-            }
-            //console.log('Chunk: ', decoder.decode(value));
-            let chunk = decoder.decode(value);
-            const separateLines = chunk.split(/data: /g);
-            separateLines.forEach(line => {
-              if (line.trim() === "[DONE]") {
-                console.log("Finished Streaming");
-              }
-              else if (line.trim()) {
-                //console.log(line);
-                try {
-                  const data = JSON.parse(line);
-                  //console.log(data);
-                  if (data.choices[0].delta.content) {
-                    updatedMessages[updatedMessages.length - 1].content += data.choices[0].delta.content;
-                  }
-                }
-                catch (error) {
-                  console.log(error, chunk.substring(6));
-                }
-              }
-            });
-            setMessages(updatedMessages);
-            saveConversation(updatedMessages);
-            scrollToBottom();
-            return reader.read().then(processText);
-        }
-        return reader.read().then(processText);
-      });
-      
-    } catch (error) {
-      console.error('Error fetching tagline:', error);
+    if (!regenerate) {
+      setOriginalUserInput(userMessage); // Store the original user input
     }
-  }, [messages, serverUrl, apiKey]);
+    
+    try {
+      await sendConversationToAPI(
+        serverUrl,
+        apiKey,
+        messages,
+        userMessage,
+        regenerate,
+        (updatedMessages) => {
+          setMessages(updatedMessages);
+          scrollToBottom();
+        },
+        (finalMessages) => {
+          saveConversation(finalMessages);
+        }
+      );
+    } catch (error) {
+      console.error('Error sending conversation:', error);
+    }
+  }, [messages, serverUrl, apiKey, saveConversation]);
 
   const addNewConversation = () => {
     const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
