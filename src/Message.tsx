@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-interface MessageProps {
+export interface MessageProps {
   role: string;
   content: string;
 }
