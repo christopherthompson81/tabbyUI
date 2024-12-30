@@ -1,4 +1,16 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
+import {
+  getPersistedConversations,
+  persistConversations,
+  getPersistedCurrentConversationId,
+  persistCurrentConversationId,
+  getPersistedServerUrl,
+  persistServerUrl,
+  getPersistedApiKey,
+  persistApiKey,
+  getPersistedGenerationParams,
+  persistGenerationParam
+} from './utils/persistence';
 import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
@@ -28,35 +40,11 @@ import { sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 
 function App() {
-  const [conversations, setConversations] = useState<any[]>(
-    JSON.parse(localStorage.getItem('conversations') || '[]')
-  );
-  const [currentConversationId, setCurrentConversationId] = useState<string>(
-      JSON.parse(localStorage.getItem('currentConversationId') || '1')
-    );
-    
-  const [serverUrl, setServerUrl] = useState(
-    localStorage.getItem('serverUrl') || 'http://127.0.0.1:5000'
-  );
-  const [apiKey, setApiKey] = useState(localStorage.getItem('apiKey') || '');
-  const [generationParams, setGenerationParams] = useState({
-    maxTokens: localStorage.getItem('maxTokens') || 150,
-    temperature: localStorage.getItem('temperature') || 1,
-    topP: localStorage.getItem('topP') || 1,
-    topK: localStorage.getItem('topK') || -1,
-    frequencyPenalty: localStorage.getItem('frequencyPenalty') || 0,
-    presencePenalty: localStorage.getItem('presencePenalty') || 0,
-    repetitionPenalty: localStorage.getItem('repetitionPenalty') || 1,
-    typicalP: localStorage.getItem('typicalP') || 1,
-    minTokens: localStorage.getItem('minTokens') || 0,
-    generateWindow: localStorage.getItem('generateWindow') || 512,
-    tokenHealing: localStorage.getItem('tokenHealing') || 'true',
-    mirostatMode: localStorage.getItem('mirostatMode') || 0,
-    mirostatTau: localStorage.getItem('mirostatTau') || 1.5,
-    mirostatEta: localStorage.getItem('mirostatEta') || 0.3,
-    addBosToken: localStorage.getItem('addBosToken') || 'true',
-    banEosToken: localStorage.getItem('banEosToken') || 'false',
-  });
+  const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
+  const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
+  const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
+  const [apiKey, setApiKey] = useState(getPersistedApiKey());
+  const [generationParams, setGenerationParams] = useState(getPersistedGenerationParams());
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
@@ -81,14 +69,14 @@ function App() {
   }, [messages]);
 
   useEffect(() => {
-    const storedConversations = JSON.parse(localStorage.getItem('conversations') || '[]');
+    const storedConversations = getPersistedConversations();
     setConversations(storedConversations);
     let conversation = conversations.find(conv => conv.id === currentConversationId);
     setMessages(conversation.messages);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('conversations', JSON.stringify(conversations));
+    persistConversations(conversations);
   }, [conversations]);
 
   const saveConversation = useCallback((v) => {
@@ -101,7 +89,7 @@ function App() {
       }
       //console.log("saveConversation1", currentConversationId, messages, updatedConversations);
       setConversations(updatedConversations);
-      localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+      persistConversations(updatedConversations);
     }
   }, [conversations, currentConversationId, messages]);
 
@@ -142,7 +130,7 @@ function App() {
     setCurrentConversationId(id);
     let conversation = conversations.find(conv => conv.id === id);
     setMessages(conversation.messages);
-    localStorage.setItem('currentConversationId', JSON.stringify(id));
+    persistCurrentConversationId(id);
   };
 
   return (
@@ -239,10 +227,10 @@ function App() {
         <SettingsDialog
           open={showSettings}
           onClose={() => {
-            localStorage.setItem('serverUrl', serverUrl);
-            localStorage.setItem('apiKey', apiKey);
+            persistServerUrl(serverUrl);
+            persistApiKey(apiKey);
             Object.entries(generationParams).forEach(([key, value]) => {
-              localStorage.setItem(key, value);
+              persistGenerationParam(key, value);
             });
             setShowSettings(false);
           }}
