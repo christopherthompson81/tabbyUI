@@ -5,16 +5,6 @@ import Message from './Message';
 import {
     Box,
     Drawer,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemText,
-    IconButton,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
     AppBar,
     Toolbar,
     Typography,
@@ -22,10 +12,11 @@ import {
     Menu,
     MenuItem,
 } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MenuIcon from '@mui/icons-material/Menu';
-import Button from "@mui/material/Button";
-import SettingsIcon from "@mui/icons-material/Settings";
+import ConversationList from './components/ConversationList';
+import ConversationEditor from './components/ConversationEditor';
+import SettingsDialog from './components/SettingsDialog';
+import ChatInput from './components/ChatInput';
 
 function App() {
   const [conversations, setConversations] = useState<any[]>(
@@ -238,140 +229,67 @@ function App() {
           },
         }}
       >
-        <List>
-          <ListItem>
-            <h2>Conversations</h2>
-          </ListItem>
-          <Dialog open={editingConversationId !== null} onClose={() => {
-            setEditingConversationId(null);
-            setNewConversationName('');
-          }}>
-            <DialogTitle>Edit Conversation Name</DialogTitle>
-            <DialogContent>
-              <TextField
-                label="Conversation Name"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={newConversationName}
-                onChange={(e) => setNewConversationName(e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button 
-                color="error"
-                onClick={() => {
-                  if (editingConversationId !== null) {
-                    const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
-                    setConversations(updatedConversations);
-                    localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-                    if (currentConversationId === editingConversationId && updatedConversations.length > 0) {
-                      setCurrentConversationId(updatedConversations[0].id);
-                      setMessages(updatedConversations[0].messages);
-                    } else if (updatedConversations.length === 0) {
-                      setCurrentConversationId(1);
-                      setMessages([]);
-                    }
-                  }
-                  setEditingConversationId(null);
-                }}
-              >
-                Delete
-              </Button>
-              <Button onClick={() => {
-                if (editingConversationId !== null) {
-                  const updatedConversations = conversations.map(conv =>
-                    conv.id === editingConversationId ? { ...conv, name: newConversationName } : conv
-                  );
-                  setConversations(updatedConversations);
-                  localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-                }
-                setEditingConversationId(null);
-              }}>
-                Save
-              </Button>
-              <Button onClick={() => setEditingConversationId(null)}>Cancel</Button>
-            </DialogActions>
-          </Dialog>
-          <ListItem>
-            <Button variant="contained" onClick={addNewConversation}>
-              New Conversation
-            </Button>
-          </ListItem>
-          {conversations.map((conv) => (
-            <ListItemButton key={conv.id} onClick={() => switchConversation(conv.id)} selected={conv.id === currentConversationId}>
-              <ListItemText primary={conv.name} />
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setEditingConversationId(conv.id);
-                  setNewConversationName(conv.name);
-                }}
-                style={{ marginLeft: 'auto' }}
-              >
-                <MoreVertIcon fontSize="small" />
-              </IconButton>
-            </ListItemButton>
-          ))}
-        </List>
+        <ConversationList
+          conversations={conversations}
+          currentConversationId={currentConversationId}
+          onAddConversation={addNewConversation}
+          onSwitchConversation={switchConversation}
+          onEditConversation={(id) => {
+            setEditingConversationId(id);
+            setNewConversationName(conversations.find(conv => conv.id === id).name);
+          }}
+        />
 
-        {/* Settings Dialog */}
-        <Dialog open={showSettings} onClose={() => setShowSettings(false)}>
-          <DialogTitle>Settings</DialogTitle>
-          <DialogContent>
-            <TextField label="Server URL" variant="outlined" fullWidth margin="normal" value={serverUrl} onChange={(e) => setServerUrl(e.target.value)} />
-            <TextField label="API Key" variant="outlined" fullWidth margin="normal" value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-            
-            <Typography variant="h6" sx={{ mt: 2 }}>Generation Parameters</Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-              <TextField label="Max Tokens" type="number" variant="outlined" />
-              <TextField label="Temperature" type="number" variant="outlined" />
-              <TextField label="Top P" type="number" variant="outlined" />
-              <TextField label="Top K" type="number" variant="outlined" />
-              <TextField label="Frequency Penalty" type="number" variant="outlined" />
-              <TextField label="Presence Penalty" type="number" variant="outlined" />
-              <TextField label="Repetition Penalty" type="number" variant="outlined" />
-              <TextField label="Typical P" type="number" variant="outlined" />
-            </Box>
+        <ConversationEditor
+          editingConversationId={editingConversationId}
+          newConversationName={newConversationName}
+          onNameChange={(e) => setNewConversationName(e.target.value)}
+          onSave={() => {
+            if (editingConversationId !== null) {
+              const updatedConversations = conversations.map(conv =>
+                conv.id === editingConversationId ? { ...conv, name: newConversationName } : conv
+              );
+              setConversations(updatedConversations);
+              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+              setEditingConversationId(null);
+            }
+          }}
+          onDelete={() => {
+            if (editingConversationId !== null) {
+              const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
+              setConversations(updatedConversations);
+              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+              if (currentConversationId === editingConversationId && updatedConversations.length > 0) {
+                setCurrentConversationId(updatedConversations[0].id);
+                setMessages(updatedConversations[0].messages);
+              } else if (updatedConversations.length === 0) {
+                setCurrentConversationId(1);
+                setMessages([]);
+              }
+              setEditingConversationId(null);
+            }
+          }}
+          onCancel={() => setEditingConversationId(null)}
+        />
 
-            <Typography variant="h6" sx={{ mt: 2 }}>Advanced Parameters</Typography>
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-              <TextField label="Min Tokens" type="number" variant="outlined" />
-              <TextField label="Generate Window" type="number" variant="outlined" />
-              <TextField label="Token Healing" select variant="outlined">
-                <MenuItem value="true">True</MenuItem>
-                <MenuItem value="false">False</MenuItem>
-              </TextField>
-              <TextField label="Mirostat Mode" type="number" variant="outlined" />
-              <TextField label="Mirostat Tau" type="number" variant="outlined" />
-              <TextField label="Mirostat Eta" type="number" variant="outlined" />
-              <TextField label="Add BOS Token" select variant="outlined">
-                <MenuItem value="true">True</MenuItem>
-                <MenuItem value="false">False</MenuItem>
-              </TextField>
-              <TextField label="Ban EOS Token" select variant="outlined">
-                <MenuItem value="true">True</MenuItem>
-                <MenuItem value="false">False</MenuItem>
-              </TextField>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => {
-              localStorage.setItem('serverUrl', serverUrl);
-              localStorage.setItem('apiKey', apiKey);
-              // Save generation parameters
-              Object.entries(generationParams).forEach(([key, value]) => {
-                localStorage.setItem(key, value);
-              });
-              setShowSettings(false);
-            }}>
-              Save Settings
-            </Button>
-            <Button onClick={() => setShowSettings(false)}>Close</Button>
-          </DialogActions>
-        </Dialog>
+        <SettingsDialog
+          open={showSettings}
+          onClose={() => {
+            localStorage.setItem('serverUrl', serverUrl);
+            localStorage.setItem('apiKey', apiKey);
+            Object.entries(generationParams).forEach(([key, value]) => {
+              localStorage.setItem(key, value);
+            });
+            setShowSettings(false);
+          }}
+          serverUrl={serverUrl}
+          onServerUrlChange={(e) => setServerUrl(e.target.value)}
+          apiKey={apiKey}
+          onApiKeyChange={(e) => setApiKey(e.target.value)}
+          generationParams={generationParams}
+          onGenerationParamsChange={(key, value) => setGenerationParams(prev => ({...prev, [key]: value}))}
+        />
 
-        {/* About Dialog */}
         <Dialog open={showAbout} onClose={() => setShowAbout(false)}>
           <DialogTitle>About tabbyUI</DialogTitle>
           <DialogContent>
@@ -395,41 +313,22 @@ function App() {
           ))}
           <div ref={messagesEndRef} />
         </div>
-        {/* Removed messagesEndRef div */}
-        <TextField
-          label="Enter your message"
-          variant="outlined"
-          fullWidth
+        
+        <ChatInput
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && userInput.trim()) {
-              fetchTagline(userInput);
-              setUserInput('');
-            }
-          }}
-        />
-        <Button
-          variant="contained"
-          onClick={() => {
+          onSend={() => {
             if (userInput.trim()) {
               fetchTagline(userInput);
               setUserInput('');
             }
           }}
-        >
-          Send
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
+          onRegenerate={() => {
             if (messages.length > 0) {
               fetchTagline(originalUserInput, true);
             }
           }}
-        >
-          Regenerate
-        </Button>
+        />
       </Box>
     </Box>
   );
