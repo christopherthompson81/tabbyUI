@@ -104,7 +104,7 @@ function App() {
     }
   }, [conversations, currentConversationId, messages]);
 
-  const fetchTagline = useCallback(async (userMessage: string, regenerate: boolean = false) => {
+  const sendConversation = useCallback(async (userMessage: string, regenerate: boolean = false) => {
     try {
       let updatedMessages: any[];
       if (regenerate) {
@@ -316,13 +316,13 @@ function App() {
           onChange={(e) => setUserInput(e.target.value)}
           onSend={() => {
             if (userInput.trim()) {
-              fetchTagline(userInput);
+              sendConversation(userInput);
               setUserInput('');
             }
           }}
           onRegenerate={() => {
             if (messages.length > 0) {
-              fetchTagline(originalUserInput, true);
+              sendConversation(originalUserInput, true);
             }
           }}
         />
