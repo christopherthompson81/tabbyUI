@@ -114,9 +114,9 @@ function App() {
   const addNewConversation = () => {
     const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
     const newConversationName = new Date().toISOString();
-    const newConversation = { id: newId, name: newConversationName, messages: [] };
+    const newConversation = { id: newId.toString(), name: newConversationName, messages: [] };
     setConversations([...conversations, newConversation]);
-    setCurrentConversationId(newId);
+    setCurrentConversationId(newId.toString());
   };
 
   const switchConversation = (id: number) => {
