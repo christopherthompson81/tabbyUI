@@ -23,6 +23,7 @@ import ChatInput from './components/ChatInput';
 import ConversationList from './components/ConversationList';
 import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
+import AboutDialog from './components/AboutDialog';
 
 
 function App() {
@@ -297,21 +298,10 @@ function App() {
           onGenerationParamsChange={(key, value) => setGenerationParams(prev => ({...prev, [key]: value}))}
         />
 
-        <Dialog open={showAbout} onClose={() => setShowAbout(false)}>
-          <DialogTitle>About tabbyUI</DialogTitle>
-          <DialogContent>
-            <img src={tabbyImage} width="250" alt="Tabby" style={{ display: 'block', margin: '0 auto' }} />
-            <Typography variant="h4" align="center" sx={{ mt: 2 }}>
-              tabbyUI
-            </Typography>
-            <Typography variant="body1" align="center" sx={{ mt: 2 }}>
-              A simple chat interface for Tabby
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setShowAbout(false)}>Close</Button>
-          </DialogActions>
-        </Dialog>
+        <AboutDialog
+          open={showAbout}
+          onClose={() => setShowAbout(false)}
+        />
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <div className="main-content">
