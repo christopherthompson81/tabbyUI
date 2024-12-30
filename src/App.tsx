@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
+import { checkServerStatus } from './services/tabbyAPI';
 import Message from './Message';
 import { MessageProps } from './Message';
 import {
@@ -42,6 +43,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
+  const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
   const [userInput, setUserInput] = useState('');
@@ -74,6 +76,19 @@ function App() {
   useEffect(() => {
     persistConversations(conversations);
   }, [conversations]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      setServerStatus('checking');
+      const isOnline = await checkServerStatus(serverUrl, apiKey);
+      setServerStatus(isOnline ? 'online' : 'offline');
+    };
+
+    checkStatus();
+    const interval = setInterval(checkStatus, 30000); // Check every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [serverUrl, apiKey]);
 
   const saveConversation = useCallback((v: MessageProps[]) => {
     if (currentConversationId !== null) {
@@ -160,9 +175,22 @@ function App() {
               About
             </MenuItem>
           </Menu>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             tabbyUI
           </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              backgroundColor: serverStatus === 'online' ? 'green' : 
+                             serverStatus === 'offline' ? 'red' : 'orange'
+            }} />
+            <Typography variant="caption">
+              {serverStatus === 'online' ? 'Online' : 
+               serverStatus === 'offline' ? 'Offline' : 'Checking...'}
+            </Typography>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer

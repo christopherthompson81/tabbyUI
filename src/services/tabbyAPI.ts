@@ -8,6 +8,35 @@ interface TabbyAPIResponse {
   }[];
 }
 
+interface ModelInfo {
+  id: string;
+  object: string;
+  created: number;
+  owned_by: string;
+}
+
+export async function checkServerStatus(serverUrl: string, apiKey: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/model`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey || '',
+      },
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data: ModelInfo = await response.json();
+    return !!data.id;
+  } catch (error) {
+    console.error('Error checking server status:', error);
+    return false;
+  }
+}
+
 export async function sendConversation(
   serverUrl: string,
   apiKey: string,
