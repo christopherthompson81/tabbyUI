@@ -11,18 +11,12 @@ import {
   getPersistedGenerationParams,
   persistGenerationParam
 } from './utils/persistence';
-import tabbyImage from './assets/tabby.png';
 import './styles.css';
 import Message from './Message';
 import {
   AppBar,  
   Box,
-  Button,
   CssBaseline,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Drawer,
   IconButton,
   Menu,
