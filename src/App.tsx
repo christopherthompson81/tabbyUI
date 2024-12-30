@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
+import { Message } from './Message';
 import {
   getPersistedConversations,
   persistConversations,
@@ -73,7 +74,7 @@ function App() {
     persistConversations(conversations);
   }, [conversations]);
 
-  const saveConversation = useCallback((v) => {
+  const saveConversation = useCallback((v: Message[]) => {
     if (currentConversationId !== null) {
       let updatedConversations = [...conversations];
       for (let conv of updatedConversations) {
