@@ -15,7 +15,7 @@ export interface ModelInfo {
   owned_by: string;
 }
 
-export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | boolean> {
+export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | null> {
   try {
     const response = await fetch(`${serverUrl}/v1/model`, {
       method: 'GET',
@@ -26,13 +26,13 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
     });
 
     if (!response.ok) {
-      return false;
+      return null;
     }
 
     return await response.json();
   } catch (error) {
     console.error('Error checking server status:', error);
-    return false;
+    return null;
   }
 }
 
