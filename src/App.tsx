@@ -37,7 +37,29 @@ import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
+const MemoizedMenuItems = React.memo(({ onClose, onShowSettings, onShowAbout }: {
+  onClose: () => void;
+  onShowSettings: () => void;
+  onShowAbout: () => void;
+}) => (
+  <>
+    <MenuItem onClick={() => {
+      onClose();
+      onShowSettings();
+    }}>
+      Settings
+    </MenuItem>
+    <MenuItem onClick={() => {
+      onClose();
+      onShowAbout();
+    }}>
+      About
+    </MenuItem>
+  </>
+));
+
 function App() {
+  const [, forceUpdate] = useState({});
   const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
   const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
   const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
@@ -45,7 +67,7 @@ function App() {
   const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
   const [generationParams, setGenerationParams] = useState(getPersistedGenerationParams());
   const [showSettings, setShowSettings] = useState(false);
-  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const menuAnchorRef = useRef<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
@@ -166,27 +188,30 @@ function App() {
             color="inherit"
             edge="start"
             sx={{ mr: 2 }}
-            onClick={(e) => setMenuAnchorEl(e.currentTarget)}
+            onClick={(e) => {
+              menuAnchorRef.current = e.currentTarget;
+              forceUpdate();
+            }}
+            ref={menuAnchorRef}
           >
             <MenuIcon />
           </IconButton>
           <Menu
-            anchorEl={menuAnchorEl}
-            open={Boolean(menuAnchorEl)}
-            onClose={() => setMenuAnchorEl(null)}
+            anchorEl={menuAnchorRef.current}
+            open={Boolean(menuAnchorRef.current)}
+            onClose={() => {
+              menuAnchorRef.current = null;
+              forceUpdate();
+            }}
           >
-            <MenuItem onClick={() => {
-              setMenuAnchorEl(null);
-              setShowSettings(true);
-            }}>
-              Settings
-            </MenuItem>
-            <MenuItem onClick={() => {
-              setMenuAnchorEl(null);
-              setShowAbout(true);
-            }}>
-              About
-            </MenuItem>
+            <MemoizedMenuItems 
+              onClose={() => {
+                menuAnchorRef.current = null;
+                forceUpdate();
+              }}
+              onShowSettings={() => setShowSettings(true)}
+              onShowAbout={() => setShowAbout(true)}
+            />
           </Menu>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             tabbyUI
