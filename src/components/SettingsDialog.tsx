@@ -20,8 +20,6 @@ interface GenerationParams {
   banEosToken: string;
 }
 
-export default SettingsDialog;
-
 interface SettingsDialogProps {
   open: boolean;
   onClose: () => void;
@@ -35,7 +33,7 @@ interface SettingsDialogProps {
   onGenerationParamsChange: (key: keyof GenerationParams, value: string) => void;
 }
 
-const SettingsDialog = React.memo(function SettingsDialog({
+export default React.memo(function SettingsDialog({
   open,
   onClose,
   serverUrl,
