@@ -1,9 +1,20 @@
-import { MessageProps } from '../Message';
+export interface MessageContent {
+  type: 'text' | 'image_url';
+  text?: string;
+  image_url?: {
+    url: string;
+  };
+}
+
+export interface MessageProps {
+  role: string;
+  content: MessageContent[];
+}
 
 interface TabbyAPIResponse {
   choices: {
     delta: {
-      content: string;
+      content: MessageContent[];
     };
   }[];
 }
@@ -40,7 +51,7 @@ export async function sendConversation(
   serverUrl: string,
   apiKey: string,
   messages: MessageProps[],
-  userMessage: string,
+  userMessage: MessageContent[],
   regenerate: boolean = false,
   onUpdate: (updatedMessages: MessageProps[]) => void,
   onComplete: (finalMessages: MessageProps[]) => void
@@ -50,7 +61,10 @@ export async function sendConversation(
     if (regenerate) {
       updatedMessages = messages.slice(0, -1); // Remove the last response
     } else {
-      updatedMessages = [...messages, { role: "user", content: userMessage }];
+      updatedMessages = [...messages, { 
+        role: "user", 
+        content: userMessage 
+      }];
     }
 
     const response = await fetch(`${serverUrl}/v1/chat/completions?stream=true`, {
@@ -76,7 +90,7 @@ export async function sendConversation(
 
     const reader = stream.getReader();
     const decoder = new TextDecoder('utf-8');
-    updatedMessages.push({role: "assistant", content: ""});
+    updatedMessages.push({role: "assistant", content: [{type: 'text', text: ''}]});
 
     function processText({ done, value }: { done: boolean; value?: Uint8Array }) {
       if (done) {
@@ -95,7 +109,17 @@ export async function sendConversation(
           try {
             const data: TabbyAPIResponse = JSON.parse(line);
             if (data.choices[0].delta.content) {
-              updatedMessages[updatedMessages.length - 1].content += data.choices[0].delta.content;
+              const lastMessage = updatedMessages[updatedMessages.length - 1];
+              const lastContent = lastMessage.content[lastMessage.content.length - 1];
+              
+              if (lastContent.type === 'text') {
+                lastContent.text = (lastContent.text || '') + data.choices[0].delta.content[0].text;
+              } else {
+                lastMessage.content.push({
+                  type: 'text',
+                  text: data.choices[0].delta.content[0].text || ''
+                });
+              }
               onUpdate([...updatedMessages]);
             }
           } catch (error) {

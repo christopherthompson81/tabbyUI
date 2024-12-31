@@ -47,8 +47,8 @@ function App() {
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
-  const [userInput, setUserInput] = useState('');
-  const [originalUserInput, setOriginalUserInput] = useState('');
+  const [userInput, setUserInput] = useState<MessageContent[]>([]);
+  const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -304,11 +304,11 @@ function App() {
         
         <ChatInput
           value={userInput}
-          onChange={(e:any) => setUserInput(e.target.value)}
+          onChange={(content: MessageContent[]) => setUserInput(content)}
           onSend={() => {
-            if (userInput.trim()) {
+            if (userInput.length > 0) {
               sendConversation(userInput);
-              setUserInput('');
+              setUserInput([]);
             }
           }}
           onRegenerate={() => {

@@ -7,9 +7,11 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
+import { MessageContent } from '../services/tabbyAPI';
+
 export interface MessageProps {
   role: string;
-  content: string;
+  content: MessageContent[];
 }
 
 interface MessagePropsExtended extends MessageProps {
@@ -89,28 +91,45 @@ const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDele
             </Box>
           </div>
         ) : (
-          <ReactMarkdown
-          components={{
-            code({ node, inline, className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || '');
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  children={String(children).replace(/\n$/, '')}
-                  style={oneDark}
-                  language={match[1]}
-                  PreTag="div"
-                  {...props}
+          {content.map((item, idx) => {
+            if (item.type === 'text') {
+              return (
+                <ReactMarkdown
+                  key={idx}
+                  components={{
+                    code({ node, inline, className, children, ...props }) {
+                      const match = /language-(\w+)/.exec(className || '');
+                      return !inline && match ? (
+                        <SyntaxHighlighter
+                          children={String(children).replace(/\n$/, '')}
+                          style={oneDark}
+                          language={match[1]}
+                          PreTag="div"
+                          {...props}
+                        />
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    }
+                  }}
+                >
+                  {item.text || ''}
+                </ReactMarkdown>
+              );
+            } else if (item.type === 'image_url' && item.image_url) {
+              return (
+                <img 
+                  key={idx}
+                  src={item.image_url.url} 
+                  alt="User uploaded" 
+                  style={{ maxWidth: '100%', margin: '10px 0' }}
                 />
-              ) : (
-                <code className={className} {...props}>
-                  {children}
-                </code>
               );
             }
-          }}
-        >
-          {content}
-        </ReactMarkdown>
+            return null;
+          })}
         )}
       </div>
     </div>
