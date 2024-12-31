@@ -18,7 +18,7 @@ interface GenerationParams {
   mirostatEta: string | number;
   addBosToken: string;
   banEosToken: string;
-});
+}
 
 export default SettingsDialog;
 
