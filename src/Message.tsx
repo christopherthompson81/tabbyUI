@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box } from '@mui/material';
 
 export interface MessageProps {
   role: string;
@@ -110,6 +111,7 @@ const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDele
         >
           {content}
         </ReactMarkdown>
+        )}
       </div>
     </div>
   );
