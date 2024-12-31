@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useCallback } from 'react';
 
 interface GenerationParams {
   maxTokens: string | number;
