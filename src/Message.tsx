@@ -20,7 +20,7 @@ interface MessagePropsExtended extends MessageProps {
   index: number;
 }
 
-const Message = React.memo(function Message({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
+const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(
@@ -143,4 +143,4 @@ const Message = React.memo(function Message({ role, content, onEdit, onDelete, i
   );
 };
 
-export default React.memo(Message);
+export default React.memo(MessageComponent);
