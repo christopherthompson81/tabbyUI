@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
@@ -45,7 +46,7 @@ function App() {
   const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
   const [generationParams, setGenerationParams] = useState(() => getPersistedGenerationParams());
   const [showSettings, setShowSettings] = useState(false);
-  const menuAnchorRef = useRef<null | HTMLElement>(null);
+  const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
@@ -71,19 +72,6 @@ function App() {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
-
-  useEffect(() => {
-    const storedConversations = getPersistedConversations();
-    setConversations(storedConversations);
-    let conversation = conversations.find(conv => conv.id === currentConversationId);
-    if (conversation) {
-      setMessages(conversation.messages);
-    }
-  }, []);
-
-  useEffect(() => {
-    persistConversations(conversations);
-  }, [conversations]);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -157,33 +145,40 @@ function App() {
     persistCurrentConversationId(id);
   };
 
+  const mainMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           <IconButton
+            id="main-menu-button"
             color="inherit"
             edge="start"
             sx={{ mr: 2 }}
-            onClick={(e) => menuAnchorRef.current = e.currentTarget}
-            ref={menuAnchorRef}
+            onClick={(e) => setMenuAnchorEl(e.currentTarget)}
+            ref={menuAnchorEl}
           >
             <MenuIcon />
           </IconButton>
           <Menu
-            anchorEl={menuAnchorRef.current}
-            open={Boolean(menuAnchorRef.current)}
-            onClose={() => menuAnchorRef.current = null}
+            id="main-menu"
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={mainMenuClose}
+            MenuListProps={({'aria-labelledby': 'main-menu-button',})}
           >
             <MenuItem onClick={() => {
-              menuAnchorRef.current = null;
+              mainMenuClose();
               setShowSettings(true);
             }}>
               Settings
             </MenuItem>
             <MenuItem onClick={() => {
-              menuAnchorRef.current = null;
+              mainMenuClose();
               setShowAbout(true);
             }}>
               About

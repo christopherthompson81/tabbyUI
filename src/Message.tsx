@@ -1,4 +1,3 @@
-import React from "react";
 import { useCallback, useState, useRef } from "react";
 import { TextField, Button } from '@mui/material';
 import "./styles.css";
@@ -21,7 +20,7 @@ interface MessagePropsExtended extends MessageProps {
   index: number;
 }
 
-const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
+function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(
@@ -100,6 +99,7 @@ const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePro
           </div>
         ) : (
           content.map((item, idx) => {
+            console.log(item, idx);
             if (item.type === 'text') {
               return (
                 <ReactMarkdown
@@ -145,4 +145,4 @@ const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePro
   );
 };
 
-export default React.memo(MessageComponent);
+export default MessageComponent;
