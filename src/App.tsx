@@ -55,12 +55,11 @@ function App() {
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-      window.scrollTo(0, document.body.scrollHeight);
+      messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Changed to 'auto' for faster scrolling
     }
-  };
+  }, []);
   
   useLayoutEffect(() => {
     if (messagesEndRef.current) {
@@ -102,17 +101,15 @@ function App() {
 
   const saveConversation = useCallback((v: MessageProps[]) => {
     if (currentConversationId !== null) {
-      let updatedConversations = [...conversations];
-      for (let conv of updatedConversations) {
-        if (conv.id === currentConversationId) {
-          conv.messages = v;
-        }
-      }
-      //console.log("saveConversation1", currentConversationId, messages, updatedConversations);
-      setConversations(updatedConversations);
-      persistConversations(updatedConversations);
+      setConversations(prev => {
+        const updatedConversations = prev.map(conv => 
+          conv.id === currentConversationId ? { ...conv, messages: v } : conv
+        );
+        persistConversations(updatedConversations);
+        return updatedConversations;
+      });
     }
-  }, [conversations, currentConversationId, messages]);
+  }, [currentConversationId]);
 
   const sendConversation = useCallback(async (userMessage: MessageContent[], regenerate: boolean = false) => {
     if (!regenerate) {

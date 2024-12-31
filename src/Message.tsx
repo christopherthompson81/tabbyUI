@@ -20,34 +20,39 @@ interface MessagePropsExtended extends MessageProps {
   index: number;
 }
 
-const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDelete, index }) => {
+const Message = React.memo(({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleMenuToggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(prev => !prev);
+  }, []);
+
+  const handleEditClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    setIsEditing(true);
+  }, []);
+
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowMenu(false);
+    onDelete(index);
+  }, [onDelete, index]);
   return (
     <div className={`message ${role}`}>
-      <div className="menu-icon" onClick={(e) => {
-        e.stopPropagation();
-        setShowMenu(!showMenu);
-      }}>
+      <div className="menu-icon" onClick={handleMenuToggle}>
         <MoreVertIcon fontSize="small" />
       </div>
       {showMenu && (
         <div className="menu">
-          <div className="menu-item" onClick={(e) => {
-            e.stopPropagation();
-            setShowMenu(false);
-            setIsEditing(true);
-            setShowMenu(false);
-          }}>
+          <div className="menu-item" onClick={handleEditClick}>
             Edit
           </div>
-          <div className="menu-item" onClick={(e) => {
-            e.stopPropagation();
-            setShowMenu(false);
-            onDelete(index);
-          }}>
+          <div className="menu-item" onClick={handleDeleteClick}>
             Delete
           </div>
         </div>
