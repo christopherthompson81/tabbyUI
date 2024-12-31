@@ -37,29 +37,7 @@ import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
-const MemoizedMenuItems = React.memo(({ onClose, onShowSettings, onShowAbout }: {
-  onClose: () => void;
-  onShowSettings: () => void;
-  onShowAbout: () => void;
-}) => (
-  <>
-    <MenuItem onClick={() => {
-      onClose();
-      onShowSettings();
-    }}>
-      Settings
-    </MenuItem>
-    <MenuItem onClick={() => {
-      onClose();
-      onShowAbout();
-    }}>
-      About
-    </MenuItem>
-  </>
-));
-
 function App() {
-  const [, forceUpdate] = useState({});
   const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
   const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
   const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
@@ -188,10 +166,7 @@ function App() {
             color="inherit"
             edge="start"
             sx={{ mr: 2 }}
-            onClick={(e) => {
-              menuAnchorRef.current = e.currentTarget;
-              forceUpdate();
-            }}
+            onClick={(e) => menuAnchorRef.current = e.currentTarget}
             ref={menuAnchorRef}
           >
             <MenuIcon />
@@ -199,19 +174,20 @@ function App() {
           <Menu
             anchorEl={menuAnchorRef.current}
             open={Boolean(menuAnchorRef.current)}
-            onClose={() => {
-              menuAnchorRef.current = null;
-              forceUpdate();
-            }}
+            onClose={() => menuAnchorRef.current = null}
           >
-            <MemoizedMenuItems 
-              onClose={() => {
-                menuAnchorRef.current = null;
-                forceUpdate();
-              }}
-              onShowSettings={() => setShowSettings(true)}
-              onShowAbout={() => setShowAbout(true)}
-            />
+            <MenuItem onClick={() => {
+              menuAnchorRef.current = null;
+              setShowSettings(true);
+            }}>
+              Settings
+            </MenuItem>
+            <MenuItem onClick={() => {
+              menuAnchorRef.current = null;
+              setShowAbout(true);
+            }}>
+              About
+            </MenuItem>
           </Menu>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             tabbyUI
