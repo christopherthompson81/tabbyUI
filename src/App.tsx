@@ -12,7 +12,9 @@ import {
   getPersistedApiKey,
   persistApiKey,
   getPersistedGenerationParams,
-  persistGenerationParam
+  persistGenerationParam,
+  persistAdminApiKey,
+  getPersistedAdminApiKey,
 } from './utils/persistence';
 import './styles.css';
 import {
