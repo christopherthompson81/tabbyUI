@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
+import VirtualizedMessageList from './components/VirtualizedMessageList';
 import { MessageProps } from './Message';
 import {
   getPersistedConversations,
