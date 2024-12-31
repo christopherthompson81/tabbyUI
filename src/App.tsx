@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
-import VirtualizedMessageList from './components/VirtualizedMessageList';
 import { MessageProps } from './Message';
 import {
   getPersistedConversations,
@@ -287,7 +286,23 @@ function App() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <div className="main-content">
-          <VirtualizedMessageList messages={messages} saveConversation={saveConversation} />
+          {messages.map((message, index) => (
+            <Message
+              key={index}
+              role={message.role}
+              content={message.content}
+              onEdit={(i, newContent) => {
+                const updatedMessages = [...messages];
+                updatedMessages[i].content = newContent;
+                saveConversation(updatedMessages);
+              }}
+              onDelete={(i) => {
+                const updatedMessages = messages.filter((_, idx) => idx !== i);
+                saveConversation(updatedMessages);
+              }}
+              index={index}
+            />
+          ))}
           <div ref={messagesEndRef} />
         </div>
         
