@@ -1,5 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
-import { ChangeEvent, useCallback } from 'react';
+import React, { ChangeEvent, useCallback, useMemo } from 'react';
 
 interface GenerationParams {
   maxTokens: string | number;
@@ -18,7 +18,9 @@ interface GenerationParams {
   mirostatEta: string | number;
   addBosToken: string;
   banEosToken: string;
-}
+});
+
+export default SettingsDialog;
 
 interface SettingsDialogProps {
   open: boolean;
@@ -33,7 +35,7 @@ interface SettingsDialogProps {
   onGenerationParamsChange: (key: keyof GenerationParams, value: string) => void;
 }
 
-export default function SettingsDialog({
+const SettingsDialog = React.memo(function SettingsDialog({
   open,
   onClose,
   serverUrl,
@@ -58,7 +60,7 @@ export default function SettingsDialog({
         
         <Typography variant="h6" sx={{ mt: 2 }}>Generation Parameters</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-          {[
+          {useMemo(() => [
             { label: 'Max Tokens', key: 'maxTokens', type: 'number' },
             { label: 'Temperature', key: 'temperature', type: 'number' },
             { label: 'Top P', key: 'topP', type: 'number' },
@@ -67,18 +69,18 @@ export default function SettingsDialog({
             { label: 'Presence Penalty', key: 'presencePenalty', type: 'number' },
             { label: 'Repetition Penalty', key: 'repetitionPenalty', type: 'number' },
             { label: 'Typical P', key: 'typicalP', type: 'number' },
-          ].map((param) => (
+          ], []).map((param) => (
             <TextField
               key={param.key}
               label={param.label}
               type={param.type}
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => {
+              onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
                 const value = e.target.value;
                 if (param.type === 'number' && isNaN(Number(value))) return;
                 onGenerationParamsChange(param.key as keyof GenerationParams, value);
-              }}
+              }, [onGenerationParamsChange, param.key, param.type])}
               inputProps={{
                 min: 0,
                 step: param.key === 'temperature' ? 0.1 : 1

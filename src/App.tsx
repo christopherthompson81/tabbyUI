@@ -43,7 +43,7 @@ function App() {
   const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
   const [apiKey, setApiKey] = useState(getPersistedApiKey());
   const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
-  const [generationParams, setGenerationParams] = useState(getPersistedGenerationParams());
+  const [generationParams, setGenerationParams] = useState(() => getPersistedGenerationParams());
   const [showSettings, setShowSettings] = useState(false);
   const menuAnchorRef = useRef<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
@@ -280,7 +280,9 @@ function App() {
           adminApiKey={adminApiKey}
           onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
           generationParams={generationParams}
-          onGenerationParamsChange={(key, value) => setGenerationParams(prev => ({...prev, [key]: value}))}
+          onGenerationParamsChange={useCallback((key, value) => {
+            setGenerationParams(prev => ({...prev, [key]: value}));
+          }, [])}
         />
 
         <AboutDialog
