@@ -40,6 +40,8 @@ export default function SettingsDialog({
   onServerUrlChange,
   apiKey,
   onApiKeyChange,
+  adminApiKey,
+  onAdminApiKeyChange,
   generationParams,
   onGenerationParamsChange
 }: SettingsDialogProps) {
