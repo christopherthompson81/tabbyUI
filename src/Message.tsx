@@ -21,7 +21,7 @@ interface MessagePropsExtended extends MessageProps {
   index: number;
 }
 
-const MessageComponent = React.memo(({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
+const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(
