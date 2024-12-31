@@ -91,7 +91,7 @@ const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDele
             </Box>
           </div>
         ) : (
-          {content.map((item, idx) => {
+          content.map((item, idx) => {
             if (item.type === 'text') {
               return (
                 <ReactMarkdown
@@ -129,7 +129,7 @@ const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDele
               );
             }
             return null;
-          })}
+          })
         )}
       </div>
     </div>

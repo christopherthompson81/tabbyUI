@@ -111,9 +111,9 @@ function App() {
     }
   }, [conversations, currentConversationId, messages]);
 
-  const sendConversation = useCallback(async (userMessage: string, regenerate: boolean = false) => {
+  const sendConversation = useCallback(async (userMessage: MessageContent[], regenerate: boolean = false) => {
     if (!regenerate) {
-      setOriginalUserInput(userMessage); // Store the original user input
+      setOriginalUserInput([...userMessage]); // Store the original user input
     }
     
     try {
