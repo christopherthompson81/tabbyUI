@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { TextField, Button } from '@mui/material';
 import "./styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -10,8 +11,17 @@ export interface MessageProps {
   content: string;
 }
 
-const Message: React.FC<MessageProps> = ({ role, content }) => {
+interface MessagePropsExtended extends MessageProps {
+  onEdit: (index: number, newContent: string) => void;
+  onDelete: (index: number) => void;
+  index: number;
+}
+
+const Message: React.FC<MessagePropsExtended> = ({ role, content, onEdit, onDelete, index }) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(content);
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null);
   return (
     <div className={`message ${role}`}>
       <div className="menu-icon" onClick={(e) => {
@@ -25,16 +35,15 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
           <div className="menu-item" onClick={(e) => {
             e.stopPropagation();
             setShowMenu(false);
-            // TODO: Implement edit functionality
-            console.log('Edit message:', content);
+            setIsEditing(true);
+            setShowMenu(false);
           }}>
             Edit
           </div>
           <div className="menu-item" onClick={(e) => {
             e.stopPropagation();
             setShowMenu(false);
-            // TODO: Implement delete functionality
-            console.log('Delete message');
+            onDelete(index);
           }}>
             Delete
           </div>
@@ -44,7 +53,42 @@ const Message: React.FC<MessageProps> = ({ role, content }) => {
         <strong>{role === "user" ? "You" : "Assistant"}</strong>
       </div>
       <div className="message-content">
-        <ReactMarkdown
+        {isEditing ? (
+          <div>
+            <TextField
+              fullWidth
+              multiline
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              inputRef={editTextareaRef}
+              autoFocus
+            />
+            <Box sx={{ mt: 1 }}>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={() => {
+                  onEdit(index, editedContent);
+                  setIsEditing(false);
+                }}
+                sx={{ mr: 1 }}
+              >
+                Save
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditedContent(content);
+                }}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </div>
+        ) : (
+          <ReactMarkdown
           components={{
             code({ node, inline, className, children, ...props }) {
               const match = /language-(\w+)/.exec(className || '');

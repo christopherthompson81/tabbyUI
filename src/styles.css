@@ -72,6 +72,12 @@
   padding: 5px;
 }
 
+.message-edit-buttons {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
 .main-content {
   padding: 10px;
   flex-grow: 1;
