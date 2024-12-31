@@ -1,6 +1,6 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
 import React from 'react';
-import { ChangeEvent, useCallback } from 'react';
+import { ChangeEvent } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
 
 interface GenerationParams {
   maxTokens: string | number;
@@ -46,6 +46,12 @@ function SettingsDialog({
   generationParams,
   onGenerationParamsChange
 }: SettingsDialogProps) {
+  const handleParamChange = (e: React.ChangeEvent<HTMLInputElement>, param: any) => {
+    const value = e.target.value;
+    if (param.type === 'number' && isNaN(Number(value))) return;
+    onGenerationParamsChange(param.key as keyof GenerationParams, value);
+  };
+  
   const generationParamLabels = [
     { label: 'Max Tokens', key: 'maxTokens', type: 'number' },
     { label: 'Temperature', key: 'temperature', type: 'number' },
@@ -88,11 +94,7 @@ function SettingsDialog({
               type={param.type}
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value;
-                if (param.type === 'number' && isNaN(Number(value))) return;
-                onGenerationParamsChange(param.key as keyof GenerationParams, value);
-              }, [onGenerationParamsChange, param.key, param.type])}
+              onChange={(e) => handleParamChange(e, param)}
             />
           ))}
         </Box>
@@ -106,11 +108,7 @@ function SettingsDialog({
               type={param.type}
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (param.type === 'number' && isNaN(Number(value))) return;
-                onGenerationParamsChange(param.key as keyof GenerationParams, value);
-              }}
+              onChange={(e) => handleParamChange(e, param)}
             />
           ))}
           
@@ -121,7 +119,7 @@ function SettingsDialog({
               select
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => onGenerationParamsChange(param.key as keyof GenerationParams, e.target.value)}
+              onChange={(e) => handleParamChange(e, param)}
             >
               {param.options.map((option) => (
                 <MenuItem key={option} value={option}>

@@ -108,7 +108,7 @@ export async function sendConversation(
         if (line.trim()) {
           try {
             const data: TabbyAPIResponse = JSON.parse(line);
-            console.log(data);
+            //console.log(data);
             if (data.choices[0].delta.content) {
               const lastMessage = updatedMessages[updatedMessages.length - 1];
               const lastContent = lastMessage.content[lastMessage.content.length - 1];

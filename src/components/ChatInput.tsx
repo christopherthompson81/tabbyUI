@@ -12,14 +12,11 @@ export default function ChatInput({
 }) {
   const [inputText, setInputText] = useState('');
 
-  const handleTextChange = useCallback(
-    debounce((e) => {
-      setInputText(e.target.value);
-      // Convert text to MessageContent format
-      onChange([{ type: 'text', text: e.target.value }]);
-    }, 200),
-    []
-  );
+  const handleTextChange = (e) => {
+    setInputText(e.target.value);
+    // Convert text to MessageContent format
+    onChange([{ type: 'text', text: e.target.value }]);
+  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];

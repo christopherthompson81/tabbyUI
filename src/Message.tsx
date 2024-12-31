@@ -99,7 +99,6 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
           </div>
         ) : (
           content.map((item, idx) => {
-            console.log(item, idx);
             if (item.type === 'text') {
               return (
                 <ReactMarkdown
