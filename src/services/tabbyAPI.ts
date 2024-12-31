@@ -108,16 +108,17 @@ export async function sendConversation(
         if (line.trim()) {
           try {
             const data: TabbyAPIResponse = JSON.parse(line);
+            console.log(data);
             if (data.choices[0].delta.content) {
               const lastMessage = updatedMessages[updatedMessages.length - 1];
               const lastContent = lastMessage.content[lastMessage.content.length - 1];
               
               if (lastContent.type === 'text') {
-                lastContent.text = (lastContent.text || '') + data.choices[0].delta.content[0].text;
+                lastContent.text = (lastContent.text || '') + data.choices[0].delta.content;
               } else {
                 lastMessage.content.push({
                   type: 'text',
-                  text: data.choices[0].delta.content[0].text || ''
+                  text: data.choices[0].delta.content || ''
                 });
               }
               onUpdate([...updatedMessages]);

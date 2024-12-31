@@ -32,7 +32,7 @@ import ConversationList from './components/ConversationList';
 import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
-import { sendConversation as sendConversationToAPI } from './services/tabbyAPI';
+import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 function App() {
   const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
