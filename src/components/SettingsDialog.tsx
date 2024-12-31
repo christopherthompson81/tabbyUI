@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
-import React, { ChangeEvent, useCallback, useMemo } from 'react';
+import React from 'react';
+import { ChangeEvent, useCallback, useMemo } from 'react';
 
 interface GenerationParams {
   maxTokens: string | number;
@@ -33,7 +34,7 @@ interface SettingsDialogProps {
   onGenerationParamsChange: (key: keyof GenerationParams, value: string) => void;
 }
 
-const SettingsDialog = React.memo(function SettingsDialog({
+const SettingsDialog = React.memo(({
   open,
   onClose,
   serverUrl,
@@ -44,7 +45,7 @@ const SettingsDialog = React.memo(function SettingsDialog({
   onAdminApiKeyChange,
   generationParams,
   onGenerationParamsChange
-}: SettingsDialogProps) {
+}: SettingsDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Settings</DialogTitle>
@@ -144,4 +145,6 @@ const SettingsDialog = React.memo(function SettingsDialog({
       </DialogActions>
     </Dialog>
   );
-}
+});
+
+export default SettingsDialog;

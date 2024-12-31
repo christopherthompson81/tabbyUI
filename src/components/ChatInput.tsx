@@ -1,5 +1,6 @@
 import { TextField, Button, IconButton } from '@mui/material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import debounce from 'debounce';
 import { MessageContent } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
 
