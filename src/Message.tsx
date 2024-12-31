@@ -23,7 +23,9 @@ interface MessagePropsExtended extends MessageProps {
 const Message = React.memo(({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedContent, setEditedContent] = useState(content);
+  const [editedContent, setEditedContent] = useState(
+    content.find(c => c.type === 'text')?.text || ''
+  );
   const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleMenuToggle = useCallback((e: React.MouseEvent) => {
@@ -76,7 +78,7 @@ const Message = React.memo(({ role, content, onEdit, onDelete, index }: MessageP
                 size="small"
                 variant="contained"
                 onClick={() => {
-                  onEdit(index, editedContent);
+                  onEdit(index, [{ type: 'text', text: editedContent }]);
                   setIsEditing(false);
                 }}
                 sx={{ mr: 1 }}
@@ -88,7 +90,7 @@ const Message = React.memo(({ role, content, onEdit, onDelete, index }: MessageP
                 variant="outlined"
                 onClick={() => {
                   setIsEditing(false);
-                  setEditedContent(content);
+                  setEditedContent(content.find(c => c.type === 'text')?.text || '');
                 }}
               >
                 Cancel
