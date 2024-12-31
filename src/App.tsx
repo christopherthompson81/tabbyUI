@@ -57,7 +57,11 @@ function App() {
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'auto' }); // Changed to 'auto' for faster scrolling
+      // Only scroll if user is near bottom
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      if (scrollHeight - (scrollTop + clientHeight) < 100) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
+      }
     }
   }, []);
   
@@ -105,7 +109,8 @@ function App() {
         const updatedConversations = prev.map(conv => 
           conv.id === currentConversationId ? { ...conv, messages: v } : conv
         );
-        persistConversations(updatedConversations);
+        // Throttle persistence
+        setTimeout(() => persistConversations(updatedConversations), 100);
         return updatedConversations;
       });
     }
@@ -283,25 +288,7 @@ function App() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
         <div className="main-content">
-          {messages.map((msg, index) => (
-            <Message 
-              key={index} 
-              role={msg.role} 
-              content={msg.content}
-              index={index}
-              onEdit={(index, newContent) => {
-                const updatedMessages = [...messages];
-                updatedMessages[index].content = newContent;
-                setMessages(updatedMessages);
-                saveConversation(updatedMessages);
-              }}
-              onDelete={(index) => {
-                const updatedMessages = messages.filter((_, i) => i !== index);
-                setMessages(updatedMessages);
-                saveConversation(updatedMessages);
-              }}
-            />
-          ))}
+          <VirtualizedMessageList messages={messages} saveConversation={saveConversation} />
           <div ref={messagesEndRef} />
         </div>
         

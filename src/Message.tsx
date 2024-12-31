@@ -21,7 +21,7 @@ interface MessagePropsExtended extends MessageProps {
   index: number;
 }
 
-const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
+const MessageComponent = React.memo(({ role, content, onEdit, onDelete, index }: MessagePropsExtended) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(
@@ -133,6 +133,7 @@ const MessageComponent = ({ role, content, onEdit, onDelete, index }: MessagePro
                   src={item.image_url.url} 
                   alt="User uploaded" 
                   style={{ maxWidth: '100%', margin: '10px 0' }}
+                  loading="lazy"
                 />
               );
             }
