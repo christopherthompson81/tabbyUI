@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useCallback, useState, useRef } from "react";
 import { TextField, Button } from '@mui/material';
 import "./styles.css";
 import ReactMarkdown from "react-markdown";
@@ -7,7 +7,7 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
-import { MessageContent } from '../services/tabbyAPI';
+import { MessageContent } from './services/tabbyAPI';
 
 export interface MessageProps {
   role: string;
