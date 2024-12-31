@@ -33,7 +33,7 @@ interface SettingsDialogProps {
   onGenerationParamsChange: (key: keyof GenerationParams, value: string) => void;
 }
 
-export default React.memo(function SettingsDialog({
+const SettingsDialog = React.memo(function SettingsDialog({
   open,
   onClose,
   serverUrl,
