@@ -39,6 +39,7 @@ function App() {
   const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
   const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
   const [apiKey, setApiKey] = useState(getPersistedApiKey());
+  const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
   const [generationParams, setGenerationParams] = useState(getPersistedGenerationParams());
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -260,6 +261,7 @@ function App() {
           onClose={() => {
             persistServerUrl(serverUrl);
             persistApiKey(apiKey);
+            persistAdminApiKey(adminApiKey);
             Object.entries(generationParams).forEach(([key, value]) => {
               persistGenerationParam(key, value.toString());
             });
@@ -269,6 +271,8 @@ function App() {
           onServerUrlChange={(e) => setServerUrl(e.target.value)}
           apiKey={apiKey}
           onApiKeyChange={(e) => setApiKey(e.target.value)}
+          adminApiKey={adminApiKey}
+          onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
           generationParams={generationParams}
           onGenerationParamsChange={(key, value) => setGenerationParams(prev => ({...prev, [key]: value}))}
         />

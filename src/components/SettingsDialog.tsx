@@ -27,6 +27,8 @@ interface SettingsDialogProps {
   onServerUrlChange: (e: ChangeEvent<HTMLInputElement>) => void;
   apiKey: string;
   onApiKeyChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  adminApiKey: string;
+  onAdminApiKeyChange: (e: ChangeEvent<HTMLInputElement>) => void;
   generationParams: GenerationParams;
   onGenerationParamsChange: (key: keyof GenerationParams, value: string) => void;
 }
@@ -49,6 +51,8 @@ export default function SettingsDialog({
           value={serverUrl} onChange={onServerUrlChange} />
         <TextField label="API Key" variant="outlined" fullWidth margin="normal" 
           value={apiKey} onChange={onApiKeyChange} />
+        <TextField label="Admin API Key" variant="outlined" fullWidth margin="normal"
+          value={adminApiKey} onChange={onAdminApiKeyChange} />
         
         <Typography variant="h6" sx={{ mt: 2 }}>Generation Parameters</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>

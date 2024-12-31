@@ -30,6 +30,14 @@ export function persistApiKey(key: string) {
   localStorage.setItem('apiKey', key);
 }
 
+export function getPersistedAdminApiKey() {
+  return localStorage.getItem('adminApiKey') || '';
+}
+
+export function persistAdminApiKey(key: string) {
+  localStorage.setItem('adminApiKey', key);
+}
+
 export function getPersistedGenerationParams() {
   return {
     maxTokens: localStorage.getItem('maxTokens') || 150,
