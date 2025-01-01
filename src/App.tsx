@@ -73,6 +73,7 @@ function App() {
   }, [messages]);
 
   useEffect(() => {
+    switchConversation(getPersistedCurrentConversationId());
     const checkStatus = async () => {
       setServerStatus('checking');
       const model = await getModelInfo(serverUrl, apiKey);
