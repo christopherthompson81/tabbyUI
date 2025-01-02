@@ -59,7 +59,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': adminApiKey
+          'x-admin-key': adminApiKey
         },
         body: JSON.stringify({ model: modelId })
       });
