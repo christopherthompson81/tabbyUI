@@ -91,6 +91,11 @@ function SettingsDialog({
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Settings</DialogTitle>
       <DialogContent>
+        {!apiKey && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            API Key is required
+          </Typography>
+        )}
         <TextField label="Server URL" variant="outlined" fullWidth margin="normal" 
           value={serverUrl} onChange={onServerUrlChange} />
         <TextField label="API Key" variant="outlined" fullWidth margin="normal" 
