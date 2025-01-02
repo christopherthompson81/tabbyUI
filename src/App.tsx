@@ -35,6 +35,7 @@ import ConversationList from './components/ConversationList';
 import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
+import ModelsDialog from './components/ModelsDialog';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
+  const [showModels, setShowModels] = useState(false);
   const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
@@ -179,6 +181,12 @@ function App() {
             </MenuItem>
             <MenuItem onClick={() => {
               mainMenuClose();
+              setShowModels(true);
+            }}>
+              Models
+            </MenuItem>
+            <MenuItem onClick={() => {
+              mainMenuClose();
               setShowAbout(true);
             }}>
               About
@@ -283,6 +291,12 @@ function App() {
         <AboutDialog
           open={showAbout}
           onClose={() => setShowAbout(false)}
+        />
+        <ModelsDialog
+          open={showModels}
+          onClose={() => setShowModels(false)}
+          serverUrl={serverUrl}
+          adminApiKey={adminApiKey}
         />
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
