@@ -1,5 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, MenuItem, TextField, Select, FormControl, InputLabel } from '@mui/material';
+import { 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions, 
+  Button, 
+  Typography, 
+  Box, 
+  MenuItem, 
+  TextField, 
+  Select, 
+  FormControl, 
+  InputLabel,
+  Checkbox,
+  FormControlLabel,
+  Grid
+} from '@mui/material';
 
 interface ModelInfo {
   id: string;
@@ -53,6 +69,30 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     }
   };
 
+  const [modelParams, setModelParams] = useState({
+    max_seq_len: 4096,
+    cache_size: 4096,
+    tensor_parallel: true,
+    gpu_split_auto: true,
+    autosplit_reserve: [0],
+    gpu_split: [24, 20],
+    rope_scale: 1,
+    rope_alpha: 1,
+    cache_mode: 'FP16',
+    chunk_size: 2048,
+    prompt_template: '',
+    vision: false,
+    num_experts_per_token: 0,
+    skip_queue: false
+  });
+
+  const handleParamChange = (field: string, value: any) => {
+    setModelParams(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const loadModel = async (modelId: string) => {
     try {
       const response = await fetch(`${serverUrl}/v1/model/load`, {
@@ -61,7 +101,10 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
           'Content-Type': 'application/json',
           'x-admin-key': adminApiKey
         },
-        body: JSON.stringify({ model: modelId })
+        body: JSON.stringify({ 
+          model_name: modelId,
+          ...modelParams
+        })
       });
       if (!response.ok) throw new Error('Failed to load model');
       // Refresh models after loading
@@ -102,14 +145,132 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
               </Select>
             </FormControl>
           )}
-          <Button 
-            variant="contained" 
-            sx={{ mt: 2 }}
-            onClick={() => selectedModel && loadModel(selectedModel)}
-            disabled={!selectedModel}
-          >
-            Load Selected Model
-          </Button>
+          <Grid container spacing={2} sx={{ mt: 2 }}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Max Sequence Length"
+                type="number"
+                value={modelParams.max_seq_len}
+                onChange={(e) => handleParamChange('max_seq_len', parseInt(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Cache Size"
+                type="number"
+                value={modelParams.cache_size}
+                onChange={(e) => handleParamChange('cache_size', parseInt(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={modelParams.tensor_parallel}
+                    onChange={(e) => handleParamChange('tensor_parallel', e.target.checked)}
+                  />
+                }
+                label="Tensor Parallel"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={modelParams.gpu_split_auto}
+                    onChange={(e) => handleParamChange('gpu_split_auto', e.target.checked)}
+                  />
+                }
+                label="GPU Split Auto"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Rope Scale"
+                type="number"
+                value={modelParams.rope_scale}
+                onChange={(e) => handleParamChange('rope_scale', parseFloat(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Rope Alpha"
+                type="number"
+                value={modelParams.rope_alpha}
+                onChange={(e) => handleParamChange('rope_alpha', parseFloat(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Cache Mode"
+                value={modelParams.cache_mode}
+                onChange={(e) => handleParamChange('cache_mode', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Chunk Size"
+                type="number"
+                value={modelParams.chunk_size}
+                onChange={(e) => handleParamChange('chunk_size', parseInt(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Prompt Template"
+                value={modelParams.prompt_template}
+                onChange={(e) => handleParamChange('prompt_template', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={modelParams.vision}
+                    onChange={(e) => handleParamChange('vision', e.target.checked)}
+                  />
+                }
+                label="Vision"
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Num Experts Per Token"
+                type="number"
+                value={modelParams.num_experts_per_token}
+                onChange={(e) => handleParamChange('num_experts_per_token', parseInt(e.target.value))}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={modelParams.skip_queue}
+                    onChange={(e) => handleParamChange('skip_queue', e.target.checked)}
+                  />
+                }
+                label="Skip Queue"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button 
+                variant="contained"
+                fullWidth
+                onClick={() => selectedModel && loadModel(selectedModel)}
+                disabled={!selectedModel}
+              >
+                Load Selected Model
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
 
         <Box sx={{ mt: 4 }}>
