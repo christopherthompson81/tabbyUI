@@ -80,6 +80,13 @@ function SettingsDialog({
     onClose();
   };
 
+  const handleSave = () => {
+    if (!apiKey) {
+      return;
+    }
+    onClose();
+  };
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Settings</DialogTitle>
@@ -137,10 +144,10 @@ function SettingsDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={!apiKey}>
+        <Button onClick={handleSave} disabled={!apiKey}>
           Save Settings
         </Button>
-        <Button onClick={handleClose} disabled={!apiKey}>Close</Button>
+        <Button onClick={handleClose}>Close</Button>
       </DialogActions>
     </Dialog>
   );
