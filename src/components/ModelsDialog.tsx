@@ -283,6 +283,8 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                   ))}
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item xs={12}>
               <Button 
                 variant="contained"
                 fullWidth

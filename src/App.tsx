@@ -45,7 +45,7 @@ function App() {
   const [apiKey, setApiKey] = useState(getPersistedApiKey());
   const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
   const [generationParams, setGenerationParams] = useState(() => getPersistedGenerationParams());
-  const [showSettings, setShowSettings] = useState(false);
+  const [showSettings, setShowSettings] = useState(!Boolean(getPersistedApiKey()));
   const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
   const [showAbout, setShowAbout] = useState(false);
   const [showModels, setShowModels] = useState(false);
@@ -75,7 +75,17 @@ function App() {
   }, [messages]);
 
   useEffect(() => {
-    switchConversation(getPersistedCurrentConversationId());
+    let tempConversationId = getPersistedCurrentConversationId();
+    if (!tempConversationId) {
+      addNewConversation();
+      setMessages([]);
+      saveConversation([]);
+      tempConversationId = 1;
+      setCurrentConversationId(tempConversationId.toString());
+    }
+    else {
+      switchConversation(tempConversationId);
+    }
     const checkStatus = async () => {
       setServerStatus('checking');
       const model = await getModelInfo(serverUrl, apiKey);

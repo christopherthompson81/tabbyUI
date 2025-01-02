@@ -7,7 +7,7 @@ export function persistConversations(conversations: any[]) {
 }
 
 export function getPersistedCurrentConversationId() {
-  return JSON.parse(localStorage.getItem('currentConversationId') || '1');
+  return JSON.parse(localStorage.getItem('currentConversationId') || null);
 }
 
 export function persistCurrentConversationId(id: number) {
