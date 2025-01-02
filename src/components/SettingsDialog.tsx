@@ -73,8 +73,15 @@ function SettingsDialog({
     { label: 'Add BOS Token', key: 'addBosToken', options: ['true', 'false'] },
     { label: 'Ban EOS Token', key: 'banEosToken', options: ['true', 'false'] },
   ]
+  const handleClose = () => {
+    if (!apiKey) {
+      return;
+    }
+    onClose();
+  };
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Settings</DialogTitle>
       <DialogContent>
         <TextField label="Server URL" variant="outlined" fullWidth margin="normal" 
@@ -130,10 +137,10 @@ function SettingsDialog({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>
+        <Button onClick={handleClose} disabled={!apiKey}>
           Save Settings
         </Button>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={handleClose} disabled={!apiKey}>Close</Button>
       </DialogActions>
     </Dialog>
   );
