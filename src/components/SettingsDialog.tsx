@@ -92,7 +92,7 @@ function SettingsDialog({
       <DialogTitle>Settings</DialogTitle>
       <DialogContent>
         {!apiKey && (
-          <Typography color="error" sx={{ mb: 2 }}>
+          <Typography color="error" sx={{ mb: 2, color: 'red' }}>
             API Key is required
           </Typography>
         )}
