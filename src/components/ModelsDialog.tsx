@@ -40,6 +40,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedModel, setSelectedModel] = useState('');
+  const [selectedDraftModel, setSelectedDraftModel] = useState('');
   const [preferences, setPreferences] = useState<ModelPreferences>(() => {
     const saved = localStorage.getItem('modelPreferences');
     return saved ? JSON.parse(saved) : {};
@@ -93,18 +94,24 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     }));
   };
 
-  const loadModel = async (modelId: string) => {
+  const loadModel = async (modelId: string, draftModelId?: string) => {
     try {
+      const payload: any = {
+        model_name: modelId,
+        ...modelParams
+      };
+      
+      if (draftModelId) {
+        payload.draft_model_name = draftModelId;
+      }
+
       const response = await fetch(`${serverUrl}/v1/model/load`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'x-admin-key': adminApiKey
         },
-        body: JSON.stringify({ 
-          model_name: modelId,
-          ...modelParams
-        })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error('Failed to load model');
       // Refresh models after loading
@@ -261,13 +268,28 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
               />
             </Grid>
             <Grid item xs={12}>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Select Draft Model (Optional)</InputLabel>
+                <Select
+                  value={selectedDraftModel}
+                  onChange={(e) => setSelectedDraftModel(e.target.value as string)}
+                  label="Select Draft Model"
+                >
+                  <MenuItem value="">None</MenuItem>
+                  {models.map((model) => (
+                    <MenuItem key={model.id} value={model.id}>
+                      {model.id}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <Button 
                 variant="contained"
                 fullWidth
-                onClick={() => selectedModel && loadModel(selectedModel)}
+                onClick={() => selectedModel && loadModel(selectedModel, selectedDraftModel)}
                 disabled={!selectedModel}
               >
-                Load Selected Model
+                Load Selected Model {selectedDraftModel && `with Draft Model`}
               </Button>
             </Grid>
           </Grid>
