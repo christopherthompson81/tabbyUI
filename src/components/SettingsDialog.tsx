@@ -1,4 +1,3 @@
-import React from 'react';
 import { ChangeEvent } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
 
@@ -94,7 +93,7 @@ function SettingsDialog({
               type={param.type}
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => handleParamChange(e, param)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(e, param)}
             />
           ))}
         </Box>
@@ -108,7 +107,7 @@ function SettingsDialog({
               type={param.type}
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => handleParamChange(e, param)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(e, param)}
             />
           ))}
           
@@ -119,7 +118,7 @@ function SettingsDialog({
               select
               variant="outlined"
               value={generationParams[param.key as keyof GenerationParams]}
-              onChange={(e) => handleParamChange(e, param)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleParamChange(e, param)}
             >
               {param.options.map((option) => (
                 <MenuItem key={option} value={option}>

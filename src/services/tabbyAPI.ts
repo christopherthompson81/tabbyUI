@@ -92,7 +92,7 @@ export async function sendConversation(
     const decoder = new TextDecoder('utf-8');
     updatedMessages.push({role: "assistant", content: [{type: 'text', text: ''}]});
 
-    function processText({ done, value }: { done: boolean; value?: Uint8Array }) {
+    function processText({ done, value }: { done: boolean; value?: Uint8Array }):any {
       if (done) {
         onComplete(updatedMessages);
         return;
