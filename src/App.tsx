@@ -39,7 +39,7 @@ import ModelsDialog from './components/ModelsDialog';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 function App() {
-  const [conversations, setConversations] = useState<any[]>(getPersistedConversations());
+  const [folders, setFolders] = useState<ConversationFolder[]>(getPersistedConversations());
   const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
   const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
   const [apiKey, setApiKey] = useState(getPersistedApiKey());
@@ -141,12 +141,59 @@ function App() {
     }
   }, [messages, serverUrl, apiKey, saveConversation]);
 
-  const addNewConversation = () => {
-    const newId = conversations.length > 0 ? Math.max(...conversations.map(conv => conv.id)) + 1 : 1;
-    const newConversationName = new Date().toISOString();
-    const newConversation = { id: newId.toString(), name: newConversationName, messages: [] };
-    setConversations([...conversations, newConversation]);
-    setCurrentConversationId(newId.toString());
+  const addNewConversation = (folderId = 'root') => {
+    const newId = Date.now().toString();
+    const newConversationName = new Date().toLocaleString();
+    const newConversation: Conversation = { 
+      id: newId,
+      name: newConversationName,
+      messages: [],
+      timestamp: Date.now(),
+      author: 'User'
+    };
+    
+    setFolders(prev => {
+      const updatedFolders = [...prev];
+      const folder = findFolder(updatedFolders, folderId);
+      if (folder) {
+        folder.conversations.push(newConversation);
+      }
+      persistConversations(updatedFolders);
+      return updatedFolders;
+    });
+    
+    setCurrentConversationId(newId);
+  };
+
+  const addNewFolder = (parentFolderId = 'root') => {
+    const newId = Date.now().toString();
+    const newFolder: ConversationFolder = {
+      id: newId,
+      name: 'New Folder',
+      conversations: [],
+      subfolders: [],
+      timestamp: Date.now(),
+      author: 'User'
+    };
+    
+    setFolders(prev => {
+      const updatedFolders = [...prev];
+      const parentFolder = findFolder(updatedFolders, parentFolderId);
+      if (parentFolder) {
+        parentFolder.subfolders.push(newFolder);
+      }
+      persistConversations(updatedFolders);
+      return updatedFolders;
+    });
+  };
+
+  const findFolder = (folders: ConversationFolder[], folderId: string): ConversationFolder | undefined => {
+    for (const folder of folders) {
+      if (folder.id === folderId) return folder;
+      const found = findFolder(folder.subfolders, folderId);
+      if (found) return found;
+    }
+    return undefined;
   };
 
   const switchConversation = (id: number) => {

@@ -1,9 +1,38 @@
-export function getPersistedConversations() {
-  return JSON.parse(localStorage.getItem('conversations') || '[]');
+export interface Conversation {
+  id: string;
+  name: string;
+  messages: any[];
+  timestamp: number;
+  author?: string;
+  folderId?: string;
 }
 
-export function persistConversations(conversations: any[]) {
-  localStorage.setItem('conversations', JSON.stringify(conversations));
+export interface ConversationFolder {
+  id: string;
+  name: string;
+  conversations: Conversation[];
+  subfolders: ConversationFolder[];
+  timestamp: number;
+  author?: string;
+}
+
+export function getPersistedConversations(): ConversationFolder[] {
+  const data = localStorage.getItem('conversations');
+  if (!data) {
+    // Initialize with a default folder
+    return [{
+      id: 'root',
+      name: 'Conversations',
+      conversations: [],
+      subfolders: [],
+      timestamp: Date.now()
+    }];
+  }
+  return JSON.parse(data);
+}
+
+export function persistConversations(folders: ConversationFolder[]) {
+  localStorage.setItem('conversations', JSON.stringify(folders));
 }
 
 export function getPersistedCurrentConversationId() {
