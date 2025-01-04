@@ -116,13 +116,15 @@ export default function ChatInput({
             }
           }}
         />
-        <Button 
-          variant="contained" 
-          onClick={handleAddText}
-          disabled={!inputText.trim()}
-        >
-          Add Text
-        </Button>
+        <Tooltip title="Add Text">
+          <IconButton 
+            color="primary" 
+            onClick={handleAddText}
+            disabled={!inputText.trim()}
+          >
+            <AddIcon />
+          </IconButton>
+        </Tooltip>
         <input
           accept="image/*"
           style={{ display: 'none' }}
@@ -130,11 +132,13 @@ export default function ChatInput({
           type="file"
           onChange={handleImageUpload}
         />
-        <label htmlFor="icon-button-file">
-          <IconButton color="primary" component="span">
-            <ImageIcon />
-          </IconButton>
-        </label>
+        <Tooltip title="Add Image">
+          <label htmlFor="icon-button-file">
+            <IconButton color="primary" component="span">
+              <ImageIcon />
+            </IconButton>
+          </label>
+        </Tooltip>
       </Box>
 
       {/* Action Buttons */}
