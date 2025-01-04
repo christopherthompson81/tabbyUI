@@ -1,8 +1,9 @@
-import { TextField, Button, IconButton, Box, Chip, Stack } from '@mui/material';
+import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { MessageContent } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function ChatInput({
   onSend,
