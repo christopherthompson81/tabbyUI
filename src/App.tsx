@@ -279,14 +279,19 @@ function App() {
         }}
       >
         <ConversationList
-          conversations={conversations}
+          folders={folders}
           currentConversationId={currentConversationId}
           onAddConversation={addNewConversation}
           onSwitchConversation={switchConversation}
-          onEditConversation={(id:number) => {
+          onEditConversation={(id:string) => {
             setEditingConversationId(id);
-            setNewConversationName(conversations.find(conv => conv.id === id).name);
+            // Find conversation in nested folders
+            const conversation = findConversation(folders, id);
+            if (conversation) {
+              setNewConversationName(conversation.name);
+            }
           }}
+          onAddFolder={addNewFolder}
         />
 
         <ConversationEditor
