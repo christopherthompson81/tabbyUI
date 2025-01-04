@@ -14,6 +14,7 @@ interface ConversationListProps {
   onSwitchConversation: (id: string) => void;
   onEditConversation: (id: string) => void;
   onAddFolder: (parentFolderId?: string) => void;
+  onEditFolder: (id: string) => void;
 }
 
 function FolderItem({ 
@@ -34,6 +35,15 @@ function FolderItem({
         {open ? <FolderOpenIcon fontSize="small" /> : <FolderIcon fontSize="small" />}
         <ListItemText primary={folder.name} sx={{ ml: 1 }} />
         {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            onEditFolder(folder.id);
+          }}
+          style={{ marginLeft: 'auto' }}
+        >
+          <MoreVertIcon fontSize="small" />
+        </IconButton>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <Box sx={{ pl: 2 }}>

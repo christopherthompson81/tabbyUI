@@ -51,8 +51,10 @@ function App() {
   const [showModels, setShowModels] = useState(false);
   const [serverStatus, setServerStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-  const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
+  const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+  const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
+  const [newFolderName, setNewFolderName] = useState('');
   const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -292,8 +294,58 @@ function App() {
             }
           }}
           onAddFolder={addNewFolder}
+          onEditFolder={(id: string) => {
+            setEditingFolderId(id);
+            const folder = findFolder(folders, id);
+            if (folder) {
+              setNewFolderName(folder.name);
+            }
+          }}
         />
 
+        <FolderEditor
+          editingFolderId={editingFolderId}
+          newFolderName={newFolderName}
+          onNameChange={(e:any) => setNewFolderName(e.target.value)}
+          onSave={() => {
+            if (editingFolderId !== null) {
+              setFolders(prev => {
+                const updatedFolders = [...prev];
+                const folder = findFolder(updatedFolders, editingFolderId);
+                if (folder) {
+                  folder.name = newFolderName;
+                }
+                persistConversations(updatedFolders);
+                return updatedFolders;
+              });
+              setEditingFolderId(null);
+            }
+          }}
+          onDelete={() => {
+            if (editingFolderId !== null) {
+              setFolders(prev => {
+                const updatedFolders = [...prev];
+                const deleteFolder = (folders: ConversationFolder[], id: string): boolean => {
+                  for (let i = 0; i < folders.length; i++) {
+                    if (folders[i].id === id) {
+                      folders.splice(i, 1);
+                      return true;
+                    }
+                    if (deleteFolder(folders[i].subfolders, id)) {
+                      return true;
+                    }
+                  }
+                  return false;
+                };
+                deleteFolder(updatedFolders, editingFolderId);
+                persistConversations(updatedFolders);
+                return updatedFolders;
+              });
+              setEditingFolderId(null);
+            }
+          }}
+          onCancel={() => setEditingFolderId(null)}
+        />
         <ConversationEditor
           editingConversationId={editingConversationId}
           newConversationName={newConversationName}
