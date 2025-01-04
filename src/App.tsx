@@ -53,7 +53,6 @@ function App() {
   const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
   const [editingConversationId, setEditingConversationId] = useState<number | null>(null);
   const [newConversationName, setNewConversationName] = useState('');
-  const [userInput, setUserInput] = useState<MessageContent[]>([]);
   const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -332,12 +331,9 @@ function App() {
         </div>
         
         <ChatInput
-          value={userInput}
-          onChange={(content: MessageContent[]) => setUserInput(content)}
-          onSend={() => {
-            if (userInput.length > 0) {
-              sendConversation(userInput);
-              setUserInput([]);
+          onSend={(content: MessageContent[]) => {
+            if (content.length > 0) {
+              sendConversation(content);
             }
           }}
           onRegenerate={() => {

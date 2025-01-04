@@ -1,21 +1,18 @@
-import { TextField, Button, IconButton } from '@mui/material';
-import { useCallback, useState } from 'react';
-import debounce from 'debounce';
+import { TextField, Button, IconButton, Box, Chip, Stack } from '@mui/material';
+import { useState } from 'react';
 import { MessageContent } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function ChatInput({
-  value,
-  onChange,
   onSend,
   onRegenerate
 }) {
   const [inputText, setInputText] = useState('');
+  const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
 
   const handleTextChange = (e) => {
     setInputText(e.target.value);
-    // Convert text to MessageContent format
-    onChange([{ type: 'text', text: e.target.value }]);
   };
 
   const handleImageUpload = (e) => {
@@ -24,49 +21,141 @@ export default function ChatInput({
       const reader = new FileReader();
       reader.onload = (event) => {
         const imageUrl = event.target.result;
-        // Add image to MessageContent array
-        onChange([...value, { type: 'image_url', image_url: { url: imageUrl } }]);
+        setMessagePreview(prev => [
+          ...prev,
+          { type: 'image_url', image_url: { url: imageUrl } }
+        ]);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const handleAddText = () => {
+    if (inputText.trim()) {
+      setMessagePreview(prev => [
+        ...prev,
+        { type: 'text', text: inputText }
+      ]);
+      setInputText('');
+    }
+  };
+
+  const handleRemoveItem = (index: number) => {
+    setMessagePreview(prev => prev.filter((_, i) => i !== index));
+  };
+
   return (
-    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-      <TextField
-        label="Enter your message"
-        variant="outlined"
-        fullWidth
-        value={inputText}
-        onChange={handleTextChange}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && (inputText.trim() || value.length > 0)) {
-            onSend();
-            setInputText('');
-          }
-        }}
-      />
-      <input
-        accept="image/*"
-        style={{ display: 'none' }}
-        id="icon-button-file"
-        type="file"
-        onChange={handleImageUpload}
-      />
-      <label htmlFor="icon-button-file">
-        <IconButton color="primary" component="span">
-          <ImageIcon />
-        </IconButton>
-      </label>
-      <Button variant="contained" onClick={() => {
-        onSend();
-        setInputText('');
-      }}>
-        Send
-      </Button>
-      <Button variant="contained" onClick={onRegenerate}>
-        Regenerate
-      </Button>
-    </div>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {/* Message Preview */}
+      {messagePreview.length > 0 && (
+        <Box sx={{
+          p: 2,
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 1,
+          backgroundColor: 'background.paper'
+        }}>
+          <Stack direction="column" spacing={1}>
+            {messagePreview.map((item, index) => (
+              <Box key={index} sx={{ position: 'relative' }}>
+                {item.type === 'text' && (
+                  <Chip
+                    label={item.text}
+                    onDelete={() => handleRemoveItem(index)}
+                    deleteIcon={<CancelIcon />}
+                    sx={{ 
+                      maxWidth: '100%',
+                      '& .MuiChip-label': {
+                        whiteSpace: 'normal'
+                      }
+                    }}
+                  />
+                )}
+                {item.type === 'image_url' && item.image_url && (
+                  <Box sx={{ position: 'relative' }}>
+                    <img
+                      src={item.image_url.url}
+                      alt="Preview"
+                      style={{ 
+                        maxWidth: '100%',
+                        maxHeight: '200px',
+                        borderRadius: '4px'
+                      }}
+                    />
+                    <IconButton
+                      size="small"
+                      onClick={() => handleRemoveItem(index)}
+                      sx={{
+                        position: 'absolute',
+                        right: 4,
+                        top: 4,
+                        backgroundColor: 'background.paper'
+                      }}
+                    >
+                      <CancelIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      )}
+
+      {/* Input Area */}
+      <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+        <TextField
+          label="Enter your message"
+          variant="outlined"
+          fullWidth
+          value={inputText}
+          onChange={handleTextChange}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && inputText.trim()) {
+              handleAddText();
+            }
+          }}
+        />
+        <Button 
+          variant="contained" 
+          onClick={handleAddText}
+          disabled={!inputText.trim()}
+        >
+          Add Text
+        </Button>
+        <input
+          accept="image/*"
+          style={{ display: 'none' }}
+          id="icon-button-file"
+          type="file"
+          onChange={handleImageUpload}
+        />
+        <label htmlFor="icon-button-file">
+          <IconButton color="primary" component="span">
+            <ImageIcon />
+          </IconButton>
+        </label>
+      </Box>
+
+      {/* Action Buttons */}
+      <Box sx={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <Button 
+          variant="contained" 
+          onClick={() => {
+            onSend(messagePreview);
+            setMessagePreview([]);
+          }}
+          disabled={messagePreview.length === 0}
+        >
+          Send
+        </Button>
+        <Button 
+          variant="contained" 
+          onClick={onRegenerate}
+        >
+          Regenerate
+        </Button>
+      </Box>
+    </Box>
   );
 }
