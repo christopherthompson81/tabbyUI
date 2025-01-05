@@ -24,7 +24,8 @@ function FolderItem({
   onAddConversation,
   onSwitchConversation,
   onEditConversation,
-  onAddFolder
+  onAddFolder,
+  onEditFolder
 }: {
   folder: ConversationFolder;
 } & ConversationListProps) {
@@ -153,6 +154,7 @@ export default function ConversationList({
           onSwitchConversation={onSwitchConversation}
           onEditConversation={onEditConversation}
           onAddFolder={onAddFolder}
+          onEditFolder={onEditFolder}
         />
       ))}
       <ListItem>
