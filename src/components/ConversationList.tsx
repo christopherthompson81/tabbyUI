@@ -157,7 +157,6 @@ export default function ConversationList({
           onEditConversation={onEditConversation}
           onAddFolder={onAddFolder}
           onEditFolder={onEditFolder}
-          onEditFolder={onEditFolder}
         />
       ))}
       <ListItem>
