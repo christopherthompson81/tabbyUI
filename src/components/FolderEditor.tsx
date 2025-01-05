@@ -1,4 +1,14 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { ChangeEvent } from 'react';
+
+interface FolderEditorProps {
+  editingFolderId: string | null;
+  newFolderName: string;
+  onNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSave: () => void;
+  onDelete: () => void;
+  onCancel: () => void;
+}
 
 export default function FolderEditor({
   editingFolderId,
@@ -7,7 +17,7 @@ export default function FolderEditor({
   onSave,
   onDelete,
   onCancel
-}) {
+}: FolderEditorProps) {
   return (
     <Dialog open={editingFolderId !== null} onClose={onCancel}>
       <DialogTitle>Edit Folder</DialogTitle>
