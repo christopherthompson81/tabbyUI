@@ -29,6 +29,17 @@ function FolderItem({
   folder: ConversationFolder;
 } & ConversationListProps) {
   const [open, setOpen] = useState(true);
+  const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const menuOpen = Boolean(menuAnchorEl);
+
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
 
   return (
     <>
@@ -37,14 +48,36 @@ function FolderItem({
         <ListItemText primary={folder.name} sx={{ ml: 1 }} />
         {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            onEditFolder(folder.id);
-          }}
+          onClick={handleMenuClick}
           style={{ marginLeft: 'auto' }}
         >
           <MoreVertIcon fontSize="small" />
         </IconButton>
+        <Menu
+          anchorEl={menuAnchorEl}
+          open={menuOpen}
+          onClose={handleMenuClose}
+          onClick={handleMenuClose}
+        >
+          <MenuItem onClick={() => {
+            onEditFolder(folder.id);
+            handleMenuClose();
+          }}>
+            Rename Folder
+          </MenuItem>
+          <MenuItem onClick={() => {
+            onAddConversation(folder.id);
+            handleMenuClose();
+          }}>
+            Add Conversation
+          </MenuItem>
+          <MenuItem onClick={() => {
+            onAddFolder(folder.id);
+            handleMenuClose();
+          }}>
+            Add Subfolder
+          </MenuItem>
+        </Menu>
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <Box sx={{ pl: 2 }}>
@@ -81,28 +114,6 @@ function FolderItem({
               onAddFolder={onAddFolder}
             />
           ))}
-          <Box sx={{ display: 'flex', gap: 1, pl: 2, mt: 1 }}>
-            <Button 
-              size="small" 
-              variant="outlined"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddConversation(folder.id);
-              }}
-            >
-              + Conversation
-            </Button>
-            <Button 
-              size="small" 
-              variant="outlined"
-              onClick={(e) => {
-                e.stopPropagation();
-                onAddFolder(folder.id);
-              }}
-            >
-              + Folder
-            </Button>
-          </Box>
         </Box>
       </Collapse>
     </>
