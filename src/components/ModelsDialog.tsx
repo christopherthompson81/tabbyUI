@@ -70,28 +70,40 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     }
   };
 
-  const [modelParams, setModelParams] = useState({
-    max_seq_len: 4096,
-    cache_size: 4096,
-    tensor_parallel: true,
-    gpu_split_auto: true,
-    autosplit_reserve: [0],
-    gpu_split: [24, 20],
-    rope_scale: 1,
-    rope_alpha: 1,
-    cache_mode: 'FP16',
-    chunk_size: 2048,
-    prompt_template: '',
-    vision: false,
-    num_experts_per_token: 0,
-    skip_queue: false
-  });
+  const getInitialModelParams = (modelId: string) => {
+    const saved = localStorage.getItem(`modelParams_${modelId}`);
+    return saved ? JSON.parse(saved) : {
+      max_seq_len: 4096,
+      cache_size: 4096,
+      tensor_parallel: true,
+      gpu_split_auto: true,
+      autosplit_reserve: [0],
+      gpu_split: [24, 20],
+      rope_scale: 1,
+      rope_alpha: 1,
+      cache_mode: 'FP16',
+      chunk_size: 2048,
+      prompt_template: '',
+      vision: false,
+      num_experts_per_token: 0,
+      skip_queue: false
+    };
+  };
+
+  const [modelParams, setModelParams] = useState(() => getInitialModelParams(selectedModel));
 
   const handleParamChange = (field: string, value: any) => {
-    setModelParams(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    setModelParams(prev => {
+      const newParams = {
+        ...prev,
+        [field]: value
+      };
+      // Save params whenever they change
+      if (selectedModel) {
+        localStorage.setItem(`modelParams_${selectedModel}`, JSON.stringify(newParams));
+      }
+      return newParams;
+    });
   };
 
   const loadModel = async (modelId: string, draftModelId?: string) => {
@@ -141,7 +153,12 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
               <InputLabel>Select Model</InputLabel>
               <Select
                 value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value as string)}
+                onChange={(e) => {
+                  const modelId = e.target.value as string;
+                  setSelectedModel(modelId);
+                  // Load saved params when model changes
+                  setModelParams(getInitialModelParams(modelId));
+                }}
                 label="Select Model"
               >
                 {models.map((model) => (
