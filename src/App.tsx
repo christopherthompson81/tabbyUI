@@ -312,6 +312,7 @@ function App() {
               setNewFolderName(folder.name);
             }
           }}
+          onUpdateFolders={setFolders}
         />
 
         <FolderEditor

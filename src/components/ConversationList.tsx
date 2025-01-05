@@ -138,6 +138,7 @@ export default function ConversationList({
   onSwitchConversation,
   onEditConversation,
   onAddFolder,
+  onEditFolder,
   onUpdateFolders
 }: ConversationListProps) {
   return (
