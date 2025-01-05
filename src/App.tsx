@@ -18,6 +18,8 @@ import {
   getPersistedAdminApiKey,
   Conversation,
   ConversationFolder,
+  findConversation,
+  findFirstConversation,
 } from './utils/persistence';
 import './styles.css';
 import {
@@ -111,13 +113,15 @@ function App() {
 
   const saveConversation = useCallback((v: MessageProps[]) => {
     if (currentConversationId !== null) {
-      setConversations(prev => {
-        const updatedConversations = prev.map(conv => 
-          conv.id === currentConversationId ? { ...conv, messages: v } : conv
-        );
+      setFolders(prev => {
+        const updatedFolders = [...prev];
+        const conversation = findConversation(updatedFolders, currentConversationId);
+        if (conversation) {
+          conversation.messages = v;
+        }
         // Throttle persistence
-        setTimeout(() => persistConversations(updatedConversations), 100);
-        return updatedConversations;
+        setTimeout(() => persistConversations(updatedFolders), 100);
+        return updatedFolders;
       });
     }
   }, [currentConversationId]);
@@ -203,14 +207,13 @@ function App() {
     return undefined;
   };
 
-  const switchConversation = (id: number) => {
-    setCurrentConversationId(id.toString());
-    let conversation;
-    for (let folder of folders) {
-      conversation = folder.find(conv => conv.id === id);
+  const switchConversation = (id: string) => {
+    const conversation = findConversation(folders, id);
+    if (conversation) {
+      setCurrentConversationId(id);
+      setMessages(conversation.messages);
+      persistCurrentConversationId(Number(id));
     }
-    setMessages(conversation.messages);
-    persistCurrentConversationId(id);
   };
 
   const mainMenuClose = () => {
@@ -360,26 +363,51 @@ function App() {
           onNameChange={(e:any) => setNewConversationName(e.target.value)}
           onSave={() => {
             if (editingConversationId !== null) {
-              const updatedConversations = conversations.map(conv =>
-                conv.id === editingConversationId ? { ...conv, name: newConversationName } : conv
-              );
-              setConversations(updatedConversations);
-              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
+              setFolders(prev => {
+                const updatedFolders = [...prev];
+                const conversation = findConversation(updatedFolders, editingConversationId);
+                if (conversation) {
+                  conversation.name = newConversationName;
+                }
+                persistConversations(updatedFolders);
+                return updatedFolders;
+              });
               setEditingConversationId(null);
             }
           }}
           onDelete={() => {
             if (editingConversationId !== null) {
-              const updatedConversations = conversations.filter(conv => conv.id !== editingConversationId);
-              setConversations(updatedConversations);
-              localStorage.setItem('conversations', JSON.stringify(updatedConversations));
-              if (currentConversationId === editingConversationId.toString() && updatedConversations.length > 0) {
-                setCurrentConversationId(updatedConversations[0].id);
-                setMessages(updatedConversations[0].messages);
-              } else if (updatedConversations.length === 0) {
-                setCurrentConversationId("1");
-                setMessages([]);
-              }
+              setFolders(prev => {
+                const updatedFolders = [...prev];
+                const deleteConversation = (folders: ConversationFolder[], id: string): boolean => {
+                  for (const folder of folders) {
+                    const index = folder.conversations.findIndex(conv => conv.id === id);
+                    if (index !== -1) {
+                      folder.conversations.splice(index, 1);
+                      return true;
+                    }
+                    if (deleteConversation(folder.subfolders, id)) {
+                      return true;
+                    }
+                  }
+                  return false;
+                };
+                deleteConversation(updatedFolders, editingConversationId);
+                persistConversations(updatedFolders);
+                
+                if (currentConversationId === editingConversationId) {
+                  // Find first available conversation
+                  const firstConversation = findFirstConversation(updatedFolders);
+                  if (firstConversation) {
+                    setCurrentConversationId(firstConversation.id);
+                    setMessages(firstConversation.messages);
+                  } else {
+                    setCurrentConversationId("");
+                    setMessages([]);
+                  }
+                }
+                return updatedFolders;
+              });
               setEditingConversationId(null);
             }
           }}

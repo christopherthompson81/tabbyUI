@@ -107,3 +107,14 @@ export function findConversation(
   }
   return null;
 }
+
+export function findFirstConversation(folders: ConversationFolder[]): Conversation | null {
+  for (const folder of folders) {
+    if (folder.conversations.length > 0) {
+      return folder.conversations[0];
+    }
+    const subfolderResult = findFirstConversation(folder.subfolders);
+    if (subfolderResult) return subfolderResult;
+  }
+  return null;
+}
