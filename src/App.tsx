@@ -16,6 +16,8 @@ import {
   persistGenerationParam,
   persistAdminApiKey,
   getPersistedAdminApiKey,
+  Conversation,
+  ConversationFolder,
 } from './utils/persistence';
 import './styles.css';
 import {
@@ -36,6 +38,7 @@ import ConversationEditor from './components/ConversationEditor';
 import SettingsDialog from './components/SettingsDialog';
 import AboutDialog from './components/AboutDialog';
 import ModelsDialog from './components/ModelsDialog';
+import FolderEditor from './components/FolderEditor';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
 function App() {
@@ -78,11 +81,12 @@ function App() {
   useEffect(() => {
     let tempConversationId = getPersistedCurrentConversationId();
     if (!tempConversationId) {
-      addNewConversation();
+      const newId = addNewConversation();
       setMessages([]);
       saveConversation([]);
-      tempConversationId = 1;
+      tempConversationId = newId;
       setCurrentConversationId(tempConversationId.toString());
+      persistCurrentConversationId(tempConversationId.toString());
     }
     else {
       switchConversation(tempConversationId);
@@ -165,6 +169,7 @@ function App() {
     });
     
     setCurrentConversationId(newId);
+    return newId;
   };
 
   const addNewFolder = (parentFolderId = 'root') => {
@@ -200,7 +205,10 @@ function App() {
 
   const switchConversation = (id: number) => {
     setCurrentConversationId(id.toString());
-    let conversation = conversations.find(conv => conv.id === id);
+    let conversation;
+    for (let folder of folders) {
+      conversation = folder.find(conv => conv.id === id);
+    }
     setMessages(conversation.messages);
     persistCurrentConversationId(id);
   };
