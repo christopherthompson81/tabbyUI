@@ -15,6 +15,7 @@ interface ConversationListProps {
   onEditConversation: (id: string) => void;
   onAddFolder: (parentFolderId?: string) => void;
   onEditFolder: (id: string) => void;
+  onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
 }
 
 function FolderItem({ 
@@ -114,7 +115,8 @@ export default function ConversationList({
   onAddConversation,
   onSwitchConversation,
   onEditConversation,
-  onAddFolder
+  onAddFolder,
+  onUpdateFolders
 }: ConversationListProps) {
   return (
     <List>

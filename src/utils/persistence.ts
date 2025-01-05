@@ -91,3 +91,19 @@ export function getPersistedGenerationParams() {
 export function persistGenerationParam(key: string, value: string) {
   localStorage.setItem(key, value);
 }
+
+export function findConversation(
+  folders: ConversationFolder[],
+  conversationId: string
+): Conversation | null {
+  for (const folder of folders) {
+    // Check current folder's conversations
+    const conversation = folder.conversations.find(c => c.id === conversationId);
+    if (conversation) return conversation;
+    
+    // Recursively check subfolders
+    const subfolderResult = findConversation(folder.subfolders, conversationId);
+    if (subfolderResult) return subfolderResult;
+  }
+  return null;
+}
