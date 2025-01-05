@@ -43,13 +43,23 @@ function FolderItem({
 
   return (
     <>
-      <ListItemButton onClick={() => setOpen(!open)}>
-        {open ? <FolderOpenIcon fontSize="small" /> : <FolderIcon fontSize="small" />}
-        <ListItemText primary={folder.name} sx={{ ml: 1 }} />
-        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+      <ListItemButton sx={{ p: 0 }}>
+        <Box 
+          onClick={() => setOpen(!open)}
+          sx={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            flexGrow: 1,
+            p: '8px 16px' // Match ListItemButton padding
+          }}
+        >
+          {open ? <FolderOpenIcon fontSize="small" /> : <FolderIcon fontSize="small" />}
+          <ListItemText primary={folder.name} sx={{ ml: 1 }} />
+          {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </Box>
         <IconButton
           onClick={handleMenuClick}
-          style={{ marginLeft: 'auto' }}
+          sx={{ mr: 1 }}
         >
           <MoreVertIcon fontSize="small" />
         </IconButton>
