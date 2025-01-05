@@ -29,7 +29,7 @@ function FolderItem({
 }: {
   folder: ConversationFolder;
 } & ConversationListProps) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(menuAnchorEl);
 
