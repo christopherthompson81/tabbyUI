@@ -123,6 +123,7 @@ function FolderItem({
               onSwitchConversation={onSwitchConversation}
               onEditConversation={onEditConversation}
               onAddFolder={onAddFolder}
+              onEditFolder={onEditFolder}
             />
           ))}
         </Box>
@@ -155,6 +156,7 @@ export default function ConversationList({
           onSwitchConversation={onSwitchConversation}
           onEditConversation={onEditConversation}
           onAddFolder={onAddFolder}
+          onEditFolder={onEditFolder}
           onEditFolder={onEditFolder}
         />
       ))}
