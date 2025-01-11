@@ -72,54 +72,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     }
   };
 
-  interface DraftModelParams {
-    draft_model_name: string;
-    draft_rope_scale: number;
-    draft_rope_alpha: number;
-    draft_cache_mode: string;
-  }
-
-  interface ModelLoadParams {
-    model_name: string;
-    max_seq_len: number;
-    cache_size: number;
-    tensor_parallel: boolean;
-    gpu_split_auto: boolean;
-    autosplit_reserve: number[];
-    gpu_split: number[] | null;
-    rope_scale: number;
-    rope_alpha: number;
-    cache_mode: string;
-    chunk_size: number;
-    prompt_template: string;
-    vision: boolean;
-    num_experts_per_token: number;
-    draft_model?: DraftModelParams;
-    skip_queue: boolean;
-  }
-
-  const getInitialModelParams = (modelId: string): ModelLoadParams => {
-    const saved = localStorage.getItem(`modelParams_${modelId}`);
-    return saved ? JSON.parse(saved) : {
-      model_name: modelId,
-      max_seq_len: 4096,
-      cache_size: 4096,
-      tensor_parallel: true,
-      gpu_split_auto: true,
-      autosplit_reserve: [0],
-      gpu_split: null,
-      rope_scale: 1,
-      rope_alpha: 1,
-      cache_mode: 'FP16',
-      chunk_size: 2048,
-      prompt_template: '',
-      vision: false,
-      num_experts_per_token: 0,
-      skip_queue: false
-    };
-  };
-
-  const [modelParams, setModelParams] = useState(() => getInitialModelParams(selectedModel));
+  const [modelParams, setModelParams] = useState(() => getModelParams(selectedModel));
 
   const handleParamChange = (field: string, value: any) => {
     setModelParams(prev => {
@@ -129,7 +82,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
       };
       // Save params whenever they change
       if (selectedModel) {
-        localStorage.setItem(`modelParams_${selectedModel}`, JSON.stringify(newParams));
+        persistModelParams(selectedModel, newParams);
       }
       return newParams;
     });
@@ -193,7 +146,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                   const modelId = e.target.value as string;
                   setSelectedModel(modelId);
                   // Load saved params when model changes
-                  setModelParams(getInitialModelParams(modelId));
+                  setModelParams(getModelParams(modelId));
                 }}
                 label="Select Model"
               >

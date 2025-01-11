@@ -7,6 +7,32 @@ export interface Conversation {
   folderId?: string;
 }
 
+export interface DraftModelParams {
+  draft_model_name: string;
+  draft_rope_scale: number;
+  draft_rope_alpha: number;
+  draft_cache_mode: string;
+}
+
+export interface ModelLoadParams {
+  model_name: string;
+  max_seq_len: number;
+  cache_size: number;
+  tensor_parallel: boolean;
+  gpu_split_auto: boolean;
+  autosplit_reserve: number[];
+  gpu_split: number[] | null;
+  rope_scale: number;
+  rope_alpha: number;
+  cache_mode: string;
+  chunk_size: number;
+  prompt_template: string;
+  vision: boolean;
+  num_experts_per_token: number;
+  draft_model?: DraftModelParams;
+  skip_queue: boolean;
+}
+
 export interface ConversationFolder {
   id: string;
   name: string;
@@ -14,6 +40,31 @@ export interface ConversationFolder {
   subfolders: ConversationFolder[];
   timestamp: number;
   author?: string;
+}
+
+export function getModelParams(modelId: string): ModelLoadParams {
+  const saved = localStorage.getItem(`modelParams_${modelId}`);
+  return saved ? JSON.parse(saved) : {
+    model_name: modelId,
+    max_seq_len: 4096,
+    cache_size: 4096,
+    tensor_parallel: true,
+    gpu_split_auto: true,
+    autosplit_reserve: [0],
+    gpu_split: null,
+    rope_scale: 1,
+    rope_alpha: 1,
+    cache_mode: 'FP16',
+    chunk_size: 2048,
+    prompt_template: '',
+    vision: false,
+    num_experts_per_token: 0,
+    skip_queue: false
+  };
+}
+
+export function persistModelParams(modelId: string, params: ModelLoadParams) {
+  localStorage.setItem(`modelParams_${modelId}`, JSON.stringify(params));
 }
 
 export function getPersistedConversations(): ConversationFolder[] {
