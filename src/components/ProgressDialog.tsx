@@ -18,7 +18,7 @@ export default function ProgressDialog({ open, progress }: ProgressDialogProps) 
   const [modelProgress, setModelProgress] = useState<ModelProgress>({});
 
   useEffect(() => {
-    if (progress) {
+    if (progress && progress.model_type) {
       setModelProgress(prev => ({
         ...prev,
         [progress.model_type]: {
@@ -33,6 +33,7 @@ export default function ProgressDialog({ open, progress }: ProgressDialogProps) 
   // Clear progress when dialog closes
   useEffect(() => {
     if (!open) {
+      console.log(modelProgress);
       setModelProgress({});
     }
   }, [open]);

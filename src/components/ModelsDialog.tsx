@@ -154,7 +154,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
         };
       }
 
-      setLoadingProgress({ status: 'starting', progress: 0 });
+      setLoadingProgress({ });
       
       await loadModelWithProgress(serverUrl, adminApiKey, payload, (progress) => {
         setLoadingProgress(progress);
