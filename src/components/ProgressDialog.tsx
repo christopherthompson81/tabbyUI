@@ -30,6 +30,13 @@ export default function ProgressDialog({ open, progress }: ProgressDialogProps) 
     }
   }, [progress]);
 
+  // Clear progress when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setModelProgress({});
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} maxWidth="sm" fullWidth>
       <DialogTitle>Loading Models</DialogTitle>
