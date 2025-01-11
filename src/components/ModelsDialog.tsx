@@ -272,6 +272,15 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
             <Grid item xs={6}>
               <TextField
                 fullWidth
+                label="GPU Split"
+                value={modelParams.gpu_split ? modelParams.gpu_split.join(',') : ''}
+                onChange={(e) => handleParamChange('gpu_split', e.target.value ? e.target.value.split(',').map(Number) : null)}
+                disabled={modelParams.gpu_split_auto}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
                 label="Chunk Size"
                 type="number"
                 value={modelParams.chunk_size}
