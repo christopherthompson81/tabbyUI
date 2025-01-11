@@ -59,7 +59,8 @@ export function getModelParams(modelId: string): ModelLoadParams {
     prompt_template: '',
     vision: false,
     num_experts_per_token: 0,
-    skip_queue: false
+    skip_queue: false,
+    draft_model: null
   };
 }
 

@@ -283,12 +283,28 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 label="Skip Queue"
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth sx={{ mb: 2 }}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Autosplit Reserve"
+                value={modelParams.autosplit_reserve ? modelParams.autosplit_reserve.join(',') : ''}
+                onChange={(e) => handleParamChange('autosplit_reserve', e.target.value ? e.target.value.split(',').map(Number) : [])}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl fullWidth>
                 <InputLabel>Select Draft Model (Optional)</InputLabel>
                 <Select
                   value={selectedDraftModel}
-                  onChange={(e) => setSelectedDraftModel(e.target.value as string)}
+                  onChange={(e) => {
+                    setSelectedDraftModel(e.target.value as string);
+                    handleParamChange('draft_model', e.target.value ? {
+                      draft_model_name: e.target.value,
+                      draft_rope_scale: modelParams.draft_model?.draft_rope_scale || 0,
+                      draft_rope_alpha: modelParams.draft_model?.draft_rope_alpha || 1,
+                      draft_cache_mode: modelParams.draft_model?.draft_cache_mode || 'FP16'
+                    } : null)
+                  }}
                   label="Select Draft Model"
                 >
                   <MenuItem value="">None</MenuItem>
@@ -300,6 +316,45 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 </Select>
               </FormControl>
             </Grid>
+            {selectedDraftModel && (
+              <>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    label="Draft Rope Scale"
+                    type="number"
+                    value={modelParams.draft_model?.draft_rope_scale || 0}
+                    onChange={(e) => handleParamChange('draft_model', {
+                      ...modelParams.draft_model,
+                      draft_rope_scale: parseFloat(e.target.value)
+                    })}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    label="Draft Rope Alpha"
+                    type="number"
+                    value={modelParams.draft_model?.draft_rope_alpha || 1}
+                    onChange={(e) => handleParamChange('draft_model', {
+                      ...modelParams.draft_model,
+                      draft_rope_alpha: parseFloat(e.target.value)
+                    })}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <TextField
+                    fullWidth
+                    label="Draft Cache Mode"
+                    value={modelParams.draft_model?.draft_cache_mode || 'FP16'}
+                    onChange={(e) => handleParamChange('draft_model', {
+                      ...modelParams.draft_model,
+                      draft_cache_mode: e.target.value
+                    })}
+                  />
+                </Grid>
+              </>
+            )}
             <Grid item xs={12}>
               <Button 
                 variant="contained"
