@@ -70,15 +70,42 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     }
   };
 
-  const getInitialModelParams = (modelId: string) => {
+  interface DraftModelParams {
+    draft_model_name: string;
+    draft_rope_scale: number;
+    draft_rope_alpha: number;
+    draft_cache_mode: string;
+  }
+
+  interface ModelLoadParams {
+    model_name: string;
+    max_seq_len: number;
+    cache_size: number;
+    tensor_parallel: boolean;
+    gpu_split_auto: boolean;
+    autosplit_reserve: number[];
+    gpu_split: number[] | null;
+    rope_scale: number;
+    rope_alpha: number;
+    cache_mode: string;
+    chunk_size: number;
+    prompt_template: string;
+    vision: boolean;
+    num_experts_per_token: number;
+    draft_model?: DraftModelParams;
+    skip_queue: boolean;
+  }
+
+  const getInitialModelParams = (modelId: string): ModelLoadParams => {
     const saved = localStorage.getItem(`modelParams_${modelId}`);
     return saved ? JSON.parse(saved) : {
+      model_name: modelId,
       max_seq_len: 4096,
       cache_size: 4096,
       tensor_parallel: true,
       gpu_split_auto: true,
       autosplit_reserve: [0],
-      gpu_split: [24, 20],
+      gpu_split: null,
       rope_scale: 1,
       rope_alpha: 1,
       cache_mode: 'FP16',
@@ -108,13 +135,19 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
 
   const loadModel = async (modelId: string, draftModelId?: string) => {
     try {
-      const payload: any = {
+      const payload: ModelLoadParams = {
+        ...modelParams,
         model_name: modelId,
-        ...modelParams
+        gpu_split: modelParams.gpu_split_auto ? null : modelParams.gpu_split
       };
       
       if (draftModelId) {
-        payload.draft_model_name = draftModelId;
+        payload.draft_model = {
+          draft_model_name: draftModelId,
+          draft_rope_scale: 0,
+          draft_rope_alpha: 1,
+          draft_cache_mode: 'FP16'
+        };
       }
 
       const response = await fetch(`${serverUrl}/v1/model/load`, {
