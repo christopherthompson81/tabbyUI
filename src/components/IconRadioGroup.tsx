@@ -39,10 +39,11 @@ export default function IconRadioGroup({ options, value, onChange }: IconRadioGr
       value={value}
       onChange={(e) => onChange(e.target.value)}
       sx={{
-        display: 'flex',
-        alignItems: 'center',
-        backgroundColor: (theme) => theme.palette.background.paper,
+        display: 'inline-flex',
+        alignItems: 'flex-start',
+        backgroundColor: (theme) => theme.palette.primary.main,
         borderRadius: '28px',
+
         padding: '4px',
       }}
     >
@@ -69,7 +70,7 @@ export default function IconRadioGroup({ options, value, onChange }: IconRadioGr
                 flexItem 
                 sx={{ 
                   height: '24px', 
-                  mx: 1,
+                  mx: 0,
                   borderColor: (theme) => theme.palette.divider 
                 }} 
               />

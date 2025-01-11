@@ -5,12 +5,20 @@ import ImageIcon from '@mui/icons-material/Image';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 
+import IconRadioGroup from './IconRadioGroup';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CodeIcon from '@mui/icons-material/Code';
+import BrainIcon from "./BrainIcon";
+
 export default function ChatInput({
   onSend,
   onRegenerate
 }) {
   const [inputText, setInputText] = useState('');
   const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
+
+  const [selectedValue, setSelectedValue] = useState('option1');
 
   const handleTextChange = (e) => {
     setInputText(e.target.value);
@@ -144,6 +152,16 @@ export default function ChatInput({
 
       {/* Action Buttons */}
       <Box sx={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+        <IconRadioGroup
+          value={selectedValue}
+          onChange={(value) => setSelectedValue(value)}
+          options={[
+            { value: 'option1', icon: <SupportAgentIcon /> },
+            { value: 'option2', icon: <VisibilityIcon /> },
+            { value: 'option3', icon: <CodeIcon /> },
+            { value: 'option4', icon: <BrainIcon /> },
+          ]}
+        />
         <Button 
           variant="contained" 
           onClick={() => {
