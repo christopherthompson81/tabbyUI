@@ -43,6 +43,15 @@ import ModelsDialog from './components/ModelsDialog';
 import FolderEditor from './components/FolderEditor';
 import { MessageContent, sendConversation as sendConversationToAPI } from './services/tabbyAPI';
 
+import IconRadioGroup from './components/IconRadioGroup';
+import HomeIcon from "@mui/icons-material/Home";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PersonIcon from "@mui/icons-material/Person";
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CodeIcon from '@mui/icons-material/Code';
+import BrainIcon from "./components/BrainIcon";
+
 function App() {
   const [folders, setFolders] = useState<ConversationFolder[]>(getPersistedConversations());
   const [currentConversationId, setCurrentConversationId] = useState<string>(getPersistedCurrentConversationId());
@@ -63,6 +72,8 @@ function App() {
   const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  const [selectedValue, setSelectedValue] = useState('option1');
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
@@ -276,6 +287,16 @@ function App() {
               {serverStatus === 'online' ? `Online (${modelInfo?.id || 'Unknown'})` : 
                serverStatus === 'offline' ? 'Offline' : 'Checking...'}
             </Typography>
+            <IconRadioGroup                                                                                                                                                                                                                            
+              value={selectedValue}
+              onChange={(value) => setSelectedValue(value)}
+              options={[
+                { value: 'option1', icon: <SupportAgentIcon /> },
+                { value: 'option2', icon: <VisibilityIcon /> },
+                { value: 'option3', icon: <CodeIcon /> },
+                { value: 'option4', icon: <BrainIcon /> },
+              ]}
+            />
           </Box>
         </Toolbar>
       </AppBar>

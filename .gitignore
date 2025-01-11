@@ -25,3 +25,6 @@ dist-ssr
 *.sw?
 .aider*
 .env
+
+# React Component Preview
+previewConfig.json
