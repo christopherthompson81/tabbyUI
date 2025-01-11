@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { loadModelWithProgress } from '../services/tabbyAPI';
+import { ModelLoadProgress, loadModelWithProgress } from '../services/tabbyAPI';
+import { ModelLoadParams, getModelParams, persistModelParams } from '../utils/persistence';
 import ProgressDialog from './ProgressDialog';
 import { 
   Dialog, 
@@ -107,7 +108,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
         };
       }
 
-      setLoadingProgress({ });
+      setLoadingProgress({});
       
       await loadModelWithProgress(serverUrl, adminApiKey, payload, (progress) => {
         setLoadingProgress(progress);
