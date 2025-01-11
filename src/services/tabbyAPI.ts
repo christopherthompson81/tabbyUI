@@ -91,6 +91,7 @@ export async function loadModelWithProgress(
       const separateLines = chunk.split(/data: /g);
       
       separateLines.forEach(line => {
+        console.log(line);
         if (line.trim() === "[DONE]") {
           return;
         }

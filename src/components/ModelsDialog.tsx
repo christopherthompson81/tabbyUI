@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { loadModelWithProgress } from '../services/tabbyAPI';
 import ProgressDialog from './ProgressDialog';
 import { 
   Dialog, 
