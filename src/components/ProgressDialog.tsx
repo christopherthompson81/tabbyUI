@@ -2,28 +2,24 @@ import { Dialog, DialogTitle, DialogContent, LinearProgress, Typography, Box } f
 
 interface ProgressDialogProps {
   open: boolean;
-  progress: number;
-  status: string;
-  message?: string;
+  progress: ModelLoadProgress | null;
 }
 
-export default function ProgressDialog({ open, progress, status, message }: ProgressDialogProps) {
+export default function ProgressDialog({ open, progress }: ProgressDialogProps) {
   return (
     <Dialog open={open} maxWidth="sm" fullWidth>
       <DialogTitle>Loading Model</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
           <Typography variant="body1" gutterBottom>
-            Status: {status}
+            Loading {progress?.model_type}: {progress?.status}
           </Typography>
-          {message && (
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {message}
-            </Typography>
-          )}
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            Module {progress?.module} of {progress?.modules}
+          </Typography>
           <LinearProgress 
             variant="determinate"
-            value={progress || 0}
+            value={progress ? (progress.module / progress.modules) * 100 : 0}
             sx={{ mt: 2, height: 8 }}
           />
         </Box>

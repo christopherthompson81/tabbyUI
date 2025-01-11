@@ -48,9 +48,10 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
 }
 
 export interface ModelLoadProgress {
+  model_type: string;
+  module: number;
+  modules: number;
   status: string;
-  progress?: number;
-  message?: string;
 }
 
 export async function loadModelWithProgress(
@@ -83,7 +84,12 @@ export async function loadModelWithProgress(
 
     function processText({ done, value }: { done: boolean; value?: Uint8Array }): any {
       if (done) {
-        onProgress({ status: 'complete' });
+        onProgress({ 
+          model_type: 'model',
+          module: 1,
+          modules: 1,
+          status: 'complete' 
+        });
         return;
       }
 
@@ -91,14 +97,20 @@ export async function loadModelWithProgress(
       const separateLines = chunk.split(/data: /g);
       
       separateLines.forEach(line => {
-        console.log(line);
         if (line.trim() === "[DONE]") {
           return;
         }
         if (line.trim()) {
           try {
             const data = JSON.parse(line);
-            onProgress(data);
+            // Ensure we have the required fields
+            const progressData: ModelLoadProgress = {
+              model_type: data.model_type || 'model',
+              module: data.module || 0,
+              modules: data.modules || 1,
+              status: data.status || 'processing'
+            };
+            onProgress(progressData);
           } catch (error) {
             console.error('Error parsing progress:', error);
           }

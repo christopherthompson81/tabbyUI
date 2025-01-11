@@ -390,9 +390,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
       
       <ProgressDialog
         open={!!loadingProgress}
-        progress={loadingProgress?.progress || 0}
-        status={loadingProgress?.status || ''}
-        message={loadingProgress?.message}
+        progress={loadingProgress}
       />
     </Dialog>
   );
