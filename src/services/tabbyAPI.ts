@@ -47,6 +47,73 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
   }
 }
 
+export interface ModelLoadProgress {
+  status: string;
+  progress?: number;
+  message?: string;
+}
+
+export async function loadModelWithProgress(
+  serverUrl: string,
+  adminApiKey: string,
+  payload: any,
+  onProgress: (progress: ModelLoadProgress) => void
+): Promise<void> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/model/load`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-key': adminApiKey
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to start model loading');
+    }
+
+    const stream = response.body;
+    if (!stream) {
+      throw new Error('No response body');
+    }
+
+    const reader = stream.getReader();
+    const decoder = new TextDecoder('utf-8');
+
+    function processText({ done, value }: { done: boolean; value?: Uint8Array }): any {
+      if (done) {
+        onProgress({ status: 'complete' });
+        return;
+      }
+
+      const chunk = decoder.decode(value);
+      const separateLines = chunk.split(/data: /g);
+      
+      separateLines.forEach(line => {
+        if (line.trim() === "[DONE]") {
+          return;
+        }
+        if (line.trim()) {
+          try {
+            const data = JSON.parse(line);
+            onProgress(data);
+          } catch (error) {
+            console.error('Error parsing progress:', error);
+          }
+        }
+      });
+
+      return reader.read().then(processText);
+    }
+
+    return reader.read().then(processText);
+  } catch (error) {
+    console.error('Error loading model:', error);
+    throw error;
+  }
+}
+
 export async function sendConversation(
   serverUrl: string,
   apiKey: string,

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ProgressDialog from './ProgressDialog';
 import { 
   Dialog, 
   DialogTitle, 
@@ -133,6 +134,8 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
     });
   };
 
+  const [loadingProgress, setLoadingProgress] = useState<ModelLoadProgress | null>(null);
+
   const loadModel = async (modelId: string, draftModelId?: string) => {
     try {
       const payload: ModelLoadParams = {
@@ -150,19 +153,18 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
         };
       }
 
-      const response = await fetch(`${serverUrl}/v1/model/load`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-admin-key': adminApiKey
-        },
-        body: JSON.stringify(payload)
+      setLoadingProgress({ status: 'starting', progress: 0 });
+      
+      await loadModelWithProgress(serverUrl, adminApiKey, payload, (progress) => {
+        setLoadingProgress(progress);
       });
-      if (!response.ok) throw new Error('Failed to load model');
+
       // Refresh models after loading
       await fetchModels();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load model');
+    } finally {
+      setLoadingProgress(null);
     }
   };
 
@@ -384,6 +386,13 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
       </DialogActions>
+      
+      <ProgressDialog
+        open={!!loadingProgress}
+        progress={loadingProgress?.progress || 0}
+        status={loadingProgress?.status || ''}
+        message={loadingProgress?.message}
+      />
     </Dialog>
   );
 }
