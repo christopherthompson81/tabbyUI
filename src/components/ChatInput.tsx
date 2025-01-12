@@ -157,11 +157,11 @@ export default function ChatInput({
           value={selectedValue}
           onChange={(value) => setSelectedValue(value)}
           options={[
-            { value: 'option1', tooltip: "Current Model", icon: <AdjustIcon /> },
-            { value: 'option2', tooltip: "Assistant", icon: <SupportAgentIcon /> },
-            { value: 'option3', tooltip: "Vision Model", icon: <VisibilityIcon /> },
-            { value: 'option4', tooltip: "Coding Model", icon: <CodeIcon /> },
-            { value: 'option5', tooltip: "Reasoning Model", icon: <BrainIcon /> },
+            { value: 'current', tooltip: "Current Model", icon: <AdjustIcon /> },
+            { value: 'Assistant', tooltip: "Assistant", icon: <SupportAgentIcon /> },
+            { value: 'Vision', tooltip: "Vision Model", icon: <VisibilityIcon /> },
+            { value: 'Coding', tooltip: "Coding Model", icon: <CodeIcon /> },
+            { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <BrainIcon /> },
           ]}
         />
         <Button 
