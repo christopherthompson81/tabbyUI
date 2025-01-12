@@ -6,6 +6,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 
 import IconRadioGroup from './IconRadioGroup';
+import AdjustIcon from '@mui/icons-material/Adjust';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
@@ -156,10 +157,11 @@ export default function ChatInput({
           value={selectedValue}
           onChange={(value) => setSelectedValue(value)}
           options={[
-            { value: 'option1', icon: <SupportAgentIcon /> },
-            { value: 'option2', icon: <VisibilityIcon /> },
-            { value: 'option3', icon: <CodeIcon /> },
-            { value: 'option4', icon: <BrainIcon /> },
+            { value: 'option1', tooltip: "Current Model", icon: <AdjustIcon /> },
+            { value: 'option2', tooltip: "Assistant", icon: <SupportAgentIcon /> },
+            { value: 'option3', tooltip: "Vision Model", icon: <VisibilityIcon /> },
+            { value: 'option4', tooltip: "Coding Model", icon: <CodeIcon /> },
+            { value: 'option5', tooltip: "Reasoning Model", icon: <BrainIcon /> },
           ]}
         />
         <Button 
