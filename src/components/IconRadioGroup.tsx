@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Divider, IconButton, Radio, RadioGroup, styled } from '@mui/material';
+import { Box, Divider, IconButton, Radio, RadioGroup, styled, Tooltip } from '@mui/material';
 
 const StyledRadio = styled(Radio)(({ theme }) => ({
   padding: 0,
@@ -27,6 +27,7 @@ interface IconRadioGroupProps {
   options: {
     value: string;
     icon: React.ReactNode;
+    tooltip?: string;
   }[];
   value: string;
   onChange: (value: string) => void;
@@ -49,20 +50,22 @@ export default function IconRadioGroup({ options, value, onChange }: IconRadioGr
       {options.map((option, index) => (
         <React.Fragment key={option.value}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <StyledRadio
-              value={option.value}
-              icon={
-                <IconButtonWrapper selected={value === option.value}>
-                  {option.icon}
-                </IconButtonWrapper>
-              }
-              checkedIcon={
-                <IconButtonWrapper selected={value === option.value}>
-                  {option.icon}
-                </IconButtonWrapper>
-              }
-              disableRipple
-            />
+            <Tooltip title={option.tooltip || ''} arrow>
+              <StyledRadio
+                value={option.value}
+                icon={
+                  <IconButtonWrapper selected={value === option.value}>
+                    {option.icon}
+                  </IconButtonWrapper>
+                }
+                checkedIcon={
+                  <IconButtonWrapper selected={value === option.value}>
+                    {option.icon}
+                  </IconButtonWrapper>
+                }
+                disableRipple
+              />
+            </Tooltip>
             {index < options.length - 1 && (
               <Divider 
                 orientation="vertical" 
