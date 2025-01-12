@@ -43,7 +43,6 @@ export default function IconRadioGroup({ options, value, onChange }: IconRadioGr
         alignItems: 'flex-start',
         backgroundColor: (theme) => theme.palette.primary.main,
         borderRadius: '28px',
-
         padding: '4px',
       }}
     >
