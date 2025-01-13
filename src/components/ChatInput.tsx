@@ -19,7 +19,7 @@ export default function ChatInput({
   const [inputText, setInputText] = useState('');
   const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
 
-  const [selectedValue, setSelectedValue] = useState('option1');
+  const [selectedValue, setSelectedValue] = useState('current');
 
   const handleTextChange = (e) => {
     setInputText(e.target.value);
