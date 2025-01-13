@@ -26,5 +26,5 @@ dist-ssr
 .aider*
 .env
 
-# React Component Preview
-previewConfig.json
+# Temporary dev notes
+aider_todo.md
