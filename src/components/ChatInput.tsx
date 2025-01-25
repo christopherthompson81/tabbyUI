@@ -152,7 +152,7 @@ export default function ChatInput({
       </Box>
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: "center" }}>
         <IconRadioGroup
           value={selectedValue}
           onChange={(value) => setSelectedValue(value)}
@@ -164,22 +164,24 @@ export default function ChatInput({
             { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <BrainIcon /> },
           ]}
         />
-        <Button 
-          variant="contained" 
-          onClick={() => {
-            onSend(messagePreview);
-            setMessagePreview([]);
-          }}
-          disabled={messagePreview.length === 0}
-        >
-          Send
-        </Button>
-        <Button 
-          variant="contained" 
-          onClick={onRegenerate}
-        >
-          Regenerate
-        </Button>
+        <Box sx={{alignItems: "center"}}>
+          <Button 
+            variant="contained" 
+            onClick={() => {
+              onSend(messagePreview);
+              setMessagePreview([]);
+            }}
+            disabled={messagePreview.length === 0}
+          >
+            Send
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={onRegenerate}
+          >
+            Regenerate
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
