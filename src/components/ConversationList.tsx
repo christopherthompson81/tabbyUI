@@ -10,7 +10,6 @@ import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface ConversationListProps {
   folders: ConversationFolder[];
-  conversationMenuAnchorEl: any,
   currentConversationId: string;
   onAddConversation: (folderId?: string) => void;
   onSwitchConversation: (id: string) => void;
@@ -18,6 +17,7 @@ interface ConversationListProps {
   onAddFolder: (parentFolderId?: string) => void;
   onEditFolder: (id: string) => void;
   onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
+  onDelete: (id: string) => void;
 }
 
 function FolderItem({ 
@@ -34,7 +34,21 @@ function FolderItem({
 } & ConversationListProps) {
   const [open, setOpen] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const menuOpen = Boolean(menuAnchorEl);
+
+  const handleConversationMenuClick = (event: React.MouseEvent<HTMLElement>, conversation: Conversation) => {
+    event.stopPropagation();
+    setConversationMenuAnchorEl(event.currentTarget);
+    setSelectedConversation(conversation);
+  };
+
+  const handleConversationMenuClose = () => {
+    setConversationMenuAnchorEl(null);
+    setSelectedConversation(null);
+  };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
     event.stopPropagation();
@@ -154,6 +168,17 @@ function FolderItem({
           ))}
         </Box>
       </Collapse>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onConfirm={() => {
+          if (selectedConversation) {
+            onDelete(selectedConversation.id);
+          }
+          setDeleteDialogOpen(false);
+        }}
+        onCancel={() => setDeleteDialogOpen(false)}
+        itemName={selectedConversation?.name || ''}
+      />
     </>
   );
 }
@@ -167,20 +192,6 @@ export default function ConversationList({
   onEditFolder,
   onUpdateFolders
 }: ConversationListProps) {
-  const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const handleConversationMenuClick = (event: React.MouseEvent<HTMLElement>, conversation: Conversation) => {
-    event.stopPropagation();
-    setConversationMenuAnchorEl(event.currentTarget);
-    setSelectedConversation(conversation);
-  };
-
-  const handleConversationMenuClose = () => {
-    setConversationMenuAnchorEl(null);
-    setSelectedConversation(null);
-  };
   return (
     <>
       <List>
@@ -209,17 +220,6 @@ export default function ConversationList({
           </Button>
         </ListItem>
       </List>
-      <DeleteConfirmationDialog
-        open={deleteDialogOpen}
-        onConfirm={() => {
-          if (selectedConversation) {
-            onDelete(selectedConversation.id);
-          }
-          setDeleteDialogOpen(false);
-        }}
-        onCancel={() => setDeleteDialogOpen(false)}
-        itemName={selectedConversation?.name || ''}
-      />
     </>
   );
 }
