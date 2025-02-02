@@ -48,11 +48,18 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
 }
 
 export interface ModelLoadProgress {
-  model_type: string;
-  module: number;
-  modules: number;
-  status: string;
+  model_type: string | null;
+  module: number | null;
+  modules: number | null;
+  status: string | null;
 }
+
+export const modelLoadProgressDefault:ModelLoadProgress = {
+  model_type: null,
+  module: null,
+  modules: null,
+  status: null
+};
 
 export async function loadModelWithProgress(
   serverUrl: string,

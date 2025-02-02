@@ -16,9 +16,8 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import ProgressDialog from './ProgressDialog';
-import { useModelLoader, ModelLoaderForm } from "./ModelLoader";
+import { useModelLoader } from "./ModelLoader";
 import {
-    ModelLoadParams,
     getModelParams,
     persistModelParams,
 } from "../utils/persistence";

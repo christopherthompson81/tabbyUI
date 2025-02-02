@@ -6,7 +6,7 @@ import {
     Typography,
     Box,
 } from "@mui/material";
-import { ModelLoadProgress } from "../services/tabbyAPI";
+import { modelLoadProgressDefault, ModelLoadProgress } from "../services/tabbyAPI";
 import { useState, useEffect } from "react";
 
 interface ProgressDialogProps {

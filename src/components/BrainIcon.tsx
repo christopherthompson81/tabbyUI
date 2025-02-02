@@ -1,4 +1,3 @@
-import SvgIcon from "@mui/material/SvgIcon";
 import { createSvgIcon } from "@mui/material/utils";
 
 const BrainIcon = createSvgIcon(

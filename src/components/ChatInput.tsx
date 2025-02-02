@@ -1,6 +1,6 @@
-import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip, Dialog, DialogContent } from '@mui/material';
-import { useModelLoader, ModelLoaderForm } from './ModelLoader';
-import { EventHandler, useState } from 'react';
+import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip } from '@mui/material';
+import { useModelLoader } from './ModelLoader';
+import { useState } from 'react';
 import { MessageContent, getModelInfo } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
 import CancelIcon from '@mui/icons-material/Cancel';
