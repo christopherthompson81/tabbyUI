@@ -83,6 +83,7 @@ export default function ChatInput({
 
     if (selectedModel) {
       // Fetch current model to compare
+      // Use getModelInfo from src/services/tabbyAPI.tsx instead of fetch, AI!
       const response = await fetch(`${serverUrl}/v1/models/current`, {
         headers: {
           'x-api-key': adminApiKey
