@@ -70,7 +70,30 @@ export default function ChatInput({
     setMessagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
-  // create a handleRegenerate that mimics the handleSend function in that it tests if a different model should be loaded before triggering the onRegenerate function, AI!
+  const handleRegenerate = async () => {
+    // Get model preferences from localStorage
+    const modelPreferences = JSON.parse(
+      localStorage.getItem('modelPreferences') || '{}'
+    );
+    
+    // Get selected model ID if not 'current'
+    const selectedModel = selectedValue !== 'current' 
+      ? modelPreferences[selectedValue]
+      : undefined;
+
+    if (selectedModel) {
+      // Fetch current model to compare
+      const currentModel = await getModelInfo(serverUrl, adminApiKey);
+      
+      // If selected model is different from current, load it
+      if (currentModel.id !== selectedModel) {
+        await modelLoader.loadModel(selectedModel);
+      }
+    }
+
+    onRegenerate();
+  };
+
   const handleSend = async () => {
     // Get model preferences from localStorage
     const modelPreferences = JSON.parse(
@@ -217,7 +240,7 @@ export default function ChatInput({
           </Button>
           <Button 
             variant="contained" 
-            onClick={onRegenerate}
+            onClick={handleRegenerate}
           >
             Regenerate
           </Button>
