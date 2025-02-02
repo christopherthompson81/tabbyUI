@@ -4,20 +4,15 @@ A modern chat interface for tabbyAPI that provides an intuitive way to interact 
 
 ## Features
 
-- Clean, intuitive chat interface
-- Support for multiple message types including text and images
-- Model management with customizable parameters
-- Specialized model selection for different tasks:
+- Backendless, all code runs in your browser
+- Support for multimodal interactions (text and image)
+- One-click model switching for different tasks:
   - General Assistant
   - Vision tasks
   - Coding assistance
   - Chain-of-thought reasoning
-- Draft model support for faster generation
-- Progress monitoring during model loading
 - Conversation organization with folders
-- Settings management for API configuration
-- Model parameter persistence
-- Regeneration capability
+- Conversations and settings persistence using localStorage
 
 ## Getting Started
 
