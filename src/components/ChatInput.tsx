@@ -70,7 +70,7 @@ export default function ChatInput({
     setMessagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
-  // compare selectedModel to the currently loaded model. If they are different, use 
+  // compare selectedModel to the currently loaded model. If they are different, use useModelLoader src/component/modelLoader.tsx to load the selected model AI!
   const handleSend = () => {
     // Get model preferences from localStorage
     const modelPreferences = JSON.parse(
