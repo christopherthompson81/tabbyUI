@@ -70,8 +70,7 @@ export default function ChatInput({
     setMessagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
-  // compare selectedModel to the currently loaded model. If they are different, use useModelLoader src/component/modelLoader.tsx to load the selected model AI!
-  const handleSend = () => {
+  const handleSend = async () => {
     // Get model preferences from localStorage
     const modelPreferences = JSON.parse(
       localStorage.getItem('modelPreferences') || '{}'
@@ -81,6 +80,21 @@ export default function ChatInput({
     const selectedModel = selectedValue !== 'current' 
       ? modelPreferences[selectedValue]
       : undefined;
+
+    if (selectedModel) {
+      // Fetch current model to compare
+      const response = await fetch(`${serverUrl}/v1/models/current`, {
+        headers: {
+          'x-api-key': adminApiKey
+        }
+      });
+      const currentModel = await response.json();
+      
+      // If selected model is different from current, load it
+      if (currentModel.id !== selectedModel) {
+        await modelLoader.loadModel(selectedModel);
+      }
+    }
 
     onSend(messagePreview, selectedModel);
     setMessagePreview([]);
