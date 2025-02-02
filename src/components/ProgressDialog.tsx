@@ -1,4 +1,5 @@
 import { Dialog, DialogTitle, DialogContent, LinearProgress, Typography, Box } from '@mui/material';
+import { ModelLoadProgress } from "../services/tabbyAPI";
 import { useState, useEffect } from 'react';
 
 interface ProgressDialogProps {
@@ -6,27 +7,20 @@ interface ProgressDialogProps {
   progress: ModelLoadProgress | null;
 }
 
-interface ModelProgress {
-  [modelType: string]: {
-    module: number;
-    modules: number;
-    status: string;
-  }
-}
-
 export default function ProgressDialog({ open, progress }: ProgressDialogProps) {
-  const [modelProgress, setModelProgress] = useState<ModelProgress>({});
+  const [modelProgress, setModelProgress] = useState<ModelLoadProgress>({});
 
   useEffect(() => {
     if (progress && progress.model_type) {
       setModelProgress(prev => ({
         ...prev,
         [progress.model_type]: {
-          module: progress.module,
-          modules: progress.modules,
-          status: progress.status
+        module: progress.module,
+        modules: progress.modules,
+        status: progress.status
         }
-      }));
+        }
+      ));
     }
   }, [progress]);
 
