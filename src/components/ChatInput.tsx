@@ -70,6 +70,7 @@ export default function ChatInput({
     setMessagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
+  // create a handleRegenerate that mimics the handleSend function in that it tests if a different model should be loaded before triggering the onRegenerate function, AI!
   const handleSend = async () => {
     // Get model preferences from localStorage
     const modelPreferences = JSON.parse(
