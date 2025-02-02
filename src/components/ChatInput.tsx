@@ -90,8 +90,8 @@ export default function ChatInput({
       
       // If selected model is different from current, load it
       if (currentModel.id !== selectedModel) {
-        // get the customParams from src/utils/peristence.ts - getModelParams and use them in loadModel, AI!
-        await modelLoader.loadModel(selectedModel);
+        const customParams = getModelParams(selectedModel);
+        await modelLoader.loadModel(selectedModel, undefined, customParams);
       }
     }
 
