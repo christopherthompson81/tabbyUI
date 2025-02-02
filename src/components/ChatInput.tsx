@@ -71,6 +71,7 @@ export default function ChatInput({
   };
 
   return (
+    <>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {/* Message Preview */}
       {messagePreview.length > 0 && (
@@ -212,6 +213,7 @@ export default function ChatInput({
     </Box>
     
     <Dialog open={modelLoaderOpen} onClose={() => setModelLoaderOpen(false)}>
+    </>
       <DialogContent>
         <ModelLoaderForm {...modelLoader} />
       </DialogContent>
