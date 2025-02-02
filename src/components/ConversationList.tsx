@@ -106,12 +106,35 @@ function FolderItem({
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  onEditConversation(conv.id);
+                  handleConversationMenuClick(e, conv);
                 }}
                 style={{ marginLeft: 'auto' }}
               >
                 <MoreVertIcon fontSize="small" />
               </IconButton>
+              <Menu
+                anchorEl={conversationMenuAnchorEl}
+                open={Boolean(conversationMenuAnchorEl)}
+                onClose={handleConversationMenuClose}
+                onClick={handleConversationMenuClose}
+              >
+                <MenuItem onClick={() => {
+                  onEditConversation(selectedConversation?.id || '');
+                }}>
+                  Rename
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  setDeleteDialogOpen(true);
+                }}>
+                  Delete
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  // TODO: Implement save conversation
+                  console.log('Save conversation:', selectedConversation?.id);
+                }}>
+                  Save Conversation
+                </MenuItem>
+              </Menu>
             </ListItemButton>
           ))}
           {folder.subfolders.map((subfolder) => (
@@ -142,6 +165,20 @@ export default function ConversationList({
   onEditFolder,
   onUpdateFolders
 }: ConversationListProps) {
+  const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleConversationMenuClick = (event: React.MouseEvent<HTMLElement>, conversation: Conversation) => {
+    event.stopPropagation();
+    setConversationMenuAnchorEl(event.currentTarget);
+    setSelectedConversation(conversation);
+  };
+
+  const handleConversationMenuClose = () => {
+    setConversationMenuAnchorEl(null);
+    setSelectedConversation(null);
+  };
   return (
     <List>
       <ListItem>
@@ -169,5 +206,16 @@ export default function ConversationList({
         </Button>
       </ListItem>
     </List>
+    <DeleteConfirmationDialog
+      open={deleteDialogOpen}
+      onConfirm={() => {
+        if (selectedConversation) {
+          onDelete(selectedConversation.id);
+        }
+        setDeleteDialogOpen(false);
+      }}
+      onCancel={() => setDeleteDialogOpen(false)}
+      itemName={selectedConversation?.name || ''}
+    />
   );
 }

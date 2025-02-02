@@ -32,13 +32,10 @@ export default function ConversationEditor({
         />
       </DialogContent>
       <DialogActions>
-        <Button color="error" onClick={onDelete}>
-          Delete
-        </Button>
-        <Button onClick={onSave}>
+        <Button onClick={onCancel}>Cancel</Button>
+        <Button onClick={onSave} color="primary">
           Save
         </Button>
-        <Button onClick={onCancel}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );
