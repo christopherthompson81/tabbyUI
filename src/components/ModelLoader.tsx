@@ -82,11 +82,10 @@ export function useModelLoader({
         });
     };
 
-    const loadModel = async (modelId: string, draftModelId?: string, customParams?: Partial<ModelLoadParams>) => {
+    const loadModel = async (modelId: string, draftModelId?: string) => {
         try {
             const payload: ModelLoadParams = {
                 ...modelParams,
-                ...customParams,
                 model_name: modelId,
                 gpu_split: modelParams.gpu_split_auto
                     ? null

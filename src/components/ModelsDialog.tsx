@@ -470,6 +470,7 @@ function ModelsDialog({
                             </>
                         )}
                         <Grid size={12}>
+                            // in modelLoader.loadModel, supply the expected customParams
                             <Button
                                 variant="contained"
                                 fullWidth
