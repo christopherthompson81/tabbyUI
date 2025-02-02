@@ -119,7 +119,13 @@ export default function ChatInput({
       }
     }
 
-    onSend(messagePreview);
+    // Create temporary preview that includes current input text if any
+    const finalPreview = inputText.trim() 
+      ? [...messagePreview, { type: 'text', text: inputText.trim() }]
+      : messagePreview;
+    
+    onSend(finalPreview);
+    setInputText('');
     setMessagePreview([]);
   };
 
@@ -238,7 +244,7 @@ export default function ChatInput({
           <Button 
             variant="contained" 
             onClick={handleSend}
-            disabled={messagePreview.length === 0}
+            disabled={messagePreview.length === 0 && !inputText.trim()}
           >
             Send
           </Button>
