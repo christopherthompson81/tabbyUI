@@ -130,7 +130,6 @@ export default function ChatInput({
     setMessagePreview([]);
   };
 
-  // make the inputText a textArea so that it can accept multi-line input. AI!
   return (
     <div>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -199,10 +198,14 @@ export default function ChatInput({
           value={inputText}
           onChange={handleTextChange}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && inputText.trim()) {
+            if (e.key === 'Enter' && !e.shiftKey && inputText.trim()) {
+              e.preventDefault();
               handleAddText();
             }
           }}
+          multiline
+          minRows={2}
+          maxRows={6}
         />
         <Tooltip title="Add Text">
           <IconButton 
