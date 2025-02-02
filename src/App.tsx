@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
@@ -231,7 +231,6 @@ function App() {
             edge="start"
             sx={{ mr: 2 }}
             onClick={(e) => setMenuAnchorEl(e.currentTarget)}
-            ref={menuAnchorEl}
           >
             <MenuIcon />
           </IconButton>
