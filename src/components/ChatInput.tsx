@@ -13,6 +13,9 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
 import BrainIcon from "./BrainIcon";
 
+import { getPersistedAdminApiKey, getPersistedServerUrl } from '../utils/persistence';
+import ProgressDialog from './ProgressDialog';
+
 interface ChatInputProps {
   onSend: (preview: MessageContent[], selectedModel?: string) => void;
   onRegenerate: () => void;
@@ -23,8 +26,8 @@ interface ChatInputProps {
 export default function ChatInput({
   onSend,
   onRegenerate,
-  serverUrl,
-  adminApiKey
+  serverUrl = getPersistedServerUrl(),
+  adminApiKey = getPersistedAdminApiKey()
 }: ChatInputProps) {
   const [modelLoaderOpen, setModelLoaderOpen] = useState(false);
   const modelLoader = useModelLoader({ 
@@ -87,6 +90,7 @@ export default function ChatInput({
       
       // If selected model is different from current, load it
       if (currentModel.id !== selectedModel) {
+        // get the customParams from src/utils/peristence.ts - getModelParams and use them in loadModel, AI!
         await modelLoader.loadModel(selectedModel);
       }
     }
@@ -248,11 +252,10 @@ export default function ChatInput({
       </Box>
     </Box>
     
-    <Dialog open={modelLoaderOpen} onClose={() => setModelLoaderOpen(false)}>
-      <DialogContent>
-        <ModelLoaderForm {...modelLoader} />
-      </DialogContent>
-    </Dialog>
+    <ProgressDialog
+        open={!!modelLoader.loadingProgress}
+        progress={modelLoader.loadingProgress}
+    />
     </div>
   );
 }
