@@ -5,7 +5,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { Conversation, ConversationFolder } from '../utils/persistence';
+import { Conversation, ConversationFolder, getPersistedCurrentConversationId } from '../utils/persistence';
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface ConversationListProps {
@@ -22,7 +22,6 @@ interface ConversationListProps {
 
 function FolderItem({ 
   folder,
-  conversationMenuAnchorEl,
   currentConversationId,
   onAddConversation,
   onSwitchConversation,
@@ -192,6 +191,7 @@ export default function ConversationList({
   onEditFolder,
   onUpdateFolders
 }: ConversationListProps) {
+  const currentConversationId = getPersistedCurrentConversationId();
   return (
     <>
       <List>
