@@ -82,6 +82,7 @@ export function useModelLoader({
         });
     };
 
+    // modify this function to accept modelParams as a parameter AI!
     const loadModel = async (modelId: string, draftModelId?: string) => {
         try {
             const payload: ModelLoadParams = {
