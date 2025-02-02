@@ -168,7 +168,17 @@ export default function ChatInput({
           <Button 
             variant="contained" 
             onClick={() => {
-              onSend(messagePreview);
+              // Get model preferences from localStorage
+              const modelPreferences = JSON.parse(
+                localStorage.getItem('modelPreferences') || '{}'
+              );
+              
+              // Get selected model ID if not 'current'
+              const selectedModel = selectedValue !== 'current' 
+                ? modelPreferences[selectedValue]
+                : undefined;
+
+              onSend(messagePreview, selectedModel);
               setMessagePreview([]);
             }}
             disabled={messagePreview.length === 0}
