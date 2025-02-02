@@ -1,6 +1,6 @@
 import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip, Dialog, DialogContent } from '@mui/material';
 import { useModelLoader, ModelLoaderForm } from './ModelLoader';
-import { useState } from 'react';
+import { EventHandler, useState } from 'react';
 import { MessageContent, getModelInfo } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -19,41 +19,42 @@ import ProgressDialog from './ProgressDialog';
 interface ChatInputProps {
   onSend: (preview: MessageContent[], selectedModel?: string) => void;
   onRegenerate: () => void;
-  serverUrl: string;
-  adminApiKey: string;
 }
 
 export default function ChatInput({
   onSend,
-  onRegenerate,
-  serverUrl = getPersistedServerUrl(),
-  adminApiKey = getPersistedAdminApiKey()
+  onRegenerate
 }: ChatInputProps) {
-  const [modelLoaderOpen, setModelLoaderOpen] = useState(false);
+  const serverUrl = getPersistedServerUrl();
+  const adminApiKey = getPersistedAdminApiKey();
   const modelLoader = useModelLoader({ 
     serverUrl, 
     adminApiKey,
-    onLoadComplete: () => setModelLoaderOpen(false)
+    onLoadComplete: () => {}
   });
   const [inputText, setInputText] = useState('');
   const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
 
   const [selectedValue, setSelectedValue] = useState('current');
 
-  const handleTextChange = (e) => {
-    setInputText(e.target.value);
+  const handleTextChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e?.target?.value);
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
+  const handleImageUpload = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    console.log(file);
     if (file) {
       const reader = new FileReader();
       reader.onload = (event) => {
-        const imageUrl = event.target.result;
-        setMessagePreview(prev => [
-          ...prev,
-          { type: 'image_url', image_url: { url: imageUrl } }
-        ]);
+        if (event.target) {
+          const imageUrl:string = event.target.result?.toString() ?? '';
+          const tempMessage:MessageContent = { type: 'image_url', image_url: { url: imageUrl } };
+          setMessagePreview(prev => [
+            ...prev,
+            tempMessage
+          ]);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -89,7 +90,7 @@ export default function ChatInput({
       const currentModel = await getModelInfo(serverUrl, adminApiKey);
       
       // If selected model is different from current, load it
-      if (currentModel.id !== selectedModel) {
+      if (currentModel?.id !== selectedModel) {
         const customParams = getModelParams(selectedModel);
         await modelLoader.loadModel(selectedModel, undefined, customParams);
       }
@@ -114,13 +115,13 @@ export default function ChatInput({
       const currentModel = await getModelInfo(serverUrl, adminApiKey);
       
       // If selected model is different from current, load it
-      if (currentModel.id !== selectedModel) {
+      if (currentModel?.id !== selectedModel) {
         await modelLoader.loadModel(selectedModel);
       }
     }
 
     // Create temporary preview that includes current input text if any
-    const finalPreview = inputText.trim() 
+    const finalPreview:MessageContent[] = inputText.trim() 
       ? [...messagePreview, { type: 'text', text: inputText.trim() }]
       : messagePreview;
     
