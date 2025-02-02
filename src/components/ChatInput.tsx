@@ -119,7 +119,7 @@ export default function ChatInput({
       }
     }
 
-    onSend(messagePreview, selectedModel);
+    onSend(messagePreview);
     setMessagePreview([]);
   };
 
