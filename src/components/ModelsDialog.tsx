@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ModelLoadProgress, loadModelWithProgress } from '../services/tabbyAPI';
 import { ModelLoadParams, getModelParams, persistModelParams } from '../utils/persistence';
 import ProgressDialog from './ProgressDialog';
@@ -16,9 +16,9 @@ import {
   FormControl, 
   InputLabel,
   Checkbox,
-  FormControlLabel,
-  Grid
+  FormControlLabel
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 
 interface ModelInfo {
   id: string;
@@ -108,7 +108,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
         };
       }
 
-      setLoadingProgress({});
+      setLoadingProgress(null);
       
       await loadModelWithProgress(serverUrl, adminApiKey, payload, (progress) => {
         setLoadingProgress(progress);
@@ -160,7 +160,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
             </FormControl>
           )}
           <Grid container spacing={2} sx={{ mt: 2 }}>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Max Sequence Length"
@@ -169,7 +169,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('max_seq_len', parseInt(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Cache Size"
@@ -178,7 +178,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('cache_size', parseInt(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -189,7 +189,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 label="Tensor Parallel"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -200,7 +200,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 label="GPU Split Auto"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Rope Scale"
@@ -209,7 +209,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('rope_scale', parseFloat(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Rope Alpha"
@@ -218,7 +218,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('rope_alpha', parseFloat(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Cache Mode"
@@ -226,7 +226,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('cache_mode', e.target.value)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="GPU Split"
@@ -235,7 +235,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 disabled={modelParams.gpu_split_auto}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Chunk Size"
@@ -244,7 +244,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('chunk_size', parseInt(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Prompt Template"
@@ -252,7 +252,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('prompt_template', e.target.value)}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -263,7 +263,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 label="Vision"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Num Experts Per Token"
@@ -272,7 +272,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('num_experts_per_token', parseInt(e.target.value))}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -283,7 +283,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 label="Skip Queue"
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <TextField
                 fullWidth
                 label="Autosplit Reserve"
@@ -291,7 +291,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 onChange={(e) => handleParamChange('autosplit_reserve', e.target.value ? e.target.value.split(',').map(Number) : [])}
               />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={12}>
               <FormControl fullWidth>
                 <InputLabel>Select Draft Model (Optional)</InputLabel>
                 <Select
@@ -318,7 +318,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
             </Grid>
             {selectedDraftModel && (
               <>
-                <Grid item xs={4}>
+                <Grid size={4}>
                   <TextField
                     fullWidth
                     label="Draft Rope Scale"
@@ -330,7 +330,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                     })}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                   <TextField
                     fullWidth
                     label="Draft Rope Alpha"
@@ -342,7 +342,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                     })}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                   <TextField
                     fullWidth
                     label="Draft Cache Mode"
@@ -355,7 +355,7 @@ function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogPro
                 </Grid>
               </>
             )}
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Button 
                 variant="contained"
                 fullWidth
