@@ -7,7 +7,6 @@ interface AboutDialogProps {
   onClose: () => void;
 }
 
-// Make tabbyAPI a hyperlink to the URL https://github.com/theroyallab/tabbyAPI AI!
 export default function AboutDialog({ open, onClose }: AboutDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -18,7 +17,7 @@ export default function AboutDialog({ open, onClose }: AboutDialogProps) {
           tabbyUI
         </Typography>
         <Typography variant="body1" align="center" sx={{ mt: 2 }}>
-          A simple chat interface for tabbyAPI
+          A simple chat interface for <a href="https://github.com/theroyallab/tabbyAPI" target="_blank" rel="noopener noreferrer">tabbyAPI</a>
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
