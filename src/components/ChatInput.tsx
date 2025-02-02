@@ -1,7 +1,7 @@
 import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip, Dialog, DialogContent } from '@mui/material';
 import { useModelLoader, ModelLoaderForm } from './ModelLoader';
 import { useState } from 'react';
-import { MessageContent } from '../services/tabbyAPI';
+import { MessageContent, getModelInfo } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
@@ -83,13 +83,7 @@ export default function ChatInput({
 
     if (selectedModel) {
       // Fetch current model to compare
-      // Use getModelInfo from src/services/tabbyAPI.tsx instead of fetch, AI!
-      const response = await fetch(`${serverUrl}/v1/models/current`, {
-        headers: {
-          'x-api-key': adminApiKey
-        }
-      });
-      const currentModel = await response.json();
+      const currentModel = await getModelInfo(serverUrl, adminApiKey);
       
       // If selected model is different from current, load it
       if (currentModel.id !== selectedModel) {
