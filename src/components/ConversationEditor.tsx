@@ -1,6 +1,14 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+import { ChangeEvent } from 'react';
 
-// implement a typescript interface for this function's parameters. AI!
+interface ConversationEditorProps {
+  editingConversationId: string | null;
+  newConversationName: string;
+  onNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSave: () => void;
+  onDelete: () => void;
+  onCancel: () => void;
+}
 
 export default function ConversationEditor({
   editingConversationId,
@@ -9,7 +17,7 @@ export default function ConversationEditor({
   onSave,
   onDelete,
   onCancel
-}) {
+}: ConversationEditorProps) {
   return (
     <Dialog open={editingConversationId !== null} onClose={onCancel}>
       <DialogTitle>Edit Conversation Name</DialogTitle>
