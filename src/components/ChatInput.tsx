@@ -130,6 +130,7 @@ export default function ChatInput({
     setMessagePreview([]);
   };
 
+  // make the inputText a textArea so that it can accept multi-line input. AI!
   return (
     <div>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
