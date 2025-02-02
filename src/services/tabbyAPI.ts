@@ -35,7 +35,7 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
         'x-api-key': apiKey || '',
       },
     });
-
+    
     if (!response.ok) {
       return null;
     }

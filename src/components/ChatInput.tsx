@@ -13,7 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
 import BrainIcon from "./BrainIcon";
 
-import { getPersistedAdminApiKey, getPersistedServerUrl } from '../utils/persistence';
+import { getModelParams, getPersistedAdminApiKey, getPersistedServerUrl } from '../utils/persistence';
 import ProgressDialog from './ProgressDialog';
 
 interface ChatInputProps {
