@@ -82,11 +82,11 @@ export function useModelLoader({
         });
     };
 
-    // modify this function to accept modelParams as a parameter AI!
-    const loadModel = async (modelId: string, draftModelId?: string) => {
+    const loadModel = async (modelId: string, draftModelId?: string, customParams?: Partial<ModelLoadParams>) => {
         try {
             const payload: ModelLoadParams = {
                 ...modelParams,
+                ...customParams,
                 model_name: modelId,
                 gpu_split: modelParams.gpu_split_auto
                     ? null
