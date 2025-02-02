@@ -35,7 +35,7 @@ export async function getModelInfo(serverUrl: string, apiKey: string): Promise<M
         'x-api-key': apiKey || '',
       },
     });
-    
+
     if (!response.ok) {
       return null;
     }
@@ -97,7 +97,7 @@ export async function loadModelWithProgress(
       const separateLines = chunk.split(/data: /g);
       
       separateLines.forEach(line => {
-        console.log(line);
+        //console.log(line);
         if (line.trim() === "[DONE]") {
           return;
         }
