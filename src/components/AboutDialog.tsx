@@ -6,6 +6,7 @@ interface AboutDialogProps {
   onClose: () => void;
 }
 
+// Add a github icon and link to the github site: https://github.com/christopherthompson81/tabbyUI AI!
 export default function AboutDialog({ open, onClose }: AboutDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
