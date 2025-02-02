@@ -470,13 +470,12 @@ function ModelsDialog({
                             </>
                         )}
                         <Grid size={12}>
-                            // in modelLoader.loadModel, supply the expected customParams
                             <Button
                                 variant="contained"
                                 fullWidth
                                 onClick={() =>
                                     selectedModel &&
-                                    modelLoader.loadModel(selectedModel, selectedDraftModel)
+                                    modelLoader.loadModel(selectedModel, selectedDraftModel, modelParams)
                                 }
                                 disabled={!selectedModel}
                             >
