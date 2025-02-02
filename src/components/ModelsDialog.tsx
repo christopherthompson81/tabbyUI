@@ -1,34 +1,9 @@
-import { useState, useEffect } from 'react';
-import { ModelLoadProgress, loadModelWithProgress } from '../services/tabbyAPI';
-import { ModelLoadParams, getModelParams, persistModelParams } from '../utils/persistence';
-import ProgressDialog from './ProgressDialog';
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  Button, 
-  Typography, 
-  Box, 
-  MenuItem, 
-  TextField, 
-  Select, 
-  FormControl, 
-  InputLabel,
-  Checkbox,
-  FormControlLabel
-} from '@mui/material';
-import Grid from '@mui/material/Grid2';
-
-interface ModelInfo {
-  id: string;
-  object: string;
-  created: number;
-  owned_by: string;
-}
+import { useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box } from '@mui/material';
+import { useModelLoader, ModelLoaderForm } from './ModelLoader';
 
 interface ModelPreferences {
-  [taskType: string]: string; // Maps task type to model ID
+  [taskType: string]: string;
 }
 
 interface ModelsDialogProps {
@@ -39,6 +14,11 @@ interface ModelsDialogProps {
 }
 
 function ModelsDialog({ open, onClose, serverUrl, adminApiKey }: ModelsDialogProps) {
+  const modelLoader = useModelLoader({ 
+    serverUrl, 
+    adminApiKey,
+    onLoadComplete: () => {} 
+  });
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

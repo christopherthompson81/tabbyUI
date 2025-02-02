@@ -1,4 +1,5 @@
-import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip } from '@mui/material';
+import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip, Dialog, DialogContent } from '@mui/material';
+import { useModelLoader, ModelLoaderForm } from './ModelLoader';
 import { useState } from 'react';
 import { MessageContent } from '../services/tabbyAPI';
 import ImageIcon from '@mui/icons-material/Image';
@@ -12,10 +13,25 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
 import BrainIcon from "./BrainIcon";
 
+interface ChatInputProps {
+  onSend: (preview: MessageContent[], selectedModel?: string) => void;
+  onRegenerate: () => void;
+  serverUrl: string;
+  adminApiKey: string;
+}
+
 export default function ChatInput({
   onSend,
-  onRegenerate
-}) {
+  onRegenerate,
+  serverUrl,
+  adminApiKey
+}: ChatInputProps) {
+  const [modelLoaderOpen, setModelLoaderOpen] = useState(false);
+  const modelLoader = useModelLoader({ 
+    serverUrl, 
+    adminApiKey,
+    onLoadComplete: () => setModelLoaderOpen(false)
+  });
   const [inputText, setInputText] = useState('');
   const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
 
@@ -194,5 +210,11 @@ export default function ChatInput({
         </Box>
       </Box>
     </Box>
+    
+    <Dialog open={modelLoaderOpen} onClose={() => setModelLoaderOpen(false)}>
+      <DialogContent>
+        <ModelLoaderForm {...modelLoader} />
+      </DialogContent>
+    </Dialog>
   );
 }
