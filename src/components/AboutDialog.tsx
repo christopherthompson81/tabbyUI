@@ -7,7 +7,7 @@ interface AboutDialogProps {
   onClose: () => void;
 }
 
-// Add a github icon and link to the github site: https://github.com/christopherthompson81/tabbyUI AI!
+// Make tabbyAPI a hyperlink to the URL https://github.com/theroyallab/tabbyAPI AI!
 export default function AboutDialog({ open, onClose }: AboutDialogProps) {
   return (
     <Dialog open={open} onClose={onClose}>
@@ -18,7 +18,7 @@ export default function AboutDialog({ open, onClose }: AboutDialogProps) {
           tabbyUI
         </Typography>
         <Typography variant="body1" align="center" sx={{ mt: 2 }}>
-          A simple chat interface for Tabby
+          A simple chat interface for tabbyAPI
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
           <Button
