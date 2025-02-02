@@ -6,9 +6,11 @@ import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { Conversation, ConversationFolder } from '../utils/persistence';
+import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface ConversationListProps {
   folders: ConversationFolder[];
+  conversationMenuAnchorEl: any,
   currentConversationId: string;
   onAddConversation: (folderId?: string) => void;
   onSwitchConversation: (id: string) => void;
@@ -20,6 +22,7 @@ interface ConversationListProps {
 
 function FolderItem({ 
   folder,
+  conversationMenuAnchorEl,
   currentConversationId,
   onAddConversation,
   onSwitchConversation,
@@ -157,7 +160,6 @@ function FolderItem({
 
 export default function ConversationList({ 
   folders, 
-  currentConversationId,
   onAddConversation,
   onSwitchConversation,
   onEditConversation,
@@ -180,42 +182,44 @@ export default function ConversationList({
     setSelectedConversation(null);
   };
   return (
-    <List>
-      <ListItem>
-        <Typography variant="h6">Conversations</Typography>
-      </ListItem>
-      {folders.map((folder) => (
-        <FolderItem
-          key={folder.id}
-          folder={folder}
-          currentConversationId={currentConversationId}
-          onAddConversation={onAddConversation}
-          onSwitchConversation={onSwitchConversation}
-          onEditConversation={onEditConversation}
-          onAddFolder={onAddFolder}
-          onEditFolder={onEditFolder}
-        />
-      ))}
-      <ListItem>
-        <Button 
-          variant="contained" 
-          fullWidth
-          onClick={() => onAddFolder()}
-        >
-          New Folder
-        </Button>
-      </ListItem>
-    </List>
-    <DeleteConfirmationDialog
-      open={deleteDialogOpen}
-      onConfirm={() => {
-        if (selectedConversation) {
-          onDelete(selectedConversation.id);
-        }
-        setDeleteDialogOpen(false);
-      }}
-      onCancel={() => setDeleteDialogOpen(false)}
-      itemName={selectedConversation?.name || ''}
-    />
+    <>
+      <List>
+        <ListItem>
+          <Typography variant="h6">Conversations</Typography>
+        </ListItem>
+        {folders.map((folder) => (
+          <FolderItem
+            key={folder.id}
+            folder={folder}
+            currentConversationId={currentConversationId}
+            onAddConversation={onAddConversation}
+            onSwitchConversation={onSwitchConversation}
+            onEditConversation={onEditConversation}
+            onAddFolder={onAddFolder}
+            onEditFolder={onEditFolder}
+          />
+        ))}
+        <ListItem>
+          <Button 
+            variant="contained" 
+            fullWidth
+            onClick={() => onAddFolder()}
+          >
+            New Folder
+          </Button>
+        </ListItem>
+      </List>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        onConfirm={() => {
+          if (selectedConversation) {
+            onDelete(selectedConversation.id);
+          }
+          setDeleteDialogOpen(false);
+        }}
+        onCancel={() => setDeleteDialogOpen(false)}
+        itemName={selectedConversation?.name || ''}
+      />
+    </>
   );
 }
