@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ModelLoadProgress, loadModelWithProgress } from "../services/tabbyAPI";
 import {
     ModelLoadParams,
@@ -6,19 +6,7 @@ import {
     persistModelParams,
 } from "../utils/persistence";
 import ProgressDialog from "./ProgressDialog";
-import {
-    Typography,
-    Box,
-    MenuItem,
-    TextField,
-    Select,
-    FormControl,
-    InputLabel,
-    Checkbox,
-    FormControlLabel,
-    Button,
-} from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Typography } from "@mui/material";
 
 interface ModelInfo {
     id: string;
@@ -141,18 +129,8 @@ export function useModelLoader({
 }
 
 export function ModelLoaderForm({
-    models,
-    loading,
     error,
-    selectedModel,
-    setSelectedModel,
-    selectedDraftModel,
-    setSelectedDraftModel,
-    modelParams,
-    handleParamChange,
-    loadModel,
     loadingProgress,
-    fetchModels,
 }: ReturnType<typeof useModelLoader>) {
     return (
         <>

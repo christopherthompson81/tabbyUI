@@ -70,6 +70,22 @@ export default function ChatInput({
     setMessagePreview(prev => prev.filter((_, i) => i !== index));
   };
 
+  // compare selectedModel to the currently loaded model. If they are different, use 
+  const handleSend = () => {
+    // Get model preferences from localStorage
+    const modelPreferences = JSON.parse(
+      localStorage.getItem('modelPreferences') || '{}'
+    );
+    
+    // Get selected model ID if not 'current'
+    const selectedModel = selectedValue !== 'current' 
+      ? modelPreferences[selectedValue]
+      : undefined;
+
+    onSend(messagePreview, selectedModel);
+    setMessagePreview([]);
+  };
+
   return (
     <div>
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -184,20 +200,7 @@ export default function ChatInput({
         <Box sx={{alignItems: "center"}}>
           <Button 
             variant="contained" 
-            onClick={() => {
-              // Get model preferences from localStorage
-              const modelPreferences = JSON.parse(
-                localStorage.getItem('modelPreferences') || '{}'
-              );
-              
-              // Get selected model ID if not 'current'
-              const selectedModel = selectedValue !== 'current' 
-                ? modelPreferences[selectedValue]
-                : undefined;
-
-              onSend(messagePreview, selectedModel);
-              setMessagePreview([]);
-            }}
+            onClick={handleSend}
             disabled={messagePreview.length === 0}
           >
             Send
