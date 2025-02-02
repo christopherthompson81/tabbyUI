@@ -1,5 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
 
+// implement a typescript interface for this function's parameters. AI!
+
 export default function ConversationEditor({
   editingConversationId,
   newConversationName,
