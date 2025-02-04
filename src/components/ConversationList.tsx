@@ -27,7 +27,8 @@ function FolderItem({
   onSwitchConversation,
   onEditConversation,
   onAddFolder,
-  onEditFolder
+  onEditFolder,
+  onDelete
 }: {
   folder: ConversationFolder;
 } & ConversationListProps) {
@@ -46,7 +47,6 @@ function FolderItem({
 
   const handleConversationMenuClose = () => {
     setConversationMenuAnchorEl(null);
-    setSelectedConversation(null);
   };
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -163,6 +163,7 @@ function FolderItem({
               onEditConversation={onEditConversation}
               onAddFolder={onAddFolder}
               onEditFolder={onEditFolder}
+              onDelete={onDelete}
             />
           ))}
         </Box>
@@ -174,6 +175,7 @@ function FolderItem({
             onDelete(selectedConversation.id);
           }
           setDeleteDialogOpen(false);
+          setSelectedConversation(null);
         }}
         onCancel={() => setDeleteDialogOpen(false)}
         itemName={selectedConversation?.name || ''}
@@ -189,7 +191,8 @@ export default function ConversationList({
   onEditConversation,
   onAddFolder,
   onEditFolder,
-  onUpdateFolders
+  onUpdateFolders,
+  onDelete
 }: ConversationListProps) {
   const currentConversationId = getPersistedCurrentConversationId();
   return (
@@ -208,6 +211,7 @@ export default function ConversationList({
             onEditConversation={onEditConversation}
             onAddFolder={onAddFolder}
             onEditFolder={onEditFolder}
+            onDelete={onDelete}
           />
         ))}
         <ListItem>

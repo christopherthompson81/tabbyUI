@@ -6,7 +6,6 @@ interface ConversationEditorProps {
   newConversationName: string;
   onNameChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSave: () => void;
-  onDelete: () => void;
   onCancel: () => void;
 }
 
@@ -15,7 +14,6 @@ export default function ConversationEditor({
   newConversationName,
   onNameChange,
   onSave,
-  onDelete,
   onCancel
 }: ConversationEditorProps) {
   return (

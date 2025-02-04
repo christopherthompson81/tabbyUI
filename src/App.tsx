@@ -312,6 +312,41 @@ function App() {
             }
           }}
           onUpdateFolders={setFolders}
+          onDelete={(selectedConversationId) => {
+            if (selectedConversationId !== null) {
+              setFolders(prev => {
+                const updatedFolders = [...prev];
+                const deleteConversation = (folders: ConversationFolder[], id: string): boolean => {
+                  for (const folder of folders) {
+                    const index = folder.conversations.findIndex(conv => conv.id === id);
+                    if (index !== -1) {
+                      folder.conversations.splice(index, 1);
+                      return true;
+                    }
+                    if (deleteConversation(folder.subfolders, id)) {
+                      return true;
+                    }
+                  }
+                  return false;
+                };
+                deleteConversation(updatedFolders, selectedConversationId);
+                persistConversations(updatedFolders);
+                
+                if (currentConversationId === selectedConversationId) {
+                  // Find first available conversation
+                  const firstConversation = findFirstConversation(updatedFolders);
+                  if (firstConversation) {
+                    setCurrentConversationId(firstConversation.id);
+                    setMessages(firstConversation.messages);
+                  } else {
+                    setCurrentConversationId("");
+                    setMessages([]);
+                  }
+                }
+                return updatedFolders;
+              });
+            }
+          }}
         />
 
         <FolderEditor
