@@ -15,6 +15,7 @@ interface AppDrawerProps {
     onAddFolder: (parentFolderId?: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
     onDelete: (id: string) => void;
+    dispatch: React.Dispatch<import('../reducers/foldersReducer').FoldersAction>;
 }
 
 function findFolder(
@@ -29,7 +30,6 @@ function findFolder(
     return undefined;
 }
 
-// use the foldersReducer here AI!
 export function AppDrawer({
     folders,
     currentConversationId,
@@ -62,33 +62,36 @@ export function AppDrawer({
 
     const onSaveFolder = () => {
         if (editingFolderId !== null) {
-            onUpdateFolders(folders.map(folder => {
+            const updatedFolders = folders.map(folder => {
                 if (folder.id === editingFolderId) {
                     return { ...folder, name: newFolderName };
                 }
                 return folder;
-            }));
+            });
+            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
             setEditingFolderId(null);
         }
     };
 
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
-            onUpdateFolders(folders.filter(folder => folder.id !== editingFolderId));
+            const updatedFolders = folders.filter(folder => folder.id !== editingFolderId);
+            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
             setEditingFolderId(null);
         }
     };
 
     const onSaveConversation = () => {
         if (editingConversationId !== null) {
-            onUpdateFolders(folders.map(folder => ({
+            const updatedFolders = folders.map(folder => ({
                 ...folder,
                 conversations: folder.conversations.map(conv =>
                     conv.id === editingConversationId
                         ? { ...conv, name: newConversationName }
                         : conv
                 )
-            })));
+            }));
+            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
             setEditingConversationId(null);
         }
     };
