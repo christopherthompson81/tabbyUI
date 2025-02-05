@@ -193,24 +193,6 @@ function App() {
         return newId;
     };
 
-    // Move addNewFolder to src/AppDrawer to replace the onAddFolder parameter in the AppDrawer component AI!
-    const addNewFolder = (parentFolderId = "root") => {
-        const newId = Date.now().toString();
-        const newFolder: ConversationFolder = {
-            id: newId,
-            name: "New Folder",
-            conversations: [],
-            subfolders: [],
-            timestamp: Date.now(),
-            author: "User",
-        };
-
-        dispatch({
-            type: 'ADD_FOLDER',
-            folder: newFolder,
-            parentFolderId
-        });
-    };
 
     const findFolder = (
         folders: ConversationFolder[],
@@ -326,7 +308,6 @@ function App() {
                 dispatch={dispatch}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
-                onAddFolder={addNewFolder}
                 onUpdateFolders={(updatedFolders) => {
                     dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
                     persistConversations(updatedFolders);

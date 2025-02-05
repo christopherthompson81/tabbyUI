@@ -12,7 +12,6 @@ interface AppDrawerProps {
     currentConversationId: string;
     onAddConversation: (folderId?: string) => void;
     onSwitchConversation: (id: string) => void;
-    onAddFolder: (parentFolderId?: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
     onDelete: (id: string) => void;
     dispatch: React.Dispatch<FoldersAction>;
@@ -103,6 +102,24 @@ export function AppDrawer({
         }
     };
 
+    const addNewFolder = (parentFolderId = "root") => {
+        const newId = Date.now().toString();
+        const newFolder: ConversationFolder = {
+            id: newId,
+            name: "New Folder",
+            conversations: [],
+            subfolders: [],
+            timestamp: Date.now(),
+            author: "User",
+        };
+
+        dispatch({
+            type: 'ADD_FOLDER',
+            folder: newFolder,
+            parentFolderId
+        });
+    };
+
     return (
         <Drawer
             variant="permanent"
@@ -122,7 +139,7 @@ export function AppDrawer({
                 onAddConversation={onAddConversation}
                 onSwitchConversation={onSwitchConversation}
                 onEditConversation={onEditConversation}
-                onAddFolder={onAddFolder}
+                onAddFolder={addNewFolder}
                 onEditFolder={onEditFolder}
                 onUpdateFolders={onUpdateFolders}
                 onDelete={onDelete}
