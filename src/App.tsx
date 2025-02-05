@@ -142,9 +142,11 @@ function App() {
                     regenerate,
                     (updatedMessages) => {
                         setMessages(updatedMessages);
+                        saveConversation(updatedMessages);
                         scrollToBottom();
                     },
                     (finalMessages) => {
+                        setMessages(finalMessages);
                         saveConversation(finalMessages);
                     }
                 );
