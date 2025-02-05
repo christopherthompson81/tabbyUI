@@ -11,6 +11,7 @@ export function foldersReducer(state: ConversationFolder[], action: FoldersActio
     switch (action.type) {
         case 'SET_FOLDERS':
         case 'UPDATE_FOLDERS':
+            persistConversations(action.folders);
             return action.folders;
             
         case 'DELETE_CONVERSATION': {
