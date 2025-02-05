@@ -77,12 +77,6 @@ function App() {
         "checking" | "online" | "offline"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-    const [editingConversationId, setEditingConversationId] = useState<
-        string | null
-    >(null);
-    const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
-    const [newConversationName, setNewConversationName] = useState("");
-    const [newFolderName, setNewFolderName] = useState("");
     const [originalUserInput, setOriginalUserInput] = useState<
         MessageContent[]
     >([]);
