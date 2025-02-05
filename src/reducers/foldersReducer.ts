@@ -1,4 +1,4 @@
-import { ConversationFolder } from "../utils/persistence";
+import { ConversationFolder, persistConversations } from "../utils/persistence";
 
 export type FoldersAction = 
   | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
@@ -24,7 +24,9 @@ export function foldersReducer(state: ConversationFolder[], action: FoldersActio
                     subfolders: deleteConversation(folder.subfolders, id)
                 }));
             };
-            return deleteConversation(state, action.id);
+            const newState = deleteConversation(state, action.id);
+            persistConversations(newState);
+            return newState;
         }
 
         case 'ADD_CONVERSATION': {
