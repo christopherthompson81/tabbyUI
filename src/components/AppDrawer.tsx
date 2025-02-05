@@ -29,6 +29,7 @@ function findFolder(
     return undefined;
 }
 
+// use the foldersReducer here AI!
 export function AppDrawer({
     folders,
     currentConversationId,

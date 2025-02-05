@@ -334,7 +334,6 @@ function App() {
                     if (selectedConversationId !== null) {
                         dispatch({ type: 'DELETE_CONVERSATION', id: selectedConversationId });
                         persistConversations(folders);
-
                         if (currentConversationId === selectedConversationId) {
                             const firstConversation = findFirstConversation(folders);
                             if (firstConversation) {
