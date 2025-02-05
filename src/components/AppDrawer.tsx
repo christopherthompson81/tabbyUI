@@ -7,6 +7,7 @@ import { ChangeEvent } from "react";
 
 import { Drawer } from "@mui/material";
 
+// Refactor the dispatch import so that it's part of the imports at the top of the file. AI!
 interface AppDrawerProps {
     folders: ConversationFolder[];
     currentConversationId: string;
