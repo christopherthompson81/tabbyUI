@@ -14,19 +14,16 @@ import { ModelInfo } from "../services/tabbyAPI";
 interface AppHeaderProps {
     serverStatus: "checking" | "online" | "offline";
     modelInfo: ModelInfo | null;
-    onShowSettings: () => void;
-    onShowModels: () => void;
-    onShowAbout: () => void;
 }
 
 export default function AppHeader({
     serverStatus,
     modelInfo,
-    onShowSettings,
-    onShowModels,
-    onShowAbout,
 }: AppHeaderProps) {
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [showSettings, setShowSettings] = React.useState(false);
+    const [showModels, setShowModels] = React.useState(false);
+    const [showAbout, setShowAbout] = React.useState(false);
 
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
@@ -56,7 +53,7 @@ export default function AppHeader({
                     <MenuItem
                         onClick={() => {
                             mainMenuClose();
-                            onShowSettings();
+                            setShowSettings(true);
                         }}
                     >
                         Settings
@@ -64,7 +61,7 @@ export default function AppHeader({
                     <MenuItem
                         onClick={() => {
                             mainMenuClose();
-                            onShowModels();
+                            setShowModels(true);
                         }}
                     >
                         Models
@@ -72,7 +69,7 @@ export default function AppHeader({
                     <MenuItem
                         onClick={() => {
                             mainMenuClose();
-                            onShowAbout();
+                            setShowAbout(true);
                         }}
                     >
                         About

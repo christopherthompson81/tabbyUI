@@ -60,11 +60,6 @@ function App() {
     const [generationParams, setGenerationParams] = useState(() =>
         getPersistedGenerationParams()
     );
-    const [showSettings, setShowSettings] = useState(
-        !Boolean(getPersistedApiKey())
-    );
-    const [showAbout, setShowAbout] = useState(false);
-    const [showModels, setShowModels] = useState(false);
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline"
     >("checking");
@@ -205,9 +200,6 @@ function App() {
             <AppHeader
                 serverStatus={serverStatus}
                 modelInfo={modelInfo}
-                onShowSettings={() => setShowSettings(true)}
-                onShowModels={() => setShowModels(true)}
-                onShowAbout={() => setShowAbout(true)}
             />
             <AppDrawer
                 currentConversationId={currentConversationId}
