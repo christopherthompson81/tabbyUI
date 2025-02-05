@@ -5,7 +5,9 @@ import {
     useCallback,
     useRef,
     useLayoutEffect,
+    useReducer,
 } from "react";
+import { foldersReducer } from "./reducers/foldersReducer";
 import { ModelInfo, getModelInfo } from "./services/tabbyAPI";
 import Message from "./Message";
 import { MessageProps } from "./services/tabbyAPI";
@@ -50,9 +52,7 @@ import {
 } from "./services/tabbyAPI";
 
 function App() {
-    const [folders, setFolders] = useState<ConversationFolder[]>(
-        getPersistedConversations()
-    );
+    const [folders, dispatch] = useReducer(foldersReducer, getPersistedConversations());
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
     );
@@ -132,22 +132,20 @@ function App() {
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
             if (currentConversationId !== null) {
-                setFolders((prev) => {
-                    const updatedFolders = [...prev];
-                    const conversation = findConversation(
-                        updatedFolders,
-                        currentConversationId
-                    );
-                    if (conversation) {
-                        conversation.messages = v;
-                    }
-                    // Throttle persistence
-                    setTimeout(() => persistConversations(updatedFolders), 100);
-                    return updatedFolders;
-                });
+                const updatedFolders = folders.map(folder => ({
+                    ...folder,
+                    conversations: folder.conversations.map(conv =>
+                        conv.id === currentConversationId
+                            ? { ...conv, messages: v }
+                            : conv
+                    )
+                }));
+                dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
+                // Throttle persistence
+                setTimeout(() => persistConversations(updatedFolders), 100);
             }
         },
-        [currentConversationId]
+        [currentConversationId, folders]
     );
 
     const sendConversation = useCallback(
@@ -181,22 +179,15 @@ function App() {
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
         const newConversationName = new Date().toLocaleString();
-        const newConversation: Conversation = {
-            id: newId,
-            name: newConversationName,
-            messages: [],
-            timestamp: Date.now(),
-            author: "User",
-        };
-
-        setFolders((prev) => {
-            const updatedFolders = [...prev];
-            const folder = findFolder(updatedFolders, folderId);
-            if (folder) {
-                folder.conversations.push(newConversation);
-            }
-            persistConversations(updatedFolders);
-            return updatedFolders;
+        
+        dispatch({
+            type: 'ADD_CONVERSATION',
+            conversation: {
+                id: newId,
+                name: newConversationName,
+                messages: []
+            },
+            folderId
         });
 
         setCurrentConversationId(newId);
@@ -214,14 +205,10 @@ function App() {
             author: "User",
         };
 
-        setFolders((prev) => {
-            const updatedFolders = [...prev];
-            const parentFolder = findFolder(updatedFolders, parentFolderId);
-            if (parentFolder) {
-                parentFolder.subfolders.push(newFolder);
-            }
-            persistConversations(updatedFolders);
-            return updatedFolders;
+        dispatch({
+            type: 'ADD_FOLDER',
+            folder: newFolder,
+            parentFolderId
         });
     };
 
@@ -340,7 +327,7 @@ function App() {
                 onSwitchConversation={switchConversation}
                 onAddFolder={addNewFolder}
                 onUpdateFolders={(updatedFolders) => {
-                    setFolders(updatedFolders);
+                    dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
                     persistConversations(updatedFolders);
                 }}
                 onDelete={(selectedConversationId) => {
