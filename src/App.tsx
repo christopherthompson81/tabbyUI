@@ -189,7 +189,7 @@ function App() {
             },
             folderId
         });
-
+        console.log('ADD_CONVERSATION', newId);
         setCurrentConversationId(newId);
         return newId;
     };
