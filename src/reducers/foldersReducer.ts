@@ -10,10 +10,10 @@ export type FoldersAction =
 export function foldersReducer(state: ConversationFolder[], action: FoldersAction): ConversationFolder[] {
     switch (action.type) {
         case 'SET_FOLDERS':
-        case 'UPDATE_FOLDERS':
+        case 'UPDATE_FOLDERS': {
             persistConversations(action.folders);
             return action.folders;
-            
+        }
         case 'DELETE_CONVERSATION': {
             const deleteConversation = (
                 folders: ConversationFolder[],
@@ -77,7 +77,9 @@ export function foldersReducer(state: ConversationFolder[], action: FoldersActio
                     };
                 });
             };
-            return addFolder(state, action.parentFolderId);
+            const newState = addFolder(state, action.parentFolderId);
+            persistConversations(newState);
+            return newState;
         }
 
         default:
