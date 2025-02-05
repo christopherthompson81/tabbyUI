@@ -1,31 +1,40 @@
-import AppDrawer from "./components/AppDrawer";
 import { useState } from "react";
 import ConversationList from "./ConversationList";
 import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
-import { ConversationFolder } from "../utils/persistence";
+import { ConversationFolder, findConversation } from "../utils/persistence";
 import { ChangeEvent } from "react";
+
+import { Drawer } from "@mui/material";
 
 interface AppDrawerProps {
     folders: ConversationFolder[];
     currentConversationId: string;
     onAddConversation: (folderId?: string) => void;
     onSwitchConversation: (id: string) => void;
-    onEditConversation: (id: string) => void;
     onAddFolder: (parentFolderId?: string) => void;
-    onEditFolder: (id: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
     onDelete: (id: string) => void;
 }
 
-export default function AppDrawer({
+function findFolder(
+    folders: ConversationFolder[],
+    folderId: string
+): ConversationFolder | undefined {
+    for (const folder of folders) {
+        if (folder.id === folderId) return folder;
+        const found = findFolder(folder.subfolders, folderId);
+        if (found) return found;
+    }
+    return undefined;
+}
+
+export function AppDrawer({
     folders,
     currentConversationId,
     onAddConversation,
     onSwitchConversation,
-    onEditConversation,
     onAddFolder,
-    onEditFolder,
     onUpdateFolders,
     onDelete,
 }: AppDrawerProps) {
@@ -33,6 +42,55 @@ export default function AppDrawer({
     const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
     const [newConversationName, setNewConversationName] = useState("");
     const [newFolderName, setNewFolderName] = useState("");
+
+    const onEditConversation = (id: string) => {
+        setEditingConversationId(id);
+        const conversation = findConversation(folders, id);
+        if (conversation) {
+            setNewConversationName(conversation.name);
+        }
+    };
+
+    const onEditFolder = (id: string) => {
+        setEditingFolderId(id);
+        const folder = findFolder(folders, id);
+        if (folder) {
+            setNewFolderName(folder.name);
+        }
+    };
+
+    const onSaveFolder = () => {
+        if (editingFolderId !== null) {
+            onUpdateFolders(folders.map(folder => {
+                if (folder.id === editingFolderId) {
+                    return { ...folder, name: newFolderName };
+                }
+                return folder;
+            }));
+            setEditingFolderId(null);
+        }
+    };
+
+    const onDeleteFolder = () => {
+        if (editingFolderId !== null) {
+            onUpdateFolders(folders.filter(folder => folder.id !== editingFolderId));
+            setEditingFolderId(null);
+        }
+    };
+
+    const onSaveConversation = () => {
+        if (editingConversationId !== null) {
+            onUpdateFolders(folders.map(folder => ({
+                ...folder,
+                conversations: folder.conversations.map(conv =>
+                    conv.id === editingConversationId
+                        ? { ...conv, name: newConversationName }
+                        : conv
+                )
+            })));
+            setEditingConversationId(null);
+        }
+    };
 
     return (
         <Drawer
@@ -52,21 +110,9 @@ export default function AppDrawer({
                 currentConversationId={currentConversationId}
                 onAddConversation={onAddConversation}
                 onSwitchConversation={onSwitchConversation}
-                onEditConversation={(id: string) => {
-                    setEditingConversationId(id);
-                    const conversation = findConversation(folders, id);
-                    if (conversation) {
-                        setNewConversationName(conversation.name);
-                    }
-                }}
+                onEditConversation={onEditConversation}
                 onAddFolder={onAddFolder}
-                onEditFolder={(id: string) => {
-                    setEditingFolderId(id);
-                    const folder = findFolder(folders, id);
-                    if (folder) {
-                        setNewFolderName(folder.name);
-                    }
-                }}
+                onEditFolder={onEditFolder}
                 onUpdateFolders={onUpdateFolders}
                 onDelete={onDelete}
             />
@@ -75,23 +121,8 @@ export default function AppDrawer({
                 editingFolderId={editingFolderId}
                 newFolderName={newFolderName}
                 onNameChange={(e: ChangeEvent<HTMLInputElement>) => setNewFolderName(e.target.value)}
-                onSave={() => {
-                    if (editingFolderId !== null) {
-                        onUpdateFolders(folders.map(folder => {
-                            if (folder.id === editingFolderId) {
-                                return { ...folder, name: newFolderName };
-                            }
-                            return folder;
-                        }));
-                        setEditingFolderId(null);
-                    }
-                }}
-                onDelete={() => {
-                    if (editingFolderId !== null) {
-                        onUpdateFolders(folders.filter(folder => folder.id !== editingFolderId));
-                        setEditingFolderId(null);
-                    }
-                }}
+                onSave={onSaveFolder}
+                onDelete={onDeleteFolder}
                 onCancel={() => setEditingFolderId(null)}
             />
             <ConversationEditor
@@ -100,43 +131,9 @@ export default function AppDrawer({
                 onNameChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setNewConversationName(e.target.value)
                 }
-                onSave={() => {
-                    if (editingConversationId !== null) {
-                        onUpdateFolders(folders.map(folder => ({
-                            ...folder,
-                            conversations: folder.conversations.map(conv =>
-                                conv.id === editingConversationId
-                                    ? { ...conv, name: newConversationName }
-                                    : conv
-                            )
-                        })));
-                        setEditingConversationId(null);
-                    }
-                }}
+                onSave={onSaveConversation}
                 onCancel={() => setEditingConversationId(null)}
             />
         </Drawer>
     );
-}
-
-function findFolder(
-    folders: ConversationFolder[],
-    folderId: string
-): ConversationFolder | undefined {
-    for (const folder of folders) {
-        if (folder.id === folderId) return folder;
-        const found = findFolder(folder.subfolders, folderId);
-        if (found) return found;
-    }
-    return undefined;
-}
-
-function findConversation(folders: ConversationFolder[], id: string) {
-    for (const folder of folders) {
-        const conversation = folder.conversations.find(conv => conv.id === id);
-        if (conversation) return conversation;
-        const found = findConversation(folder.subfolders, id);
-        if (found) return found;
-    }
-    return undefined;
 }

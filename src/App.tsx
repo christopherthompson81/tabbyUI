@@ -32,7 +32,6 @@ import {
     AppBar,
     Box,
     CssBaseline,
-    Drawer,
     IconButton,
     Menu,
     MenuItem,
@@ -41,12 +40,10 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChatInput from "./components/ChatInput";
-import ConversationList from "./components/ConversationList";
-import ConversationEditor from "./components/ConversationEditor";
 import SettingsDialog from "./components/SettingsDialog";
 import AboutDialog from "./components/AboutDialog";
 import ModelsDialog from "./components/ModelsDialog";
-import FolderEditor from "./components/FolderEditor";
+import { AppDrawer } from "./components/AppDrawer";
 import {
     MessageContent,
     sendConversation as sendConversationToAPI,
@@ -341,19 +338,7 @@ function App() {
                 currentConversationId={currentConversationId}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
-                onEditConversation={(id: string) => {
-                    const conversation = findConversation(folders, id);
-                    if (conversation) {
-                        setNewConversationName(conversation.name);
-                    }
-                }}
                 onAddFolder={addNewFolder}
-                onEditFolder={(id: string) => {
-                    const folder = findFolder(folders, id);
-                    if (folder) {
-                        setNewFolderName(folder.name);
-                    }
-                }}
                 onUpdateFolders={(updatedFolders) => {
                     setFolders(updatedFolders);
                     persistConversations(updatedFolders);
@@ -437,7 +422,6 @@ function App() {
                     serverUrl={serverUrl}
                     adminApiKey={adminApiKey}
                 />
-            </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                 <div className="main-content">
                     {messages.map((message, index) => (
