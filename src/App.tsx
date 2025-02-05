@@ -189,7 +189,7 @@ function App() {
             },
             folderId
         });
-        console.log('ADD_CONVERSATION', newId);
+        persistConversations(folders);
         setCurrentConversationId(newId);
         return newId;
     };
@@ -321,7 +321,9 @@ function App() {
                 </Toolbar>
             </AppBar>
             <AppDrawer
+                folders={folders}
                 currentConversationId={currentConversationId}
+                dispatch={dispatch}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
                 onAddFolder={addNewFolder}
