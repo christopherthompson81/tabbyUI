@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
     useState,
     useEffect,
@@ -30,20 +29,11 @@ import {
     getPersistedCurrentConversationId,
     persistCurrentConversationId,
     getPersistedServerUrl,
-    persistServerUrl,
     getPersistedApiKey,
-    persistApiKey,
-    getPersistedGenerationParams,
-    persistGenerationParam,
-    persistAdminApiKey,
-    getPersistedAdminApiKey,
     findConversation,
     findFirstConversation,
 } from "./utils/persistence";
 import ChatInput from "./components/ChatInput";
-import SettingsDialog from "./components/SettingsDialog";
-import AboutDialog from "./components/AboutDialog";
-import ModelsDialog from "./components/ModelsDialog";
 import { AppDrawer } from "./components/AppDrawer";
 
 function App() {
@@ -53,12 +43,6 @@ function App() {
     );
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
-    );
-    const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
-    const [apiKey, setApiKey] = useState(getPersistedApiKey());
-    const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
-    const [generationParams, setGenerationParams] = useState(() =>
-        getPersistedGenerationParams()
     );
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline"
@@ -103,7 +87,7 @@ function App() {
         }
         const checkStatus = async () => {
             setServerStatus("checking");
-            const model = await getModelInfo(serverUrl, apiKey);
+            const model = await getModelInfo(getPersistedServerUrl(), getPersistedApiKey());
             if (model) {
                 setServerStatus("online");
                 setModelInfo(model);
@@ -117,7 +101,7 @@ function App() {
         const interval = setInterval(checkStatus, 30000); // Check every 30 seconds
 
         return () => clearInterval(interval);
-    }, [serverUrl, apiKey]);
+    }, []);
 
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
@@ -146,8 +130,8 @@ function App() {
 
             try {
                 await sendConversationToAPI(
-                    serverUrl,
-                    apiKey,
+                    getPersistedServerUrl(),
+                    getPersistedApiKey(),
                     messages,
                     userMessage,
                     regenerate,
@@ -163,7 +147,7 @@ function App() {
                 console.error("Error sending conversation:", error);
             }
         },
-        [messages, serverUrl, apiKey, saveConversation]
+        [messages, saveConversation]
     );
 
     const addNewConversation = (folderId = "root") => {
@@ -232,40 +216,6 @@ function App() {
                     }
                 }}
             />
-
-            <SettingsDialog
-                open={showSettings}
-                onClose={() => {
-                    persistServerUrl(serverUrl);
-                    persistApiKey(apiKey);
-                    persistAdminApiKey(adminApiKey);
-                    Object.entries(generationParams).forEach(([key, value]) => {
-                        persistGenerationParam(key, value.toString());
-                    });
-                    setShowSettings(false);
-                }}
-                serverUrl={serverUrl}
-                onServerUrlChange={(e) => setServerUrl(e.target.value)}
-                apiKey={apiKey}
-                onApiKeyChange={(e) => setApiKey(e.target.value)}
-                adminApiKey={adminApiKey}
-                onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
-                generationParams={generationParams}
-                onGenerationParamsChange={useCallback((key, value) => {
-                    setGenerationParams((prev) => ({
-                        ...prev,
-                        [key]: value,
-                    }));
-                }, [])}
-            />
-            <ModelsDialog
-                open={showModels}
-                onClose={() => setShowModels(false)}
-                serverUrl={serverUrl}
-                adminApiKey={adminApiKey}
-            />
-            <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
-
             <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                 <div className="main-content">
                     {messages.map((message, index) => (
