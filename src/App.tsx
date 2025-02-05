@@ -111,15 +111,17 @@ function App() {
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
             if (currentConversationId !== null) {
-                // This won't traverse conversations in subfolders. it needs to do both this, and somthing similar with subfolders (and recursively from there) AI!
-                const updatedFolders = folders.map((folder) => ({
+                const updateConversationsInFolder = (folder: typeof folders[0]): typeof folders[0] => ({
                     ...folder,
-                    conversations: folder.conversations.map((conv) =>
+                    conversations: folder.conversations.map(conv =>
                         conv.id === currentConversationId
                             ? { ...conv, messages: v }
                             : conv
                     ),
-                }));
+                    subfolders: folder.subfolders.map(updateConversationsInFolder)
+                });
+
+                const updatedFolders = folders.map(updateConversationsInFolder);
                 dispatch({ type: "UPDATE_FOLDERS", folders: updatedFolders });
                 // Throttle persistence
                 //setTimeout(() => persistConversations(updatedFolders), 100);
