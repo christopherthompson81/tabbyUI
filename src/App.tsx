@@ -7,10 +7,29 @@ import {
     useLayoutEffect,
     useReducer,
 } from "react";
-import { foldersReducer } from "./reducers/foldersReducer";
-import { ModelInfo, getModelInfo } from "./services/tabbyAPI";
+import "./styles.css";
+import {
+    AppBar,
+    Box,
+    CssBaseline,
+    IconButton,
+    Menu,
+    MenuItem,
+    Toolbar,
+    Typography,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+
+// Local Imports
 import Message from "./Message";
-import { MessageProps } from "./services/tabbyAPI";
+import { foldersReducer } from "./reducers/foldersReducer";
+import {
+    MessageContent,
+    sendConversation as sendConversationToAPI,
+    MessageProps,
+    ModelInfo,
+    getModelInfo,
+} from "./services/tabbyAPI";
 import {
     getPersistedConversations,
     persistConversations,
@@ -24,34 +43,20 @@ import {
     persistGenerationParam,
     persistAdminApiKey,
     getPersistedAdminApiKey,
-    ConversationFolder,
     findConversation,
     findFirstConversation,
 } from "./utils/persistence";
-import "./styles.css";
-import {
-    AppBar,
-    Box,
-    CssBaseline,
-    IconButton,
-    Menu,
-    MenuItem,
-    Toolbar,
-    Typography,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChatInput from "./components/ChatInput";
 import SettingsDialog from "./components/SettingsDialog";
 import AboutDialog from "./components/AboutDialog";
 import ModelsDialog from "./components/ModelsDialog";
 import { AppDrawer } from "./components/AppDrawer";
-import {
-    MessageContent,
-    sendConversation as sendConversationToAPI,
-} from "./services/tabbyAPI";
 
 function App() {
-    const [folders, dispatch] = useReducer(foldersReducer, getPersistedConversations());
+    const [folders, dispatch] = useReducer(
+        foldersReducer,
+        getPersistedConversations()
+    );
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
     );
@@ -131,15 +136,15 @@ function App() {
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
             if (currentConversationId !== null) {
-                const updatedFolders = folders.map(folder => ({
+                const updatedFolders = folders.map((folder) => ({
                     ...folder,
-                    conversations: folder.conversations.map(conv =>
+                    conversations: folder.conversations.map((conv) =>
                         conv.id === currentConversationId
                             ? { ...conv, messages: v }
                             : conv
-                    )
+                    ),
                 }));
-                dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
+                dispatch({ type: "UPDATE_FOLDERS", folders: updatedFolders });
                 // Throttle persistence
                 setTimeout(() => persistConversations(updatedFolders), 100);
             }
@@ -178,32 +183,19 @@ function App() {
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
         const newConversationName = new Date().toLocaleString();
-        
+
         dispatch({
-            type: 'ADD_CONVERSATION',
+            type: "ADD_CONVERSATION",
             conversation: {
                 id: newId,
                 name: newConversationName,
-                messages: []
+                messages: [],
             },
-            folderId
+            folderId,
         });
         persistConversations(folders);
         setCurrentConversationId(newId);
         return newId;
-    };
-
-
-    const findFolder = (
-        folders: ConversationFolder[],
-        folderId: string
-    ): ConversationFolder | undefined => {
-        for (const folder of folders) {
-            if (folder.id === folderId) return folder;
-            const found = findFolder(folder.subfolders, folderId);
-            if (found) return found;
-        }
-        return undefined;
     };
 
     const switchConversation = (id: string) => {
@@ -309,14 +301,21 @@ function App() {
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
                 onUpdateFolders={(updatedFolders) => {
-                    dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
+                    dispatch({
+                        type: "UPDATE_FOLDERS",
+                        folders: updatedFolders,
+                    });
                     persistConversations(updatedFolders);
                 }}
                 onDelete={(selectedConversationId) => {
                     if (selectedConversationId !== null) {
-                        dispatch({ type: 'DELETE_CONVERSATION', id: selectedConversationId });
+                        dispatch({
+                            type: "DELETE_CONVERSATION",
+                            id: selectedConversationId,
+                        });
                         if (currentConversationId === selectedConversationId) {
-                            const firstConversation = findFirstConversation(folders);
+                            const firstConversation =
+                                findFirstConversation(folders);
                             if (firstConversation) {
                                 setCurrentConversationId(firstConversation.id);
                                 setMessages(firstConversation.messages);
@@ -329,44 +328,39 @@ function App() {
                 }}
             />
 
-                <SettingsDialog
-                    open={showSettings}
-                    onClose={() => {
-                        persistServerUrl(serverUrl);
-                        persistApiKey(apiKey);
-                        persistAdminApiKey(adminApiKey);
-                        Object.entries(generationParams).forEach(
-                            ([key, value]) => {
-                                persistGenerationParam(key, value.toString());
-                            }
-                        );
-                        setShowSettings(false);
-                    }}
-                    serverUrl={serverUrl}
-                    onServerUrlChange={(e) => setServerUrl(e.target.value)}
-                    apiKey={apiKey}
-                    onApiKeyChange={(e) => setApiKey(e.target.value)}
-                    adminApiKey={adminApiKey}
-                    onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
-                    generationParams={generationParams}
-                    onGenerationParamsChange={useCallback((key, value) => {
-                        setGenerationParams((prev) => ({
-                            ...prev,
-                            [key]: value,
-                        }));
-                    }, [])}
-                />
+            <SettingsDialog
+                open={showSettings}
+                onClose={() => {
+                    persistServerUrl(serverUrl);
+                    persistApiKey(apiKey);
+                    persistAdminApiKey(adminApiKey);
+                    Object.entries(generationParams).forEach(([key, value]) => {
+                        persistGenerationParam(key, value.toString());
+                    });
+                    setShowSettings(false);
+                }}
+                serverUrl={serverUrl}
+                onServerUrlChange={(e) => setServerUrl(e.target.value)}
+                apiKey={apiKey}
+                onApiKeyChange={(e) => setApiKey(e.target.value)}
+                adminApiKey={adminApiKey}
+                onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
+                generationParams={generationParams}
+                onGenerationParamsChange={useCallback((key, value) => {
+                    setGenerationParams((prev) => ({
+                        ...prev,
+                        [key]: value,
+                    }));
+                }, [])}
+            />
+            <ModelsDialog
+                open={showModels}
+                onClose={() => setShowModels(false)}
+                serverUrl={serverUrl}
+                adminApiKey={adminApiKey}
+            />
+            <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
 
-                <AboutDialog
-                    open={showAbout}
-                    onClose={() => setShowAbout(false)}
-                />
-                <ModelsDialog
-                    open={showModels}
-                    onClose={() => setShowModels(false)}
-                    serverUrl={serverUrl}
-                    adminApiKey={adminApiKey}
-                />
             <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                 <div className="main-content">
                     {messages.map((message, index) => (
