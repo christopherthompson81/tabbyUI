@@ -15,6 +15,7 @@ import AppHeader from "./components/AppHeader";
 
 // Local Imports
 import Message from "./Message";
+import ReducerContext from './reducers/ReducerContext';
 import { foldersReducer } from "./reducers/foldersReducer";
 import {
     MessageContent,
@@ -41,6 +42,10 @@ function App() {
         foldersReducer,
         getPersistedConversations()
     );
+    const providerState = {
+        folders,
+        dispatch
+    }
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
     );
@@ -164,6 +169,7 @@ function App() {
             folderId,
         });
         setCurrentConversationId(newId);
+        persistConversations(folders); 
         return newId;
     };
 
@@ -178,6 +184,7 @@ function App() {
 
 
     return (
+        <ReducerContext.Provider value={providerState} >
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <AppHeader
@@ -253,6 +260,7 @@ function App() {
                 />
             </Box>
         </Box>
+        </ReducerContext.Provider>
     );
 }
 

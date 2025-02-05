@@ -1,15 +1,14 @@
-import { useState, useReducer } from "react";
+import { useState } from "react";
 import ConversationList from "./ConversationList";
 import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
 import {
     ConversationFolder,
     findConversation,
-    getPersistedConversations,
 } from "../utils/persistence";
 import { ChangeEvent } from "react";
 import { Drawer } from "@mui/material";
-import { foldersReducer } from "../reducers/foldersReducer";
+import { useReducerContext } from "../reducers/ReducerContext";
 
 interface AppDrawerProps {
     currentConversationId: string;
@@ -38,10 +37,7 @@ export function AppDrawer({
     onUpdateFolders,
     onDelete,
 }: AppDrawerProps) {
-    const [folders, dispatch] = useReducer(
-        foldersReducer,
-        getPersistedConversations()
-    );
+    const { folders, dispatch } = useReducerContext();
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
     >(null);
