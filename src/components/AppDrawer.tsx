@@ -2,19 +2,21 @@ import { useState, useReducer } from "react";
 import ConversationList from "./ConversationList";
 import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
-import { ConversationFolder, findConversation, getPersistedConversations } from "../utils/persistence";
+import {
+    ConversationFolder,
+    findConversation,
+    getPersistedConversations,
+} from "../utils/persistence";
 import { ChangeEvent } from "react";
 import { Drawer } from "@mui/material";
-import { FoldersAction, foldersReducer } from "../reducers/foldersReducer";
+import { foldersReducer } from "../reducers/foldersReducer";
 
 interface AppDrawerProps {
-    folders: ConversationFolder[];
     currentConversationId: string;
     onAddConversation: (folderId?: string) => void;
     onSwitchConversation: (id: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
     onDelete: (id: string) => void;
-    dispatch: React.Dispatch<FoldersAction>;
 }
 
 function findFolder(
@@ -30,16 +32,19 @@ function findFolder(
 }
 
 export function AppDrawer({
-    folders,
     currentConversationId,
     onAddConversation,
     onSwitchConversation,
-    onAddFolder,
     onUpdateFolders,
     onDelete,
-    dispatch,
 }: AppDrawerProps) {
-    const [editingConversationId, setEditingConversationId] = useState<string | null>(null);
+    const [folders, dispatch] = useReducer(
+        foldersReducer,
+        getPersistedConversations()
+    );
+    const [editingConversationId, setEditingConversationId] = useState<
+        string | null
+    >(null);
     const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
     const [newConversationName, setNewConversationName] = useState("");
     const [newFolderName, setNewFolderName] = useState("");
@@ -62,14 +67,14 @@ export function AppDrawer({
 
     const onSaveFolder = () => {
         if (editingFolderId !== null) {
-            dispatch({ 
-                type: 'UPDATE_FOLDERS', 
-                folders: folders.map(folder => {
+            dispatch({
+                type: "UPDATE_FOLDERS",
+                folders: folders.map((folder) => {
                     if (folder.id === editingFolderId) {
                         return { ...folder, name: newFolderName };
                     }
                     return folder;
-                })
+                }),
             });
             setEditingFolderId(null);
         }
@@ -77,9 +82,11 @@ export function AppDrawer({
 
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
-            dispatch({ 
-                type: 'UPDATE_FOLDERS', 
-                folders: folders.filter(folder => folder.id !== editingFolderId)
+            dispatch({
+                type: "UPDATE_FOLDERS",
+                folders: folders.filter(
+                    (folder) => folder.id !== editingFolderId
+                ),
             });
             setEditingFolderId(null);
         }
@@ -88,15 +95,15 @@ export function AppDrawer({
     const onSaveConversation = () => {
         if (editingConversationId !== null) {
             dispatch({
-                type: 'UPDATE_FOLDERS',
-                folders: folders.map(folder => ({
+                type: "UPDATE_FOLDERS",
+                folders: folders.map((folder) => ({
                     ...folder,
-                    conversations: folder.conversations.map(conv =>
+                    conversations: folder.conversations.map((conv) =>
                         conv.id === editingConversationId
                             ? { ...conv, name: newConversationName }
                             : conv
-                    )
-                }))
+                    ),
+                })),
             });
             setEditingConversationId(null);
         }
@@ -114,9 +121,9 @@ export function AppDrawer({
         };
 
         dispatch({
-            type: 'ADD_FOLDER',
+            type: "ADD_FOLDER",
             folder: newFolder,
-            parentFolderId
+            parentFolderId,
         });
     };
 
@@ -148,7 +155,9 @@ export function AppDrawer({
             <FolderEditor
                 editingFolderId={editingFolderId}
                 newFolderName={newFolderName}
-                onNameChange={(e: ChangeEvent<HTMLInputElement>) => setNewFolderName(e.target.value)}
+                onNameChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setNewFolderName(e.target.value)
+                }
                 onSave={onSaveFolder}
                 onDelete={onDeleteFolder}
                 onCancel={() => setEditingFolderId(null)}
