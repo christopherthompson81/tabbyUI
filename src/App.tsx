@@ -24,7 +24,6 @@ import {
     persistGenerationParam,
     persistAdminApiKey,
     getPersistedAdminApiKey,
-    Conversation,
     ConversationFolder,
     findConversation,
     findFirstConversation,
@@ -194,6 +193,7 @@ function App() {
         return newId;
     };
 
+    // Move addNewFolder to src/AppDrawer to replace the onAddFolder parameter in the AppDrawer component AI!
     const addNewFolder = (parentFolderId = "root") => {
         const newId = Date.now().toString();
         const newFolder: ConversationFolder = {
