@@ -62,36 +62,42 @@ export function AppDrawer({
 
     const onSaveFolder = () => {
         if (editingFolderId !== null) {
-            const updatedFolders = folders.map(folder => {
-                if (folder.id === editingFolderId) {
-                    return { ...folder, name: newFolderName };
-                }
-                return folder;
+            dispatch({ 
+                type: 'UPDATE_FOLDERS', 
+                folders: folders.map(folder => {
+                    if (folder.id === editingFolderId) {
+                        return { ...folder, name: newFolderName };
+                    }
+                    return folder;
+                })
             });
-            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
             setEditingFolderId(null);
         }
     };
 
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
-            const updatedFolders = folders.filter(folder => folder.id !== editingFolderId);
-            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
+            dispatch({ 
+                type: 'UPDATE_FOLDERS', 
+                folders: folders.filter(folder => folder.id !== editingFolderId)
+            });
             setEditingFolderId(null);
         }
     };
 
     const onSaveConversation = () => {
         if (editingConversationId !== null) {
-            const updatedFolders = folders.map(folder => ({
-                ...folder,
-                conversations: folder.conversations.map(conv =>
-                    conv.id === editingConversationId
-                        ? { ...conv, name: newConversationName }
-                        : conv
-                )
-            }));
-            dispatch({ type: 'UPDATE_FOLDERS', folders: updatedFolders });
+            dispatch({
+                type: 'UPDATE_FOLDERS',
+                folders: folders.map(folder => ({
+                    ...folder,
+                    conversations: folder.conversations.map(conv =>
+                        conv.id === editingConversationId
+                            ? { ...conv, name: newConversationName }
+                            : conv
+                    )
+                }))
+            });
             setEditingConversationId(null);
         }
     };
