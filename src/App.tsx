@@ -336,179 +336,68 @@ function App() {
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Drawer
-                variant="permanent"
-                anchor="left"
-                sx={{
-                    width: 240,
-                    flexShrink: 0,
-                    "& .MuiDrawer-paper": {
-                        width: 240,
-                        boxSizing: "border-box",
-                    },
-                }}
-            >
-                <ConversationList
-                    folders={folders}
-                    currentConversationId={currentConversationId}
-                    onAddConversation={addNewConversation}
-                    onSwitchConversation={switchConversation}
-                    onEditConversation={(id: string) => {
-                        setEditingConversationId(id);
-                        // Find conversation in nested folders
-                        const conversation = findConversation(folders, id);
-                        if (conversation) {
-                            setNewConversationName(conversation.name);
-                        }
-                    }}
-                    onAddFolder={addNewFolder}
-                    onEditFolder={(id: string) => {
-                        setEditingFolderId(id);
-                        const folder = findFolder(folders, id);
-                        if (folder) {
-                            setNewFolderName(folder.name);
-                        }
-                    }}
-                    onUpdateFolders={setFolders}
-                    onDelete={(selectedConversationId) => {
-                        if (selectedConversationId !== null) {
-                            setFolders((prev) => {
-                                const updatedFolders = [...prev];
-                                const deleteConversation = (
-                                    folders: ConversationFolder[],
-                                    id: string
-                                ): boolean => {
-                                    for (const folder of folders) {
-                                        const index =
-                                            folder.conversations.findIndex(
-                                                (conv) => conv.id === id
-                                            );
-                                        if (index !== -1) {
-                                            folder.conversations.splice(
-                                                index,
-                                                1
-                                            );
-                                            return true;
-                                        }
-                                        if (
-                                            deleteConversation(
-                                                folder.subfolders,
-                                                id
-                                            )
-                                        ) {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                };
-                                deleteConversation(
-                                    updatedFolders,
-                                    selectedConversationId
-                                );
-                                persistConversations(updatedFolders);
-
-                                if (
-                                    currentConversationId ===
-                                    selectedConversationId
-                                ) {
-                                    // Find first available conversation
-                                    const firstConversation =
-                                        findFirstConversation(updatedFolders);
-                                    if (firstConversation) {
-                                        setCurrentConversationId(
-                                            firstConversation.id
-                                        );
-                                        setMessages(firstConversation.messages);
-                                    } else {
-                                        setCurrentConversationId("");
-                                        setMessages([]);
-                                    }
-                                }
-                                return updatedFolders;
-                            });
-                        }
-                    }}
-                />
-
-                <FolderEditor
-                    editingFolderId={editingFolderId}
-                    newFolderName={newFolderName}
-                    onNameChange={(e: any) => setNewFolderName(e.target.value)}
-                    onSave={() => {
-                        if (editingFolderId !== null) {
-                            setFolders((prev) => {
-                                const updatedFolders = [...prev];
-                                const folder = findFolder(
-                                    updatedFolders,
-                                    editingFolderId
-                                );
-                                if (folder) {
-                                    folder.name = newFolderName;
-                                }
-                                persistConversations(updatedFolders);
-                                return updatedFolders;
-                            });
-                            setEditingFolderId(null);
-                        }
-                    }}
-                    onDelete={() => {
-                        if (editingFolderId !== null) {
-                            setFolders((prev) => {
-                                const updatedFolders = [...prev];
-                                const deleteFolder = (
-                                    folders: ConversationFolder[],
-                                    id: string
-                                ): boolean => {
-                                    for (let i = 0; i < folders.length; i++) {
-                                        if (folders[i].id === id) {
-                                            folders.splice(i, 1);
-                                            return true;
-                                        }
-                                        if (
-                                            deleteFolder(
-                                                folders[i].subfolders,
-                                                id
-                                            )
-                                        ) {
-                                            return true;
-                                        }
-                                    }
-                                    return false;
-                                };
-                                deleteFolder(updatedFolders, editingFolderId);
-                                persistConversations(updatedFolders);
-                                return updatedFolders;
-                            });
-                            setEditingFolderId(null);
-                        }
-                    }}
-                    onCancel={() => setEditingFolderId(null)}
-                />
-                <ConversationEditor
-                    editingConversationId={editingConversationId}
-                    newConversationName={newConversationName}
-                    onNameChange={(e: any) =>
-                        setNewConversationName(e.target.value)
+            <AppDrawer
+                folders={folders}
+                currentConversationId={currentConversationId}
+                onAddConversation={addNewConversation}
+                onSwitchConversation={switchConversation}
+                onEditConversation={(id: string) => {
+                    const conversation = findConversation(folders, id);
+                    if (conversation) {
+                        setNewConversationName(conversation.name);
                     }
-                    onSave={() => {
-                        if (editingConversationId !== null) {
-                            setFolders((prev) => {
-                                const updatedFolders = [...prev];
-                                const conversation = findConversation(
-                                    updatedFolders,
-                                    editingConversationId
-                                );
-                                if (conversation) {
-                                    conversation.name = newConversationName;
+                }}
+                onAddFolder={addNewFolder}
+                onEditFolder={(id: string) => {
+                    const folder = findFolder(folders, id);
+                    if (folder) {
+                        setNewFolderName(folder.name);
+                    }
+                }}
+                onUpdateFolders={(updatedFolders) => {
+                    setFolders(updatedFolders);
+                    persistConversations(updatedFolders);
+                }}
+                onDelete={(selectedConversationId) => {
+                    if (selectedConversationId !== null) {
+                        setFolders((prev) => {
+                            const updatedFolders = [...prev];
+                            const deleteConversation = (
+                                folders: ConversationFolder[],
+                                id: string
+                            ): boolean => {
+                                for (const folder of folders) {
+                                    const index = folder.conversations.findIndex(
+                                        (conv) => conv.id === id
+                                    );
+                                    if (index !== -1) {
+                                        folder.conversations.splice(index, 1);
+                                        return true;
+                                    }
+                                    if (deleteConversation(folder.subfolders, id)) {
+                                        return true;
+                                    }
                                 }
-                                persistConversations(updatedFolders);
-                                return updatedFolders;
-                            });
-                            setEditingConversationId(null);
-                        }
-                    }}
-                    onCancel={() => setEditingConversationId(null)}
-                />
+                                return false;
+                            };
+                            deleteConversation(updatedFolders, selectedConversationId);
+                            persistConversations(updatedFolders);
+
+                            if (currentConversationId === selectedConversationId) {
+                                const firstConversation = findFirstConversation(updatedFolders);
+                                if (firstConversation) {
+                                    setCurrentConversationId(firstConversation.id);
+                                    setMessages(firstConversation.messages);
+                                } else {
+                                    setCurrentConversationId("");
+                                    setMessages([]);
+                                }
+                            }
+                            return updatedFolders;
+                        });
+                    }
+                }}
+            />
 
                 <SettingsDialog
                     open={showSettings}
