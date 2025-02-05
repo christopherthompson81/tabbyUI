@@ -321,7 +321,6 @@ function App() {
                 </Toolbar>
             </AppBar>
             <AppDrawer
-                folders={folders}
                 currentConversationId={currentConversationId}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
