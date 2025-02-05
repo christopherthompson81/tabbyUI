@@ -7,13 +7,9 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
-import { MessageContent } from './services/tabbyAPI';
+import { MessageProps} from './services/tabbyAPI';
 
-export interface MessageProps {
-  role: string;
-  content: MessageContent[];
-}
-
+// newContent has the following parameter passed to it when called: [{ type: 'text', text: editedContent }]. Update the interface to match this AI!
 interface MessagePropsExtended extends MessageProps {
   onEdit: (index: number, newContent: string) => void;
   onDelete: (index: number) => void;
