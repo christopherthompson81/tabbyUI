@@ -332,6 +332,7 @@ function App() {
                 }}
                 onDelete={(selectedConversationId) => {
                     if (selectedConversationId !== null) {
+                        // use the folersReducer here AI!
                         setFolders((prev) => {
                             const updatedFolders = [...prev];
                             const deleteConversation = (
