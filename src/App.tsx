@@ -163,7 +163,6 @@ function App() {
             },
             folderId,
         });
-        persistConversations(folders);
         setCurrentConversationId(newId);
         return newId;
     };

@@ -54,7 +54,9 @@ export function foldersReducer(state: ConversationFolder[], action: FoldersActio
                     };
                 });
             };
-            return addConversation(state, action.folderId);
+            const newState = addConversation(state, action.folderId);
+            persistConversations(newState);
+            return newState;
         }
 
         case 'ADD_FOLDER': {
