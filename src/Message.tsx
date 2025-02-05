@@ -9,9 +9,8 @@ import { Box } from '@mui/material';
 
 import { MessageProps} from './services/tabbyAPI';
 
-// newContent has the following parameter passed to it when called: [{ type: 'text', text: editedContent }]. Update the interface to match this AI!
 interface MessagePropsExtended extends MessageProps {
-  onEdit: (index: number, newContent: string) => void;
+  onEdit: (index: number, newContent: { type: 'text', text: string }[]) => void;
   onDelete: (index: number) => void;
   index: number;
 }
