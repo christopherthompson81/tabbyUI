@@ -7,7 +7,7 @@ import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
-import { MessageProps} from './services/tabbyAPI';
+import { MessageProps } from './services/tabbyAPI';
 
 interface MessagePropsExtended extends MessageProps {
   onEdit: (index: number, newContent: { type: 'text', text: string }[]) => void;

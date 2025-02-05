@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useEffect, useCallback, useRef, useLayoutEffect } from 'react';
 import { ModelInfo, getModelInfo } from './services/tabbyAPI';
 import Message from './Message';
-import { MessageProps } from './Message';
+import { MessageProps } from './services/tabbyAPI';
 import {
   getPersistedConversations,
   persistConversations,
@@ -405,42 +405,6 @@ function App() {
                   conversation.name = newConversationName;
                 }
                 persistConversations(updatedFolders);
-                return updatedFolders;
-              });
-              setEditingConversationId(null);
-            }
-          }}
-          onDelete={() => {
-            if (editingConversationId !== null) {
-              setFolders(prev => {
-                const updatedFolders = [...prev];
-                const deleteConversation = (folders: ConversationFolder[], id: string): boolean => {
-                  for (const folder of folders) {
-                    const index = folder.conversations.findIndex(conv => conv.id === id);
-                    if (index !== -1) {
-                      folder.conversations.splice(index, 1);
-                      return true;
-                    }
-                    if (deleteConversation(folder.subfolders, id)) {
-                      return true;
-                    }
-                  }
-                  return false;
-                };
-                deleteConversation(updatedFolders, editingConversationId);
-                persistConversations(updatedFolders);
-                
-                if (currentConversationId === editingConversationId) {
-                  // Find first available conversation
-                  const firstConversation = findFirstConversation(updatedFolders);
-                  if (firstConversation) {
-                    setCurrentConversationId(firstConversation.id);
-                    setMessages(firstConversation.messages);
-                  } else {
-                    setCurrentConversationId("");
-                    setMessages([]);
-                  }
-                }
                 return updatedFolders;
               });
               setEditingConversationId(null);
