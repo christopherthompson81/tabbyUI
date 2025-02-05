@@ -4,10 +4,9 @@ import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
 import { ConversationFolder, findConversation } from "../utils/persistence";
 import { ChangeEvent } from "react";
-
 import { Drawer } from "@mui/material";
+import { FoldersAction } from "../reducers/foldersReducer";
 
-// Refactor the dispatch import so that it's part of the imports at the top of the file. AI!
 interface AppDrawerProps {
     folders: ConversationFolder[];
     currentConversationId: string;
@@ -16,7 +15,7 @@ interface AppDrawerProps {
     onAddFolder: (parentFolderId?: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
     onDelete: (id: string) => void;
-    dispatch: React.Dispatch<import('../reducers/foldersReducer').FoldersAction>;
+    dispatch: React.Dispatch<FoldersAction>;
 }
 
 function findFolder(
