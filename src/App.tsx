@@ -137,7 +137,7 @@ function App() {
         },
         [messages, saveConversation]
     );
-
+    
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
         const newConversationName = new Date().toLocaleString();
@@ -152,7 +152,6 @@ function App() {
             folderId,
         });
         dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
-        persistConversations(state.folders); 
         return newId;
     };
 
@@ -164,7 +163,6 @@ function App() {
             persistCurrentConversationId(Number(id));
         }
     };
-
 
     return (
         <ReducerContext.Provider value={providerState} >
