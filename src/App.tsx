@@ -133,7 +133,7 @@ function App() {
                 console.error("Error sending conversation:", error);
             }
         },
-        [messages, saveConversation]
+        [state.messages, saveConversation]
     );
 
     const addNewConversation = (folderId = "root") => {
