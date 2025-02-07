@@ -44,6 +44,7 @@ function App() {
         folders,
         dispatch
     }
+    // since this is used in multiple components lets move it to the foldersReducer AI!
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
     );
