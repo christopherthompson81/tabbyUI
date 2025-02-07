@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+    useEffect,
     useState,
     useCallback,
 } from "react";
@@ -13,7 +14,10 @@ import {
     Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { ModelInfo } from "../services/tabbyAPI";
+import {
+    ModelInfo,
+    getModelInfo
+} from "../services/tabbyAPI";
 import {
     getPersistedServerUrl,
     persistServerUrl,
@@ -29,12 +33,7 @@ import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
 
-interface AppHeaderProps {
-    serverStatus: "checking" | "online" | "offline";
-    modelInfo: ModelInfo | null;
-}
-
-export default function AppHeader({ serverStatus, modelInfo }: AppHeaderProps) {
+export default function AppHeader() {
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -47,10 +46,34 @@ export default function AppHeader({ serverStatus, modelInfo }: AppHeaderProps) {
     const [generationParams, setGenerationParams] = useState(() =>
         getPersistedGenerationParams()
     );
+    const [serverStatus, setServerStatus] = useState<
+        "checking" | "online" | "offline"
+    >("checking");
+    const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
 
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
     };
+
+    // Bootstrap conversations and periodic status checks
+    useEffect(() => {
+        const checkStatus = async () => {
+            setServerStatus("checking");
+            const model = await getModelInfo(getPersistedServerUrl(), getPersistedApiKey());
+            if (model) {
+                setServerStatus("online");
+                setModelInfo(model);
+            } else {
+                setServerStatus("offline");
+                setModelInfo(null);
+            }
+        };
+
+        checkStatus();
+        const interval = setInterval(checkStatus, 30000); // Check every 30 seconds
+
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <>
@@ -120,16 +143,16 @@ export default function AppHeader({ serverStatus, modelInfo }: AppHeaderProps) {
                                     serverStatus === "online"
                                         ? "lime"
                                         : serverStatus === "offline"
-                                        ? "red"
-                                        : "orange",
+                                            ? "red"
+                                            : "orange",
                             }}
                         />
                         <Typography variant="caption">
                             {serverStatus === "online"
                                 ? `Online (${modelInfo?.id || "Unknown"})`
                                 : serverStatus === "offline"
-                                ? "Offline"
-                                : "Checking..."}
+                                    ? "Offline"
+                                    : "Checking..."}
                         </Typography>
                     </Box>
                 </Toolbar>

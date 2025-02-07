@@ -11,7 +11,6 @@ import {
     Box,
     CssBaseline,
 } from "@mui/material";
-import AppHeader from "./components/AppHeader";
 
 // Local Imports
 import Message from "./Message";
@@ -21,8 +20,6 @@ import {
     MessageContent,
     sendConversation as sendConversationToAPI,
     MessageProps,
-    ModelInfo,
-    getModelInfo,
 } from "./services/tabbyAPI";
 import {
     getPersistedConversations,
@@ -34,6 +31,7 @@ import {
     findConversation,
     findFirstConversation,
 } from "./utils/persistence";
+import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 
@@ -49,10 +47,6 @@ function App() {
     const [currentConversationId, setCurrentConversationId] = useState<string>(
         getPersistedCurrentConversationId()
     );
-    const [serverStatus, setServerStatus] = useState<
-        "checking" | "online" | "offline"
-    >("checking");
-    const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
     const [originalUserInput, setOriginalUserInput] = useState<
         MessageContent[]
     >([]);
@@ -90,22 +84,6 @@ function App() {
         } else {
             switchConversation(tempConversationId);
         }
-        const checkStatus = async () => {
-            setServerStatus("checking");
-            const model = await getModelInfo(getPersistedServerUrl(), getPersistedApiKey());
-            if (model) {
-                setServerStatus("online");
-                setModelInfo(model);
-            } else {
-                setServerStatus("offline");
-                setModelInfo(null);
-            }
-        };
-
-        checkStatus();
-        const interval = setInterval(checkStatus, 30000); // Check every 30 seconds
-
-        return () => clearInterval(interval);
     }, []);
 
     const saveConversation = useCallback(
@@ -192,10 +170,7 @@ function App() {
         <ReducerContext.Provider value={providerState} >
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
-            <AppHeader
-                serverStatus={serverStatus}
-                modelInfo={modelInfo}
-            />
+            <AppHeader />
             <AppDrawer
                 currentConversationId={currentConversationId}
                 onAddConversation={addNewConversation}
