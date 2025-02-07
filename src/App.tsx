@@ -40,7 +40,8 @@ function App() {
         conversationsReducer,
         {
             folders: getPersistedConversations(),
-            currentConversationId: getPersistedCurrentConversationId()
+            currentConversationId: getPersistedCurrentConversationId(),
+            messages: []
         }
     );
     const providerState = {
@@ -68,7 +69,7 @@ function App() {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    }, [messages]);
+    }, [state.messages]);
 
     // Bootstrap conversations and periodic status checks
     useEffect(() => {
@@ -116,7 +117,7 @@ function App() {
                 await sendConversationToAPI(
                     getPersistedServerUrl(),
                     getPersistedApiKey(),
-                    messages,
+                    state.messages,
                     userMessage,
                     regenerate,
                     (updatedMessages) => {
@@ -205,12 +206,12 @@ function App() {
                             role={message.role}
                             content={message.content}
                             onEdit={(i, newContent) => {
-                                const updatedMessages = [...messages];
+                                const updatedMessages = [...state.messages];
                                 updatedMessages[i].content = newContent;
                                 saveConversation(updatedMessages);
                             }}
                             onDelete={(i) => {
-                                const updatedMessages = messages.filter(
+                                const updatedMessages = state.messages.filter(
                                     (_, idx) => idx !== i
                                 );
                                 saveConversation(updatedMessages);
@@ -228,7 +229,7 @@ function App() {
                         }
                     }}
                     onRegenerate={() => {
-                        if (messages.length > 0) {
+                        if (state.messages.length > 0) {
                             sendConversation(originalUserInput, true);
                         }
                     }}
