@@ -88,20 +88,7 @@ function App() {
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
             if (state.currentConversationId !== null) {
-                const updateConversationsInFolder = (folder: typeof state.folders[0]): typeof state.folders[0] => ({
-                    ...folder,
-                    conversations: folder.conversations.map(conv =>
-                        conv.id === state.currentConversationId
-                            ? { ...conv, messages: v }
-                            : conv
-                    ),
-                    subfolders: folder.subfolders.map(updateConversationsInFolder)
-                });
-
-                const updatedFolders = state.folders.map(updateConversationsInFolder);
-                dispatch({ type: "UPDATE_FOLDERS", folders: updatedFolders });
-                // Throttle persistence
-                //setTimeout(() => persistConversations(updatedFolders), 100);
+                dispatch({ type: "UPDATE_CONVERSATION", id: state.currentConversationId, messages: v });
             }
         },
         [state]
@@ -165,77 +152,77 @@ function App() {
 
     return (
         <ReducerContext.Provider value={providerState} >
-        <Box sx={{ display: "flex" }}>
-            <CssBaseline />
-            <AppHeader />
-            <AppDrawer
-                onAddConversation={addNewConversation}
-                onSwitchConversation={switchConversation}
-                onUpdateFolders={(updatedFolders) => {
-                    dispatch({
-                        type: "UPDATE_FOLDERS",
-                        folders: updatedFolders,
-                    });
-                    persistConversations(updatedFolders);
-                }}
-                onDelete={(selectedConversationId) => {
-                    if (selectedConversationId !== null) {
+            <Box sx={{ display: "flex" }}>
+                <CssBaseline />
+                <AppHeader />
+                <AppDrawer
+                    onAddConversation={addNewConversation}
+                    onSwitchConversation={switchConversation}
+                    onUpdateFolders={(updatedFolders) => {
                         dispatch({
-                            type: "DELETE_CONVERSATION",
-                            id: selectedConversationId,
+                            type: "UPDATE_FOLDERS",
+                            folders: updatedFolders,
                         });
-                        if (state.currentConversationId === selectedConversationId) {
-                            const firstConversation =
-                                findFirstConversation(state.folders);
-                            if (firstConversation) {
-                                dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
-                                dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
-                            } else {
-                                dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
-                                dispatch({ type: 'SET_MESSAGES', messages: [] });
-                            }
-                        }
-                    }
-                }}
-            />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
-                <div className="main-content">
-                    {state.messages.map((message, index) => (
-                        <Message
-                            key={index}
-                            role={message.role}
-                            content={message.content}
-                            onEdit={(i, newContent) => {
-                                const updatedMessages = [...state.messages];
-                                updatedMessages[i].content = newContent;
-                                saveConversation(updatedMessages);
-                            }}
-                            onDelete={(i) => {
-                                const updatedMessages = state.messages.filter(
-                                    (_, idx) => idx !== i
-                                );
-                                saveConversation(updatedMessages);
-                            }}
-                            index={index}
-                        />
-                    ))}
-                    <div ref={messagesEndRef} />
-                </div>
-
-                <ChatInput
-                    onSend={(content: MessageContent[]) => {
-                        if (content.length > 0) {
-                            sendConversation(content);
-                        }
+                        persistConversations(updatedFolders);
                     }}
-                    onRegenerate={() => {
-                        if (state.messages.length > 0) {
-                            sendConversation(originalUserInput, true);
+                    onDelete={(selectedConversationId) => {
+                        if (selectedConversationId !== null) {
+                            dispatch({
+                                type: "DELETE_CONVERSATION",
+                                id: selectedConversationId,
+                            });
+                            if (state.currentConversationId === selectedConversationId) {
+                                const firstConversation =
+                                    findFirstConversation(state.folders);
+                                if (firstConversation) {
+                                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
+                                    dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
+                                } else {
+                                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
+                                    dispatch({ type: 'SET_MESSAGES', messages: [] });
+                                }
+                            }
                         }
                     }}
                 />
+                <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
+                    <div className="main-content">
+                        {state.messages.map((message, index) => (
+                            <Message
+                                key={index}
+                                role={message.role}
+                                content={message.content}
+                                onEdit={(i, newContent) => {
+                                    const updatedMessages = [...state.messages];
+                                    updatedMessages[i].content = newContent;
+                                    saveConversation(updatedMessages);
+                                }}
+                                onDelete={(i) => {
+                                    const updatedMessages = state.messages.filter(
+                                        (_, idx) => idx !== i
+                                    );
+                                    saveConversation(updatedMessages);
+                                }}
+                                index={index}
+                            />
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    <ChatInput
+                        onSend={(content: MessageContent[]) => {
+                            if (content.length > 0) {
+                                sendConversation(content);
+                            }
+                        }}
+                        onRegenerate={() => {
+                            if (state.messages.length > 0) {
+                                sendConversation(originalUserInput, true);
+                            }
+                        }}
+                    />
+                </Box>
             </Box>
-        </Box>
         </ReducerContext.Provider>
     );
 }

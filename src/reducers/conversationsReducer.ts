@@ -14,7 +14,8 @@ export type ConversationsAction =
     | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
     | { type: 'DELETE_CONVERSATION'; id: string }
     | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
-    | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
+    | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string }
+    | { type: 'UPDATE_CONVERSATION'; id: string, messages: MessageProps[] };
 
 export function conversationsReducer(state: ConversationsState, action: ConversationsAction): ConversationsState {
     switch (action.type) {
@@ -108,6 +109,24 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
             return {
                 ...state,
                 currentConversationId: action.id
+            };
+        }
+
+        case 'UPDATE_CONVERSATION': {
+            const updateConversationsInFolder = (folder: ConversationFolder): ConversationFolder => ({
+                ...folder,
+                conversations: folder.conversations.map(conv =>
+                    conv.id === action.id
+                        ? { ...conv, messages: action.messages }
+                        : conv
+                ),
+                subfolders: folder.subfolders.map(updateConversationsInFolder)
+            });
+            const updatedFolders = state.folders.map(updateConversationsInFolder);
+            persistConversations(updatedFolders);
+            return {
+                ...state,
+                folders: updatedFolders
             };
         }
 
