@@ -155,9 +155,11 @@ export function findConversation(
     for (const folder of folders) {
         // Check current folder's conversations
         const conversation = folder.conversations.find(
-            (c) => c.id === conversationId
+            (c) => c.id == conversationId
         );
-        if (conversation) return conversation;
+        if (conversation) {
+            return conversation;
+        }
 
         // Recursively check subfolders
         const subfolderResult = findConversation(

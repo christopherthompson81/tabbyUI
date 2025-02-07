@@ -21,6 +21,7 @@ import {
     MessageProps,
 } from "./services/tabbyAPI";
 import {
+    ConversationFolder,
     getPersistedConversations,
     getPersistedCurrentConversationId,
     getPersistedServerUrl,
@@ -31,13 +32,18 @@ import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 
+function getMessages(id: string, folders: ConversationFolder[]) {
+    const conversation = findConversation(folders, id);
+    return conversation ? conversation.messages : [];
+}
+
 function App() {
     const [state, dispatch] = useReducer(
         conversationsReducer,
         {
             folders: getPersistedConversations(),
             currentConversationId: getPersistedCurrentConversationId(),
-            messages: []
+            messages: getMessages(getPersistedCurrentConversationId(), getPersistedConversations())
         }
     );
     const providerState = {
@@ -77,7 +83,7 @@ function App() {
         } else {
             //switchConversation(tempConversationId);
         }
-    }, [state]);
+    }, [state.currentConversationId]);
 
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
