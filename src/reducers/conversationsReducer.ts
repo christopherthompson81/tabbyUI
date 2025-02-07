@@ -20,9 +20,14 @@ export type ConversationsAction =
     | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
     | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
 
-// add the case for "SET_MESSAGES" AI!
 export function conversationsReducer(state: ConversationsState, action: ConversationsAction): ConversationsState {
     switch (action.type) {
+        case 'SET_MESSAGES': {
+            return {
+                ...state,
+                messages: action.messages
+            };
+        }
         case 'SET_FOLDERS':
         case 'UPDATE_FOLDERS': {
             persistConversations(action.folders);
