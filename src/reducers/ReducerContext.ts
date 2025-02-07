@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ConversationFolder } from "../utils/persistence";
 import { ConversationsAction } from "./conversationsReducer";
+import { MessageProps } from "../services/tabbyAPI";
 
 interface ReducerContextType {
     folders: ConversationFolder[];
