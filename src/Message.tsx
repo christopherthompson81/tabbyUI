@@ -99,6 +99,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                 <ReactMarkdown
                   key={idx}
                   components={{
+                    // There is a linting issue with "inline" and "style". Is there a fix? AI!
                     code({ node, inline, className, children, ...props }) {
                       const match = /language-(\w+)/.exec(className || '');
                       return !inline && match ? (
