@@ -1,5 +1,4 @@
 import {
-    useState,
     useEffect,
     useCallback,
     useRef,
@@ -76,7 +75,7 @@ function App() {
             dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
             saveConversation([]);
         } else {
-            switchConversation(tempConversationId);
+            //switchConversation(tempConversationId);
         }
     }, [state]);
 
@@ -100,7 +99,6 @@ function App() {
                     regenerate,
                     (updatedMessages) => {
                         dispatch({ type: 'SET_MESSAGES', messages: updatedMessages });
-                        saveConversation(updatedMessages);
                         scrollToBottom();
                     },
                     (finalMessages) => {
