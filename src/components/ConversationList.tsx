@@ -16,10 +16,10 @@ interface ConversationListProps {
   onEditConversation: (id: string) => void;
   onAddFolder: (parentFolderId?: string) => void;
   onEditFolder: (id: string) => void;
-  onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
   onDelete: (id: string) => void;
 }
 
+// FolderItem needs it own interface and should not reuse ConversationListProps as its interface AI! 
 function FolderItem({ 
   folder,
   currentConversationId,
@@ -191,7 +191,6 @@ export default function ConversationList({
   onEditConversation,
   onAddFolder,
   onEditFolder,
-  onUpdateFolders,
   onDelete
 }: ConversationListProps) {
   const currentConversationId = getPersistedCurrentConversationId();
