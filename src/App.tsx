@@ -74,14 +74,13 @@ function App() {
 
     // Bootstrap conversations and periodic status checks
     useEffect(() => {
-        let tempConversationId = getPersistedCurrentConversationId();
+        let tempConversationId = state.currentConversationId;
         if (!tempConversationId) {
             const newId = addNewConversation();
             setMessages([]);
             saveConversation([]);
             tempConversationId = newId;
-            setCurrentConversationId(tempConversationId.toString());
-            persistCurrentConversationId(tempConversationId.toString());
+            dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
         } else {
             switchConversation(tempConversationId);
         }
@@ -89,24 +88,24 @@ function App() {
 
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
-            if (currentConversationId !== null) {
-                const updateConversationsInFolder = (folder: typeof folders[0]): typeof folders[0] => ({
+            if (state.currentConversationId !== null) {
+                const updateConversationsInFolder = (folder: typeof state.folders[0]): typeof state.folders[0] => ({
                     ...folder,
                     conversations: folder.conversations.map(conv =>
-                        conv.id === currentConversationId
+                        conv.id === state.currentConversationId
                             ? { ...conv, messages: v }
                             : conv
                     ),
                     subfolders: folder.subfolders.map(updateConversationsInFolder)
                 });
 
-                const updatedFolders = folders.map(updateConversationsInFolder);
+                const updatedFolders = state.folders.map(updateConversationsInFolder);
                 dispatch({ type: "UPDATE_FOLDERS", folders: updatedFolders });
                 // Throttle persistence
                 //setTimeout(() => persistConversations(updatedFolders), 100);
             }
         },
-        [currentConversationId, folders]
+        [state]
     );
 
     const sendConversation = useCallback(
@@ -153,12 +152,12 @@ function App() {
             folderId,
         });
         dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
-        persistConversations(folders); 
+        persistConversations(state.folders); 
         return newId;
     };
 
     const switchConversation = (id: string) => {
-        const conversation = findConversation(folders, id);
+        const conversation = findConversation(state.folders, id);
         if (conversation) {
             dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
             setMessages(conversation.messages);
@@ -173,7 +172,7 @@ function App() {
             <CssBaseline />
             <AppHeader />
             <AppDrawer
-                currentConversationId={currentConversationId}
+                currentConversationId={state.currentConversationId}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
                 onUpdateFolders={(updatedFolders) => {
@@ -189,9 +188,9 @@ function App() {
                             type: "DELETE_CONVERSATION",
                             id: selectedConversationId,
                         });
-                        if (currentConversationId === selectedConversationId) {
+                        if (state.currentConversationId === selectedConversationId) {
                             const firstConversation =
-                                findFirstConversation(folders);
+                                findFirstConversation(state.folders);
                             if (firstConversation) {
                                 dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
                                 setMessages(firstConversation.messages);
