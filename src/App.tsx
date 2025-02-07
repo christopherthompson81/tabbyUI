@@ -51,6 +51,7 @@ function App() {
     const [originalUserInput, setOriginalUserInput] = useState<
         MessageContent[]
     >([]);
+    // Lets also move messages to the conversationsReducer AI!
     const [messages, setMessages] = useState<any[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
@@ -137,7 +138,7 @@ function App() {
         },
         [messages, saveConversation]
     );
-    
+
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
         const newConversationName = new Date().toLocaleString();
