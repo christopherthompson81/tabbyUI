@@ -18,8 +18,7 @@ export default function ProgressDialog({
     open,
     progress,
 }: ProgressDialogProps) {
-    // Can you fix the linting error here on the initial value? AI!
-    const [modelProgress, setModelProgress] = useState<ModelLoadProgress>({});
+    const [modelProgress, setModelProgress] = useState<ModelLoadProgress>(modelLoadProgressDefault);
 
     useEffect(() => {
         if (progress && progress.model_type) {
