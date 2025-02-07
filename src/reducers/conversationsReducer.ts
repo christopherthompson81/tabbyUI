@@ -1,8 +1,4 @@
-import {
-    MessageContent,
-    sendConversation as sendConversationToAPI,
-    MessageProps,
-} from "../services/tabbyAPI";
+import { MessageProps } from "../services/tabbyAPI";
 import { ConversationFolder, persistConversations, persistCurrentConversationId } from "../utils/persistence";
 
 export interface ConversationsState {
