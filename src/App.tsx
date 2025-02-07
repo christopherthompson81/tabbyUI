@@ -72,16 +72,14 @@ function App() {
         }
     }, [state.messages]);
 
-    // Bootstrap conversations and periodic status checks
+    // Bootstrap conversations
+    // Things will happen repeatedly with this. It should probably be in the reducer code.
     useEffect(() => {
-        let tempConversationId = state.currentConversationId;
-        if (!tempConversationId) {
-            tempConversationId = addNewConversation();
+        if (!state.currentConversationId) {
+            const tempConversationId = addNewConversation();
             dispatch({ type: 'SET_MESSAGES', messages: [] });
             dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
             saveConversation([]);
-        } else {
-            //switchConversation(tempConversationId);
         }
     }, [state.currentConversationId]);
 
