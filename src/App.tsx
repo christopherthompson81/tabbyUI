@@ -15,7 +15,7 @@ import {
 // Local Imports
 import Message from "./Message";
 import ReducerContext from './reducers/ReducerContext';
-import { foldersReducer } from "./reducers/foldersReducer";
+import { conversationsReducer } from "./reducers/conversationsReducer";
 import {
     MessageContent,
     sendConversation as sendConversationToAPI,
@@ -37,7 +37,7 @@ import { AppDrawer } from "./components/AppDrawer";
 
 function App() {
     const [state, dispatch] = useReducer(
-        foldersReducer,
+        conversationsReducer,
         {
             folders: getPersistedConversations(),
             currentConversationId: getPersistedCurrentConversationId()

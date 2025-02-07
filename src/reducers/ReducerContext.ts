@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ConversationFolder } from "../utils/persistence";
-import { FoldersAction } from "./foldersReducer";
+import { FoldersAction } from "./conversationsReducer";
 
 interface ReducerContextType {
     folders: ConversationFolder[];
