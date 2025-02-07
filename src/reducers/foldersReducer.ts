@@ -1,18 +1,27 @@
-import { ConversationFolder, persistConversations } from "../utils/persistence";
+import { ConversationFolder, persistConversations, persistCurrentConversationId } from "../utils/persistence";
 
-export type FoldersAction = 
+export interface FoldersState {
+    folders: ConversationFolder[];
+    currentConversationId: string;
+}
+
+export type FoldersAction =
+  | { type: 'SET_CURRENT_CONVERSATION'; id: string }
   | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
   | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
   | { type: 'DELETE_CONVERSATION'; id: string }
   | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
   | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
 
-export function foldersReducer(state: ConversationFolder[], action: FoldersAction): ConversationFolder[] {
+export function foldersReducer(state: FoldersState, action: FoldersAction): FoldersState {
     switch (action.type) {
         case 'SET_FOLDERS':
         case 'UPDATE_FOLDERS': {
             persistConversations(action.folders);
-            return action.folders;
+            return {
+                ...state,
+                folders: action.folders
+            };
         }
         case 'DELETE_CONVERSATION': {
             const deleteConversation = (
@@ -79,7 +88,18 @@ export function foldersReducer(state: ConversationFolder[], action: FoldersActio
             };
             const newState = addFolder(state, action.parentFolderId);
             persistConversations(newState);
-            return newState;
+            return {
+                ...state,
+                folders: newState
+            };
+        }
+
+        case 'SET_CURRENT_CONVERSATION': {
+            persistCurrentConversationId(action.id);
+            return {
+                ...state,
+                currentConversationId: action.id
+            };
         }
 
         default:

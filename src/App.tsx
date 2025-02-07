@@ -36,18 +36,18 @@ import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 
 function App() {
-    const [folders, dispatch] = useReducer(
+    const [state, dispatch] = useReducer(
         foldersReducer,
-        getPersistedConversations()
+        {
+            folders: getPersistedConversations(),
+            currentConversationId: getPersistedCurrentConversationId()
+        }
     );
     const providerState = {
-        folders,
+        folders: state.folders,
+        currentConversationId: state.currentConversationId,
         dispatch
     }
-    // since this is used in multiple components lets move it to the foldersReducer AI!
-    const [currentConversationId, setCurrentConversationId] = useState<string>(
-        getPersistedCurrentConversationId()
-    );
     const [originalUserInput, setOriginalUserInput] = useState<
         MessageContent[]
     >([]);
@@ -152,7 +152,7 @@ function App() {
             },
             folderId,
         });
-        setCurrentConversationId(newId);
+        dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
         persistConversations(folders); 
         return newId;
     };
@@ -160,7 +160,7 @@ function App() {
     const switchConversation = (id: string) => {
         const conversation = findConversation(folders, id);
         if (conversation) {
-            setCurrentConversationId(id);
+            dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
             setMessages(conversation.messages);
             persistCurrentConversationId(Number(id));
         }
@@ -193,10 +193,10 @@ function App() {
                             const firstConversation =
                                 findFirstConversation(folders);
                             if (firstConversation) {
-                                setCurrentConversationId(firstConversation.id);
+                                dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
                                 setMessages(firstConversation.messages);
                             } else {
-                                setCurrentConversationId("");
+                                dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
                                 setMessages([]);
                             }
                         }
