@@ -1,3 +1,8 @@
+import {
+    MessageContent,
+    sendConversation as sendConversationToAPI,
+    MessageProps,
+} from "../services/tabbyAPI";
 import { ConversationFolder, persistConversations, persistCurrentConversationId } from "../utils/persistence";
 
 export interface ConversationsState {
@@ -15,6 +20,7 @@ export type ConversationsAction =
     | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
     | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
 
+// add the case for "SET_MESSAGES" AI!
 export function conversationsReducer(state: ConversationsState, action: ConversationsAction): ConversationsState {
     switch (action.type) {
         case 'SET_FOLDERS':
