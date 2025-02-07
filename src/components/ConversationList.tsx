@@ -19,7 +19,17 @@ interface ConversationListProps {
   onDelete: (id: string) => void;
 }
 
-// FolderItem needs it own interface and should not reuse ConversationListProps as its interface AI! 
+interface FolderItemProps {
+  folder: ConversationFolder;
+  currentConversationId: string;
+  onAddConversation: (folderId?: string) => void;
+  onSwitchConversation: (id: string) => void;
+  onEditConversation: (id: string) => void;
+  onAddFolder: (parentFolderId?: string) => void;
+  onEditFolder: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
 function FolderItem({ 
   folder,
   currentConversationId,
@@ -29,9 +39,7 @@ function FolderItem({
   onAddFolder,
   onEditFolder,
   onDelete
-}: {
-  folder: ConversationFolder;
-} & ConversationListProps) {
+}: FolderItemProps) {
   const [open, setOpen] = useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
