@@ -1,11 +1,11 @@
 import { ConversationFolder, persistConversations, persistCurrentConversationId } from "../utils/persistence";
 
-export interface FoldersState {
+export interface ConversationsState {
     folders: ConversationFolder[];
     currentConversationId: string;
 }
 
-export type FoldersAction =
+export type ConversationsAction =
   | { type: 'SET_CURRENT_CONVERSATION'; id: string }
   | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
   | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
@@ -13,7 +13,7 @@ export type FoldersAction =
   | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
   | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
 
-export function foldersReducer(state: FoldersState, action: FoldersAction): FoldersState {
+export function conversationsReducer(state: ConversationsState, action: ConversationsAction): ConversationsState {
     switch (action.type) {
         case 'SET_FOLDERS':
         case 'UPDATE_FOLDERS': {

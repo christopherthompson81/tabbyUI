@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ConversationFolder } from "../utils/persistence";
-import { FoldersAction } from "./conversationsReducer";
+import { ConversationsAction } from "./conversationsReducer";
 
 interface ReducerContextType {
     folders: ConversationFolder[];
     currentConversationId: string;
-    dispatch: React.Dispatch<FoldersAction>;
+    dispatch: React.Dispatch<ConversationsAction>;
 }
 
 const ReducerContext = React.createContext<ReducerContextType | undefined>(undefined);
