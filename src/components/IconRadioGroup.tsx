@@ -16,8 +16,13 @@ const StyledRadio = styled(Radio)(({ theme }) => ({
     },
 }));
 
-// There's a linting error here, saying that 'selected' is not a parameter for this type, is there a fix? AI! 
-const IconButtonWrapper = styled(IconButton)(({ theme, selected }) => ({
+interface IconButtonWrapperProps {
+    selected?: boolean;
+}
+
+const IconButtonWrapper = styled(IconButton, {
+    shouldForwardProp: (prop) => prop !== 'selected'
+})<IconButtonWrapperProps>(({ theme, selected }) => ({
     borderRadius: "24px",
     padding: theme.spacing(1.5),
     margin: theme.spacing(0.5),
