@@ -99,7 +99,6 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                 <ReactMarkdown
                   key={idx}
                   components={{
-                    // There is now another linting issue here, any more fixes? AI! 
                     code({ node, inline, className, children, ...props }: {
                       node?: any;
                       inline?: boolean;

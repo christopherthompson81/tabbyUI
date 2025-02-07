@@ -54,13 +54,6 @@ export interface ModelLoadProgress {
     status: string | null;
 }
 
-export const modelLoadProgressDefault: ModelLoadProgress = {
-    model_type: null,
-    module: null,
-    modules: null,
-    status: null
-};
-
 export async function loadModelWithProgress(
     serverUrl: string,
     adminApiKey: string,

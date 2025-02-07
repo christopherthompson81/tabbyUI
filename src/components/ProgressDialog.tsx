@@ -6,7 +6,7 @@ import {
     Typography,
     Box,
 } from "@mui/material";
-import { modelLoadProgressDefault, ModelLoadProgress } from "../services/tabbyAPI";
+import { ModelLoadProgress } from "../services/tabbyAPI";
 import { useState, useEffect } from "react";
 
 interface ProgressDialogProps {
@@ -18,7 +18,7 @@ export default function ProgressDialog({
     open,
     progress,
 }: ProgressDialogProps) {
-    const [modelProgress, setModelProgress] = useState<ModelLoadProgress>(modelLoadProgressDefault);
+    const [modelProgress, setModelProgress] = useState<ModelLoadProgress | {}>({});
 
     useEffect(() => {
         if (progress && progress.model_type) {
@@ -36,7 +36,7 @@ export default function ProgressDialog({
     // Clear progress when dialog closes
     useEffect(() => {
         if (!open) {
-            if (modelProgress.model_type) {
+            if (JSON.stringify(modelProgress) !== JSON.stringify({})) {
                 console.log(modelProgress);
             }
             setModelProgress({});

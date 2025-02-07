@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from "@mui/material";
 
-const StyledRadio = styled(Radio)(({ theme }) => ({
+const StyledRadio = styled(Radio)(({ }) => ({
     padding: 0,
     "& .MuiSvgIcon-root": {
         fontSize: 24,

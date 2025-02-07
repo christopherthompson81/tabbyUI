@@ -166,7 +166,6 @@ export function AppDrawer({
                 onEditConversation={onEditConversation}
                 onAddFolder={addNewFolder}
                 onEditFolder={onEditFolder}
-                onUpdateFolders={onUpdateFolders}
                 onDelete={onDeleteConversation}
             />
 
