@@ -46,13 +46,10 @@ function App() {
     const providerState = {
         folders: state.folders,
         currentConversationId: state.currentConversationId,
+        messages: state.messages,
         dispatch
     }
-    const [originalUserInput, setOriginalUserInput] = useState<
-        MessageContent[]
-    >([]);
-    // Lets also move messages to the conversationsReducer AI!
-    const [messages, setMessages] = useState<any[]>([]);
+    const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     const scrollToBottom = useCallback(() => {
@@ -78,7 +75,7 @@ function App() {
         let tempConversationId = state.currentConversationId;
         if (!tempConversationId) {
             const newId = addNewConversation();
-            setMessages([]);
+            dispatch({ type: 'SET_MESSAGES', messages: [] });
             saveConversation([]);
             tempConversationId = newId;
             dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
@@ -123,12 +120,12 @@ function App() {
                     userMessage,
                     regenerate,
                     (updatedMessages) => {
-                        setMessages(updatedMessages);
+                        dispatch({ type: 'SET_MESSAGES', messages: updatedMessages });
                         saveConversation(updatedMessages);
                         scrollToBottom();
                     },
                     (finalMessages) => {
-                        setMessages(finalMessages);
+                        dispatch({ type: 'SET_MESSAGES', messages: finalMessages });
                         saveConversation(finalMessages);
                     }
                 );
@@ -160,7 +157,7 @@ function App() {
         const conversation = findConversation(state.folders, id);
         if (conversation) {
             dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
-            setMessages(conversation.messages);
+            dispatch({ type: 'SET_MESSAGES', messages: conversation.messages });
             persistCurrentConversationId(Number(id));
         }
     };
@@ -191,10 +188,10 @@ function App() {
                                 findFirstConversation(state.folders);
                             if (firstConversation) {
                                 dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
-                                setMessages(firstConversation.messages);
+                                dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
                             } else {
                                 dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
-                                setMessages([]);
+                                dispatch({ type: 'SET_MESSAGES', messages: [] });
                             }
                         }
                     }
@@ -202,7 +199,7 @@ function App() {
             />
             <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                 <div className="main-content">
-                    {messages.map((message, index) => (
+                    {state.messages.map((message, index) => (
                         <Message
                             key={index}
                             role={message.role}

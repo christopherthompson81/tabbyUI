@@ -5,6 +5,7 @@ import { ConversationsAction } from "./conversationsReducer";
 interface ReducerContextType {
     folders: ConversationFolder[];
     currentConversationId: string;
+    messages: MessageProps[];
     dispatch: React.Dispatch<ConversationsAction>;
 }
 

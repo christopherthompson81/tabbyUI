@@ -3,11 +3,13 @@ import { ConversationFolder, persistConversations, persistCurrentConversationId 
 export interface ConversationsState {
     folders: ConversationFolder[];
     currentConversationId: string;
+    messages: MessageProps[];
 }
 
 export type ConversationsAction =
     | { type: 'SET_CURRENT_CONVERSATION'; id: string }
     | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
+    | { type: 'SET_MESSAGES'; messages: MessageProps[] }
     | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
     | { type: 'DELETE_CONVERSATION'; id: string }
     | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
