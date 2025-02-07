@@ -5,6 +5,7 @@ import FolderEditor from "./FolderEditor";
 import {
     ConversationFolder,
     findConversation,
+    findFirstConversation,
 } from "../utils/persistence";
 import { ChangeEvent } from "react";
 import { Drawer } from "@mui/material";
@@ -13,8 +14,6 @@ import { useReducerContext } from "../reducers/ReducerContext";
 interface AppDrawerProps {
     onAddConversation: (folderId?: string) => void;
     onSwitchConversation: (id: string) => void;
-    onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
-    onDelete: (id: string) => void;
 }
 
 function findFolder(
@@ -32,8 +31,6 @@ function findFolder(
 export function AppDrawer({
     onAddConversation,
     onSwitchConversation,
-    onUpdateFolders,
-    onDelete,
 }: AppDrawerProps) {
     const { folders, currentConversationId, dispatch } = useReducerContext();
     const [editingConversationId, setEditingConversationId] = useState<
@@ -74,6 +71,13 @@ export function AppDrawer({
         }
     };
 
+    const onUpdateFolders = (updatedFolders: ConversationFolder[]) => {
+        dispatch({
+            type: "UPDATE_FOLDERS",
+            folders: updatedFolders,
+        });
+    }
+
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
             dispatch({
@@ -83,6 +87,26 @@ export function AppDrawer({
                 ),
             });
             setEditingFolderId(null);
+        }
+    };
+
+    const onDeleteConversation = (selectedConversationId: string) => {
+        if (selectedConversationId !== null) {
+            dispatch({
+                type: "DELETE_CONVERSATION",
+                id: selectedConversationId,
+            });
+            if (currentConversationId === selectedConversationId) {
+                const firstConversation =
+                    findFirstConversation(folders);
+                if (firstConversation) {
+                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
+                    dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
+                } else {
+                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
+                    dispatch({ type: 'SET_MESSAGES', messages: [] });
+                }
+            }
         }
     };
 
@@ -143,7 +167,7 @@ export function AppDrawer({
                 onAddFolder={addNewFolder}
                 onEditFolder={onEditFolder}
                 onUpdateFolders={onUpdateFolders}
-                onDelete={onDelete}
+                onDelete={onDeleteConversation}
             />
 
             <FolderEditor

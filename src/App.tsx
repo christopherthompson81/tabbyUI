@@ -23,13 +23,10 @@ import {
 } from "./services/tabbyAPI";
 import {
     getPersistedConversations,
-    persistConversations,
     getPersistedCurrentConversationId,
-    persistCurrentConversationId,
     getPersistedServerUrl,
     getPersistedApiKey,
     findConversation,
-    findFirstConversation,
 } from "./utils/persistence";
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
@@ -50,7 +47,6 @@ function App() {
         messages: state.messages,
         dispatch
     }
-    const [originalUserInput, setOriginalUserInput] = useState<MessageContent[]>([]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     const scrollToBottom = useCallback(() => {
@@ -75,15 +71,14 @@ function App() {
     useEffect(() => {
         let tempConversationId = state.currentConversationId;
         if (!tempConversationId) {
-            const newId = addNewConversation();
+            tempConversationId = addNewConversation();
             dispatch({ type: 'SET_MESSAGES', messages: [] });
-            saveConversation([]);
-            tempConversationId = newId;
             dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
+            saveConversation([]);
         } else {
             switchConversation(tempConversationId);
         }
-    }, []);
+    }, [state]);
 
     const saveConversation = useCallback(
         (v: MessageProps[]) => {
@@ -96,10 +91,6 @@ function App() {
 
     const sendConversation = useCallback(
         async (userMessage: MessageContent[], regenerate: boolean = false) => {
-            if (!regenerate) {
-                setOriginalUserInput([...userMessage]); // Store the original user input
-            }
-
             try {
                 await sendConversationToAPI(
                     getPersistedServerUrl(),
@@ -146,7 +137,6 @@ function App() {
         if (conversation) {
             dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
             dispatch({ type: 'SET_MESSAGES', messages: conversation.messages });
-            persistCurrentConversationId(Number(id));
         }
     };
 
@@ -158,32 +148,6 @@ function App() {
                 <AppDrawer
                     onAddConversation={addNewConversation}
                     onSwitchConversation={switchConversation}
-                    onUpdateFolders={(updatedFolders) => {
-                        dispatch({
-                            type: "UPDATE_FOLDERS",
-                            folders: updatedFolders,
-                        });
-                        persistConversations(updatedFolders);
-                    }}
-                    onDelete={(selectedConversationId) => {
-                        if (selectedConversationId !== null) {
-                            dispatch({
-                                type: "DELETE_CONVERSATION",
-                                id: selectedConversationId,
-                            });
-                            if (state.currentConversationId === selectedConversationId) {
-                                const firstConversation =
-                                    findFirstConversation(state.folders);
-                                if (firstConversation) {
-                                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
-                                    dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
-                                } else {
-                                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
-                                    dispatch({ type: 'SET_MESSAGES', messages: [] });
-                                }
-                            }
-                        }
-                    }}
                 />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                     <div className="main-content">
@@ -217,7 +181,7 @@ function App() {
                         }}
                         onRegenerate={() => {
                             if (state.messages.length > 0) {
-                                sendConversation(originalUserInput, true);
+                                sendConversation([], true);
                             }
                         }}
                     />
