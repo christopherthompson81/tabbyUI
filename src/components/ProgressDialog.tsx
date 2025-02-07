@@ -22,10 +22,9 @@ export default function ProgressDialog({
 
     useEffect(() => {
         if (progress && progress.model_type) {
-            // there is a linting error here related to '[progress.model_type]'. It says a computed property must have a type of string, number, symbol or any. Is there a fix? AI!
             setModelProgress((prev) => ({
                 ...prev,
-                [progress.model_type]: {
+                [progress.model_type as string]: {
                     module: progress.module,
                     modules: progress.modules,
                     status: progress.status,
