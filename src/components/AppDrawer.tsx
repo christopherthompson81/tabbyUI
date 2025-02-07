@@ -11,7 +11,6 @@ import { Drawer } from "@mui/material";
 import { useReducerContext } from "../reducers/ReducerContext";
 
 interface AppDrawerProps {
-    currentConversationId: string;
     onAddConversation: (folderId?: string) => void;
     onSwitchConversation: (id: string) => void;
     onUpdateFolders: (updatedFolders: ConversationFolder[]) => void;
@@ -31,13 +30,12 @@ function findFolder(
 }
 
 export function AppDrawer({
-    currentConversationId,
     onAddConversation,
     onSwitchConversation,
     onUpdateFolders,
     onDelete,
 }: AppDrawerProps) {
-    const { folders, dispatch } = useReducerContext();
+    const { folders, currentConversationId, dispatch } = useReducerContext();
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
     >(null);

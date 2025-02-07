@@ -172,7 +172,6 @@ function App() {
             <CssBaseline />
             <AppHeader />
             <AppDrawer
-                currentConversationId={state.currentConversationId}
                 onAddConversation={addNewConversation}
                 onSwitchConversation={switchConversation}
                 onUpdateFolders={(updatedFolders) => {

@@ -6,12 +6,12 @@ export interface ConversationsState {
 }
 
 export type ConversationsAction =
-  | { type: 'SET_CURRENT_CONVERSATION'; id: string }
-  | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
-  | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
-  | { type: 'DELETE_CONVERSATION'; id: string }
-  | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
-  | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
+    | { type: 'SET_CURRENT_CONVERSATION'; id: string }
+    | { type: 'SET_FOLDERS'; folders: ConversationFolder[] }
+    | { type: 'UPDATE_FOLDERS'; folders: ConversationFolder[] }
+    | { type: 'DELETE_CONVERSATION'; id: string }
+    | { type: 'ADD_CONVERSATION'; conversation: { id: string, name: string, messages: any[] }, folderId: string }
+    | { type: 'ADD_FOLDER'; folder: ConversationFolder, parentFolderId: string };
 
 export function conversationsReducer(state: ConversationsState, action: ConversationsAction): ConversationsState {
     switch (action.type) {
@@ -34,8 +34,9 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     subfolders: deleteConversation(folder.subfolders, id)
                 }));
             };
-            const newState = deleteConversation(state, action.id);
-            persistConversations(newState);
+            const newFolders = deleteConversation(state.folders, action.id);
+            const newState = { ...state, folders: newFolders };
+            persistConversations(newState.folders);
             return newState;
         }
 
@@ -63,8 +64,9 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     };
                 });
             };
-            const newState = addConversation(state, action.folderId);
-            persistConversations(newState);
+            const newFolders = addConversation(state.folders, action.folderId);
+            const newState = { ...state, folders: newFolders };
+            persistConversations(newState.folders);
             return newState;
         }
 
@@ -86,16 +88,14 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     };
                 });
             };
-            const newState = addFolder(state, action.parentFolderId);
-            persistConversations(newState);
-            return {
-                ...state,
-                folders: newState
-            };
+            const newFolders = addFolder(state.folders, action.parentFolderId);
+            const newState = { ...state, folders: newFolders };
+            persistConversations(newState.folders);
+            return newState;
         }
 
         case 'SET_CURRENT_CONVERSATION': {
-            persistCurrentConversationId(action.id);
+            persistCurrentConversationId(Number(action.id));
             return {
                 ...state,
                 currentConversationId: action.id
