@@ -26,12 +26,19 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
             };
         }
         case 'SET_FOLDERS':
-        // in the UPDATE_FOLDERS case, sort subfolders (recursively) before persisting or returning. AI!
         case 'UPDATE_FOLDERS': {
-            persistConversations(action.folders);
+            const sortFoldersRecursively = (folders: ConversationFolder[]): ConversationFolder[] => {
+                return folders.map(folder => ({
+                    ...folder,
+                    subfolders: sortFoldersRecursively(folder.subfolders.sort((a, b) => a.name.localeCompare(b.name)))
+                }));
+            };
+            
+            const sortedFolders = sortFoldersRecursively(action.folders);
+            persistConversations(sortedFolders);
             return {
                 ...state,
-                folders: action.folders
+                folders: sortedFolders
             };
         }
         case 'DELETE_CONVERSATION': {
