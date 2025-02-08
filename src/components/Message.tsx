@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useMemo } from "react";
 import { TextField, Button } from '@mui/material';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
@@ -15,10 +15,10 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// I'd like to add a method to encapsulate <think></think> tags. Can you add that so that text in those tags is collapsed to a box that shows "thinking" and a token or word count, but can be expanded to see the content? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [expandedThinkTags, setExpandedThinkTags] = useState<number[]>([]);
     const [editedContent, setEditedContent] = useState(
         content.find(c => c.type === 'text')?.text || ''
     );
@@ -96,11 +96,112 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                 ) : (
                     content.map((item, idx) => {
                         if (item.type === 'text') {
+                            const text = item.text || '';
+                            const thinkMatches = Array.from(text.matchAll(/<think>(.*?)<\/think>/gs));
+                            
+                            if (thinkMatches.length > 0) {
+                                let lastIndex = 0;
+                                const elements = [];
+                                
+                                thinkMatches.forEach((match, matchIdx) => {
+                                    // Add text before the think tag
+                                    if (match.index && match.index > lastIndex) {
+                                        elements.push(
+                                            <ReactMarkdown key={`${idx}-${matchIdx}-pre`} components={{
+                                                code: codeComponent
+                                            }}>
+                                                {text.slice(lastIndex, match.index)}
+                                            </ReactMarkdown>
+                                        );
+                                    }
+                                    
+                                    // Add the think tag content
+                                    const thinkContent = match[1];
+                                    const wordCount = thinkContent.trim().split(/\s+/).length;
+                                    const isExpanded = expandedThinkTags.includes(matchIdx);
+                                    
+                                    elements.push(
+                                        <Box 
+                                            key={`${idx}-${matchIdx}-think`}
+                                            sx={{
+                                                backgroundColor: 'action.hover',
+                                                borderRadius: 1,
+                                                p: 1,
+                                                my: 1,
+                                                cursor: 'pointer'
+                                            }}
+                                            onClick={() => {
+                                                setExpandedThinkTags(prev => 
+                                                    isExpanded 
+                                                        ? prev.filter(i => i !== matchIdx)
+                                                        : [...prev, matchIdx]
+                                                );
+                                            }}
+                                        >
+                                            <Typography variant="body2" color="text.secondary">
+                                                {isExpanded ? '🤔 Thinking... (click to collapse)' : `🤔 Thinking... (${wordCount} words, click to expand)`}
+                                            </Typography>
+                                            <Collapse in={isExpanded}>
+                                                <Box sx={{ mt: 1 }}>
+                                                    <ReactMarkdown components={{
+                                                        code: codeComponent
+                                                    }}>
+                                                        {thinkContent}
+                                                    </ReactMarkdown>
+                                                </Box>
+                                            </Collapse>
+                                        </Box>
+                                    );
+                                    
+                                    lastIndex = (match.index || 0) + match[0].length;
+                                });
+                                
+                                // Add any remaining text after the last think tag
+                                if (lastIndex < text.length) {
+                                    elements.push(
+                                        <ReactMarkdown key={`${idx}-final`} components={{
+                                            code: codeComponent
+                                        }}>
+                                            {text.slice(lastIndex)}
+                                        </ReactMarkdown>
+                                    );
+                                }
+                                
+                                return <>{elements}</>;
+                            }
+                            
+                            // If no think tags, render normally
                             return (
                                 <ReactMarkdown
                                     key={idx}
                                     components={{
-                                        code({ node, inline, className, children, ...props }: {
+                                        code: codeComponent
+                                    }}
+                                >
+                                    {text}
+                                </ReactMarkdown>
+                            );
+                        } else if (item.type === 'image_url' && item.image_url) {
+                            return (
+                                <img
+                                    key={idx}
+                                    src={item.image_url.url}
+                                    alt="User uploaded"
+                                    style={{ maxWidth: '100%', margin: '10px 0' }}
+                                    loading="lazy"
+                                />
+                            );
+                        }
+                        return null;
+                    })
+                )}
+            </div>
+        </div>
+    );
+};
+
+// Define code component separately for reuse
+const codeComponent = ({ node, inline, className, children, ...props }: {
                                             node?: any;
                                             inline?: boolean;
                                             className?: string;
