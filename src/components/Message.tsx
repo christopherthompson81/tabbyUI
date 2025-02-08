@@ -1,12 +1,12 @@
 import { useCallback, useState, useRef } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import 'highlight.js/styles/github.css';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import rehypeHighlight from 'rehype-highlight';
+import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
@@ -114,7 +114,26 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             <ReactMarkdown 
                                                 key={`${idx}-${matchIdx}-pre`}
                                                 remarkPlugins={[remarkMath]}
-                                                rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                rehypePlugins={[rehypeKatex]}
+                                                components={{
+                                                    code({node, inline, className, children, ...props}) {
+                                                        const match = /language-(\w+)/.exec(className || '');
+                                                        return !inline && match ? (
+                                                            <SyntaxHighlighter
+                                                                style={dark}
+                                                                language={match[1]}
+                                                                PreTag="div"
+                                                                {...props}
+                                                            >
+                                                                {String(children).replace(/\n$/, '')}
+                                                            </SyntaxHighlighter>
+                                                        ) : (
+                                                            <code className={className} {...props}>
+                                                                {children}
+                                                            </code>
+                                                        );
+                                                    }
+                                                }}
                                             >
                                                 {text.slice(lastIndex, match.index)}
                                             </ReactMarkdown>
@@ -197,7 +216,26 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                 <ReactMarkdown 
                                                     key={`${idx}-final-text-${partIdx}`}
                                                     remarkPlugins={[remarkMath]}
-                                                    rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                    rehypePlugins={[rehypeKatex]}
+                                                    components={{
+                                                        code({node, inline, className, children, ...props}) {
+                                                            const match = /language-(\w+)/.exec(className || '');
+                                                            return !inline && match ? (
+                                                                <SyntaxHighlighter
+                                                                    style={dark}
+                                                                    language={match[1]}
+                                                                    PreTag="div"
+                                                                    {...props}
+                                                                >
+                                                                    {String(children).replace(/\n$/, '')}
+                                                                </SyntaxHighlighter>
+                                                            ) : (
+                                                                <code className={className} {...props}>
+                                                                    {children}
+                                                                </code>
+                                                            );
+                                                        }
+                                                    }}
                                                 >
                                                     {part}
                                                 </ReactMarkdown>
@@ -214,8 +252,25 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 <ReactMarkdown
                                     key={idx}
                                     remarkPlugins={[remarkMath]}
-                                    rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                    rehypePlugins={[rehypeKatex]}
                                     components={{
+                                        code({node, inline, className, children, ...props}) {
+                                            const match = /language-(\w+)/.exec(className || '');
+                                            return !inline && match ? (
+                                                <SyntaxHighlighter
+                                                    style={dark}
+                                                    language={match[1]}
+                                                    PreTag="div"
+                                                    {...props}
+                                                >
+                                                    {String(children).replace(/\n$/, '')}
+                                                </SyntaxHighlighter>
+                                            ) : (
+                                                <code className={className} {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        },
                                         box: ({ children }) => (
                                             <Box 
                                                 sx={{ 
