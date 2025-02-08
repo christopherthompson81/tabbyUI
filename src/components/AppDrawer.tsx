@@ -73,17 +73,23 @@ export function AppDrawer() {
         }
     };
 
-    // Update this to recursively look in subfolders AI!
     const onSaveFolder = () => {
         if (editingFolderId !== null) {
-            dispatch({
-                type: "UPDATE_FOLDERS",
-                folders: folders.map((folder) => {
-                    if (folder.id == editingFolderId) {
+            const updateFolderName = (folders: ConversationFolder[]): ConversationFolder[] => {
+                return folders.map(folder => {
+                    if (folder.id === editingFolderId) {
                         return { ...folder, name: newFolderName };
                     }
-                    return folder;
-                }),
+                    return {
+                        ...folder,
+                        subfolders: updateFolderName(folder.subfolders)
+                    };
+                });
+            };
+
+            dispatch({
+                type: "UPDATE_FOLDERS",
+                folders: updateFolderName(folders)
             });
             setEditingFolderId(null);
         }
