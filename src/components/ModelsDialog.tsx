@@ -72,8 +72,8 @@ function ModelsDialog({
             });
             if (!response.ok) throw new Error("Failed to fetch models");
             const data = await response.json();
-            // Before setting the models, sort them by name. AI!
-            setModels(data.data);
+            const sortedModels = [...data.data].sort((a, b) => a.id.localeCompare(b.id));
+            setModels(sortedModels);
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Failed to fetch models"
