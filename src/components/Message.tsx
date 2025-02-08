@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useMemo } from "react";
-import { TextField, Button } from '@mui/material';
+import { TextField, Button, Typography, Collapse } from '@mui/material';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -203,48 +203,25 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
 
 // Define code component separately for reuse
 const codeComponent = ({ node, inline, className, children, ...props }: {
-                                            node?: any;
-                                            inline?: boolean;
-                                            className?: string;
-                                            children: React.ReactNode;
-                                            [key: string]: any;
-                                        }) => {
-                                            const match = /language-(\w+)/.exec(className || '');
-                                            return !inline && match ? (
-                                                <SyntaxHighlighter
-                                                    children={String(children).replace(/\n$/, '')}
-                                                    style={oneDark}
-                                                    language={match[1]}
-                                                    PreTag="div"
-                                                    {...props}
-                                                />
-                                            ) : (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            );
-                                        }
-                                    }}
-                                >
-                                    {item.text || ''}
-                                </ReactMarkdown>
-                            );
-                        } else if (item.type === 'image_url' && item.image_url) {
-                            return (
-                                <img
-                                    key={idx}
-                                    src={item.image_url.url}
-                                    alt="User uploaded"
-                                    style={{ maxWidth: '100%', margin: '10px 0' }}
-                                    loading="lazy"
-                                />
-                            );
-                        }
-                        return null;
-                    })
-                )}
-            </div>
-        </div>
+    node?: any;
+    inline?: boolean;
+    className?: string;
+    children: React.ReactNode;
+    [key: string]: any;
+}) => {
+    const match = /language-(\w+)/.exec(className || '');
+    return !inline && match ? (
+        <SyntaxHighlighter
+            children={String(children).replace(/\n$/, '')}
+            style={oneDark}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+        />
+    ) : (
+        <code className={className} {...props}>
+            {children}
+        </code>
     );
 };
 
