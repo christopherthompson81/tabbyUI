@@ -1,5 +1,4 @@
 import {
-    useEffect,
     useRef,
     useLayoutEffect,
     useReducer,
@@ -13,7 +12,9 @@ import {
 // Local Imports
 import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
+import { MessageProps } from "./services/tabbyAPI";
 import {
+    ConversationFolder,
     getPersistedConversations,
     getPersistedCurrentConversationId,
     findConversation,
@@ -83,41 +84,12 @@ function App() {
         }
     }, [state.messages]);
 
-
-    const addNewConversation = (folderId = "root") => {
-        const newId = Date.now().toString();
-        const newConversationName = new Date().toLocaleString();
-
-        dispatch({
-            type: "ADD_CONVERSATION",
-            conversation: {
-                id: newId,
-                name: newConversationName,
-                messages: [],
-            },
-            folderId,
-        });
-        dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
-        return newId;
-    };
-
-    const switchConversation = (id: string) => {
-        const conversation = findConversation(state.folders, id);
-        if (conversation) {
-            dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
-            dispatch({ type: 'SET_MESSAGES', messages: conversation.messages });
-        }
-    };
-
     return (
         <ReducerContext.Provider value={providerState} >
             <Box sx={{ display: "flex" }}>
                 <CssBaseline />
                 <AppHeader />
-                <AppDrawer
-                    onAddConversation={addNewConversation}
-                    onSwitchConversation={switchConversation}
-                />
+                <AppDrawer />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                     <Messages messagesEndRef={messagesEndRef} />
                     <ChatInput messagesEndRef={messagesEndRef} />

@@ -11,11 +11,6 @@ import { ChangeEvent } from "react";
 import { Drawer } from "@mui/material";
 import { useReducerContext } from "../reducers/ReducerContext";
 
-interface AppDrawerProps {
-    onAddConversation: (folderId?: string) => void;
-    onSwitchConversation: (id: string) => void;
-}
-
 function findFolder(
     folders: ConversationFolder[],
     folderId: string
@@ -28,10 +23,7 @@ function findFolder(
     return undefined;
 }
 
-export function AppDrawer({
-    onAddConversation,
-    onSwitchConversation,
-}: AppDrawerProps) {
+export function AppDrawer() {
     const { folders, currentConversationId, dispatch } = useReducerContext();
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
@@ -39,6 +31,31 @@ export function AppDrawer({
     const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
     const [newConversationName, setNewConversationName] = useState("");
     const [newFolderName, setNewFolderName] = useState("");
+
+    const onAddConversation = (folderId = "root") => {
+        const newId = Date.now().toString();
+        const newConversationName = new Date().toLocaleString();
+
+        dispatch({
+            type: "ADD_CONVERSATION",
+            conversation: {
+                id: newId,
+                name: newConversationName,
+                messages: [],
+            },
+            folderId,
+        });
+        dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
+        return newId;
+    };
+
+    const onSwitchConversation = (id: string) => {
+        const conversation = findConversation(folders, id);
+        if (conversation) {
+            dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
+            dispatch({ type: 'SET_MESSAGES', messages: conversation.messages });
+        }
+    };
 
     const onEditConversation = (id: string) => {
         setEditingConversationId(id);
