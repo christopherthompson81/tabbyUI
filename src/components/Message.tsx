@@ -18,6 +18,7 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
+// Tell me how inline LaTeX can be handled where it isn't demarked by $$ boundaries AI?
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -205,7 +206,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                 >
                                                     <ReactMarkdown
                                                         remarkPlugins={[remarkMath]}
-                                                        rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                        rehypePlugins={[rehypeKatex]}
                                                     >
                                                         {content}
                                                     </ReactMarkdown>
