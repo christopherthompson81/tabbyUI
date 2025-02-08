@@ -154,19 +154,7 @@ function App() {
                 />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                     <Messages
-                        messages={state.messages}
                         messagesEndRef={messagesEndRef}
-                        onEditMessage={(index, newContent) => {
-                            const updatedMessages = [...state.messages];
-                            updatedMessages[index].content = newContent;
-                            saveConversation(updatedMessages);
-                        }}
-                        onDeleteMessage={(index) => {
-                            const updatedMessages = state.messages.filter(
-                                (_, idx) => idx !== index
-                            );
-                            saveConversation(updatedMessages);
-                        }}
                     />
 
                     <ChatInput
