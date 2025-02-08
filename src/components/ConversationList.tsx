@@ -7,7 +7,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { Conversation, ConversationFolder, getPersistedCurrentConversationId } from '../utils/persistence';
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-import { useReducerContext } from "../reducers/ReducerContext";
 
 interface ConversationListProps {
     folders: ConversationFolder[];
@@ -33,7 +32,7 @@ interface FolderItemProps {
 
 const isParentOfCurrentConversation = (folder: ConversationFolder, currentId: string): boolean => {
     // Check if any direct conversation is the current one
-    if (folder.conversations.some(conv => conv.id === currentId)) {
+    if (folder.conversations.some(conv => conv.id == currentId)) {
         return true;
     }
     // Recursively check subfolders
@@ -50,7 +49,7 @@ function FolderItem({
     onEditFolder,
     onDelete
 }: FolderItemProps) {
-    const [open, setOpen] = useState(() => isParentOfCurrentConversation(folder, currentConversationId));
+    const [open, setOpen] = useState(isParentOfCurrentConversation(folder, currentConversationId));
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
