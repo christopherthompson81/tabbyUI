@@ -77,7 +77,6 @@ export default function AppHeader() {
         return () => clearInterval(interval);
     }, []);
 
-    // SaveConversationDialog should not be here, but in AppDrawer. Please move it there. AI!
     return (
         <>
             <AppBar
