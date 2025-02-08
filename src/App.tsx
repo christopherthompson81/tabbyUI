@@ -152,10 +152,7 @@ function App() {
                     onSwitchConversation={switchConversation}
                 />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
-                    <Messages
-                        messagesEndRef={messagesEndRef}
-                    />
-
+                    <Messages messagesEndRef={messagesEndRef} />
                     <ChatInput
                         onSend={(content: MessageContent[]) => {
                             if (content.length > 0) {
