@@ -3,6 +3,7 @@ import {
     useEffect,
     useState,
     useCallback,
+    useContext,
 } from "react";
 import {
     AppBar,
@@ -28,10 +29,12 @@ import {
     persistAdminApiKey,
     getPersistedAdminApiKey,
 } from "../utils/persistence";
-//componets
+//components
 import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
+import { SaveConversationDialog } from "./SaveConversationDialog";
+import { ReducerContext } from "../reducers/ReducerContext";
 
 export default function AppHeader() {
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -40,6 +43,8 @@ export default function AppHeader() {
     const [showSettings, setShowSettings] = React.useState(false);
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
+    const [showSave, setShowSave] = React.useState(false);
+    const { state } = useContext(ReducerContext);
     const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
     const [apiKey, setApiKey] = useState(getPersistedApiKey());
     const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
@@ -119,6 +124,14 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
+                                setShowSave(true);
+                            }}
+                        >
+                            Save
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
                                 setShowAbout(true);
                             }}
                         >
@@ -189,6 +202,41 @@ export default function AppHeader() {
                 adminApiKey={adminApiKey}
             />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
+            <SaveConversationDialog
+                open={showSave}
+                onClose={() => setShowSave(false)}
+                onSave={(format) => {
+                    const currentConversation = state.folders
+                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
+                        .find(c => c.id === state.currentConversationId);
+                    
+                    if (currentConversation) {
+                        const content = {
+                            name: currentConversation.name,
+                            messages: state.messages
+                        };
+                        
+                        // Create and trigger download
+                        const blob = new Blob([format === 'json' ? JSON.stringify(content, null, 2) : content], 
+                            { type: `text/${format === 'json' ? 'json' : 'plain'}` });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${currentConversation.name}.${format}`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
+                    setShowSave(false);
+                }}
+                conversation={{
+                    name: state.folders
+                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
+                        .find(c => c.id === state.currentConversationId)?.name || 'Untitled',
+                    messages: state.messages
+                }}
+            />
         </>
     );
 }
