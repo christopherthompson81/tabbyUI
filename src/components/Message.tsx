@@ -17,7 +17,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// codeComponent is not defined. This might be intentional because of the plugin use. Can you review the code and make sure that codeComponent is either not called, or has a definition as needed? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -119,9 +118,11 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                     // Add text before the think tag
                                     if (match.index && match.index > lastIndex) {
                                         elements.push(
-                                            <ReactMarkdown key={`${idx}-${matchIdx}-pre`} components={{
-                                                code: codeComponent
-                                            }}>
+                                            <ReactMarkdown 
+                                                key={`${idx}-${matchIdx}-pre`}
+                                                remarkPlugins={[remarkMath]}
+                                                rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                            >
                                                 {text.slice(lastIndex, match.index)}
                                             </ReactMarkdown>
                                         );
@@ -155,9 +156,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             </Typography>
                                             <Collapse in={isExpanded}>
                                                 <Box sx={{ mt: 1 }}>
-                                                    <ReactMarkdown components={{
-                                                        code: codeComponent
-                                                    }}>
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkMath]}
+                                                        rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                    >
                                                         {thinkContent}
                                                     </ReactMarkdown>
                                                 </Box>
@@ -189,9 +191,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                         bgcolor: 'background.paper'
                                                     }}
                                                 >
-                                                    <ReactMarkdown components={{
-                                                        code: codeComponent
-                                                    }}>
+                                                    <ReactMarkdown
+                                                        remarkPlugins={[remarkMath]}
+                                                        rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                    >
                                                         {content}
                                                     </ReactMarkdown>
                                                 </Box>
