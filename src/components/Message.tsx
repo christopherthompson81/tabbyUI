@@ -5,8 +5,8 @@ import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
@@ -170,7 +170,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                 <Box sx={{ mt: 1 }}>
                                                     <ReactMarkdown
                                                         remarkPlugins={[remarkMath]}
-                                                        rehypePlugins={[rehypeKatex, rehypeHighlight]}
+                                                        rehypePlugins={[rehypeKatex]}
                                                     >
                                                         {thinkContent}
                                                     </ReactMarkdown>
