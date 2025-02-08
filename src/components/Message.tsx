@@ -209,7 +209,7 @@ const codeComponent = ({ node, inline, className, children, ...props }: {
                                             className?: string;
                                             children: React.ReactNode;
                                             [key: string]: any;
-                                        }) {
+                                        }) => {
                                             const match = /language-(\w+)/.exec(className || '');
                                             return !inline && match ? (
                                                 <SyntaxHighlighter
