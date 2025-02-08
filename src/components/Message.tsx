@@ -1,11 +1,11 @@
-import { useCallback, useState, useRef, useMemo } from "react";
+import { useCallback, useState, useRef } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import rehypeHighlight from 'rehype-highlight';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
@@ -17,34 +17,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// Define code component separately for reuse
-const codeComponent = ({ node, inline, className, children, ...props }: {
-    node?: any;
-    inline?: boolean;
-    className?: string;
-    children: React.ReactNode;
-    [key: string]: any;
-}) => {
-    const match = /language-(\w+)/.exec(className || '');
-    // Handle inline LaTeX
-    if (inline && /^\$.*\$$/.test(String(children))) {
-        const math = String(children).slice(1, -1);
-        return <InlineMath>{math}</InlineMath>;
-    }
-    return !inline && match ? (
-        <SyntaxHighlighter
-            children={String(children).replace(/\n$/, '')}
-            style={oneDark}
-            language={match[1]}
-            PreTag="div"
-            {...props}
-        />
-    ) : (
-        <code className={className} {...props}>
-            {children}
-        </code>
-    );
-};
 
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
@@ -246,6 +218,8 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                             return (
                                 <ReactMarkdown
                                     key={idx}
+                                    remarkPlugins={[remarkMath]}
+                                    rehypePlugins={[rehypeKatex, rehypeHighlight]}
                                     components={{
                                         box: ({ children }) => (
                                             <Box 
@@ -261,34 +235,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             >
                                                 {children}
                                             </Box>
-                                        ),
-                                        code: ({ node, inline, className, children, ...props }) => {
-                                            // Handle LaTeX code blocks
-                                            if (className === 'language-latex' || className === 'language-math') {
-                                                return <BlockMath>{String(children).replace(/\n$/, '')}</BlockMath>;
-                                            }
-                                            
-                                            const match = /language-(\w+)/.exec(className || '');
-                                            // Handle inline LaTeX
-                                            if (inline && /^\$.*\$$/.test(String(children))) {
-                                                const math = String(children).slice(1, -1);
-                                                return <InlineMath>{math}</InlineMath>;
-                                            }
-                                            
-                                            return !inline && match ? (
-                                                <SyntaxHighlighter
-                                                    children={String(children).replace(/\n$/, '')}
-                                                    style={oneDark}
-                                                    language={match[1]}
-                                                    PreTag="div"
-                                                    {...props}
-                                                />
-                                            ) : (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            );
-                                        }
+                                        )
                                     }}
                                 >
                                     {text}
