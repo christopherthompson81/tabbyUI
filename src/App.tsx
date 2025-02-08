@@ -23,21 +23,44 @@ import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
 
-function getMessages() {
-    const id = getPersistedCurrentConversationId();
+function initializeState(): ConversationsState {
     const folders = getPersistedConversations();
-    const conversation = findConversation(folders, id);
-    return conversation ? conversation.messages : [];
+    const currentConversationId = getPersistedCurrentConversationId();
+    
+    if (!currentConversationId) {
+        const newId = Date.now().toString();
+        const newConversation = {
+            id: newId,
+            name: new Date().toLocaleString(),
+            messages: [],
+            timestamp: Date.now(),
+            author: "User"
+        };
+        
+        // Add to root folder
+        if (folders.length > 0) {
+            folders[0].conversations.push(newConversation);
+        }
+        
+        return {
+            folders,
+            currentConversationId: newId,
+            messages: []
+        };
+    }
+    
+    const conversation = findConversation(folders, currentConversationId);
+    return {
+        folders,
+        currentConversationId,
+        messages: conversation ? conversation.messages : []
+    };
 }
 
 function App() {
     const [state, dispatch] = useReducer(
         conversationsReducer,
-        {
-            folders: getPersistedConversations(),
-            currentConversationId: getPersistedCurrentConversationId(),
-            messages: getMessages()
-        }
+        initializeState()
     );
     const providerState = {
         folders: state.folders,
@@ -54,16 +77,6 @@ function App() {
         }
     }, [state.messages]);
 
-    // Bootstrap conversations
-    // Things will happen repeatedly with this. It should probably be in the reducer code.
-    useEffect(() => {
-        if (!state.currentConversationId) {
-            const tempConversationId = addNewConversation();
-            dispatch({ type: 'SET_MESSAGES', messages: [] });
-            dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
-            dispatch({ type: "UPDATE_CONVERSATION", id: tempConversationId.toString(), messages: [] });
-        }
-    }, [state.currentConversationId]);
 
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
