@@ -1,6 +1,5 @@
 import {
     useEffect,
-    useCallback,
     useRef,
     useLayoutEffect,
     useReducer,
@@ -15,16 +14,8 @@ import {
 import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
 import {
-    MessageContent,
-    sendConversation as sendConversationToAPI,
-    MessageProps,
-} from "./services/tabbyAPI";
-import {
-    ConversationFolder,
     getPersistedConversations,
     getPersistedCurrentConversationId,
-    getPersistedServerUrl,
-    getPersistedApiKey,
     findConversation,
 } from "./utils/persistence";
 import AppHeader from "./components/AppHeader";
@@ -32,7 +23,9 @@ import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
 
-function getMessages(id: string, folders: ConversationFolder[]) {
+function getMessages() {
+    const id = getPersistedCurrentConversationId();
+    const folders = getPersistedConversations();
     const conversation = findConversation(folders, id);
     return conversation ? conversation.messages : [];
 }
@@ -43,7 +36,7 @@ function App() {
         {
             folders: getPersistedConversations(),
             currentConversationId: getPersistedCurrentConversationId(),
-            messages: getMessages(getPersistedCurrentConversationId(), getPersistedConversations())
+            messages: getMessages()
         }
     );
     const providerState = {
@@ -53,17 +46,6 @@ function App() {
         dispatch
     }
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
-    const scrollToBottom = useCallback(() => {
-        if (messagesEndRef.current) {
-            // Only scroll if user is near bottom
-            const { scrollTop, scrollHeight, clientHeight } =
-                document.documentElement;
-            if (scrollHeight - (scrollTop + clientHeight) < 100) {
-                messagesEndRef.current.scrollIntoView({ behavior: "auto" });
-            }
-        }
-    }, []);
 
     // Smooth-Scrolling
     useLayoutEffect(() => {
@@ -79,43 +61,9 @@ function App() {
             const tempConversationId = addNewConversation();
             dispatch({ type: 'SET_MESSAGES', messages: [] });
             dispatch({ type: "SET_CURRENT_CONVERSATION", id: tempConversationId.toString() });
-            saveConversation([]);
+            dispatch({ type: "UPDATE_CONVERSATION", id: tempConversationId.toString(), messages: [] });
         }
     }, [state.currentConversationId]);
-
-    const saveConversation = useCallback(
-        (v: MessageProps[]) => {
-            if (state.currentConversationId !== null) {
-                dispatch({ type: "UPDATE_CONVERSATION", id: state.currentConversationId, messages: v });
-            }
-        },
-        [state]
-    );
-
-    const sendConversation = useCallback(
-        async (userMessage: MessageContent[], regenerate: boolean = false) => {
-            try {
-                await sendConversationToAPI(
-                    getPersistedServerUrl(),
-                    getPersistedApiKey(),
-                    state.messages,
-                    userMessage,
-                    regenerate,
-                    (updatedMessages) => {
-                        dispatch({ type: 'SET_MESSAGES', messages: updatedMessages });
-                        scrollToBottom();
-                    },
-                    (finalMessages) => {
-                        dispatch({ type: 'SET_MESSAGES', messages: finalMessages });
-                        saveConversation(finalMessages);
-                    }
-                );
-            } catch (error) {
-                console.error("Error sending conversation:", error);
-            }
-        },
-        [state.messages, saveConversation]
-    );
 
     const addNewConversation = (folderId = "root") => {
         const newId = Date.now().toString();
@@ -153,18 +101,7 @@ function App() {
                 />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                     <Messages messagesEndRef={messagesEndRef} />
-                    <ChatInput
-                        onSend={(content: MessageContent[]) => {
-                            if (content.length > 0) {
-                                sendConversation(content);
-                            }
-                        }}
-                        onRegenerate={() => {
-                            if (state.messages.length > 0) {
-                                sendConversation([], true);
-                            }
-                        }}
-                    />
+                    <ChatInput messagesEndRef={messagesEndRef} />
                 </Box>
             </Box>
         </ReducerContext.Provider>

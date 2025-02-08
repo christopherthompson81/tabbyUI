@@ -71,13 +71,6 @@ export function AppDrawer({
         }
     };
 
-    const onUpdateFolders = (updatedFolders: ConversationFolder[]) => {
-        dispatch({
-            type: "UPDATE_FOLDERS",
-            folders: updatedFolders,
-        });
-    }
-
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
             dispatch({
