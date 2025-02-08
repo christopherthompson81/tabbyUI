@@ -1,6 +1,5 @@
 import { useCallback, useState, useRef, useMemo } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
-// I don't have this file. Dowload it AI!
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
 import "../styles.css";
