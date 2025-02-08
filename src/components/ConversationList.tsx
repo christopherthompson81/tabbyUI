@@ -31,7 +31,15 @@ interface FolderItemProps {
     onDelete: (id: string) => void;
 }
 
-// for the open state, if the FolderItem is the currentConversationId or a parent thereof, it should be true. Make an initializer function that returns the correct value and call it in the useState call AI!
+const isParentOfCurrentConversation = (folder: ConversationFolder, currentId: string): boolean => {
+    // Check if any direct conversation is the current one
+    if (folder.conversations.some(conv => conv.id === currentId)) {
+        return true;
+    }
+    // Recursively check subfolders
+    return folder.subfolders.some(subfolder => isParentOfCurrentConversation(subfolder, currentId));
+};
+
 function FolderItem({
     folder,
     currentConversationId,
@@ -42,7 +50,7 @@ function FolderItem({
     onEditFolder,
     onDelete
 }: FolderItemProps) {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(() => isParentOfCurrentConversation(folder, currentConversationId));
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
