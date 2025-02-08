@@ -26,6 +26,7 @@ function findFolder(
 
 export function AppDrawer() {
     const { folders, currentConversationId, messages, dispatch } = useReducerContext();
+    // setShowSave needs to be passed into ConversationList, where it can be attached to the "Save Conversation" option. AI!
     const [showSave, setShowSave] = useState(false);
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
