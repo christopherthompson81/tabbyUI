@@ -15,6 +15,7 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
+// I'd like to add a method to encapsulate <think></think> tags. Can you add that so that text in those tags is collapsed to a box that shows "thinking" and a token or word count, but can be expanded to see the content? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
