@@ -48,6 +48,7 @@ function initializeState(): ReducerState {
         if (folders.length == 0) {
             folders[0].conversations.push(newConversation);
         }
+        // Persist these values using functions from src/utils/persistance.ts AI!
         
         return {
             folders,
