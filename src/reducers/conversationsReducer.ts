@@ -26,6 +26,7 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
             };
         }
         case 'SET_FOLDERS':
+        // in the UPDATE_FOLDERS case, sort subfolders (recursively) before persisting or returning. AI!
         case 'UPDATE_FOLDERS': {
             persistConversations(action.folders);
             return {
