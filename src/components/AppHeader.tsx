@@ -3,7 +3,6 @@ import {
     useEffect,
     useState,
     useCallback,
-    useContext,
 } from "react";
 import {
     AppBar,
@@ -80,6 +79,7 @@ export default function AppHeader() {
         return () => clearInterval(interval);
     }, []);
 
+    // SaveConversationDialog should not be here, but in AppDrawer. Please move it there. AI!
     return (
         <>
             <AppBar
