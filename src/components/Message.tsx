@@ -1,6 +1,7 @@
 import { useCallback, useState, useRef } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/github.css';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import remarkMath from 'remark-math';
@@ -17,7 +18,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// Code highlighting does not appear to be working, can you ensure that it is being handled? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
