@@ -95,6 +95,7 @@ export function AppDrawer() {
         }
     };
 
+    // Recursively look in subfolders AI!
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
             dispatch({
