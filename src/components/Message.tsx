@@ -18,7 +18,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// Tell me how inline LaTeX can be handled where it isn't demarked by $$ boundaries AI?
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -119,6 +118,21 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                 components={{
                                                     code({node, inline, className, children, ...props}) {
                                                         const match = /language-(\w+)/.exec(className || '');
+                                                        
+                                                        // Handle inline LaTeX patterns
+                                                        if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
+                                                            return (
+                                                                <span className="inline-math">
+                                                                    <ReactMarkdown
+                                                                        remarkPlugins={[remarkMath]}
+                                                                        rehypePlugins={[rehypeKatex]}
+                                                                    >
+                                                                        {`$${String(children)}$`}
+                                                                    </ReactMarkdown>
+                                                                </span>
+                                                            );
+                                                        }
+                                                        
                                                         return !inline && match ? (
                                                             <SyntaxHighlighter
                                                                 style={dark}
@@ -221,6 +235,21 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                     components={{
                                                         code({node, inline, className, children, ...props}) {
                                                             const match = /language-(\w+)/.exec(className || '');
+                                                            
+                                                            // Handle inline LaTeX patterns
+                                                            if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
+                                                                return (
+                                                                    <span className="inline-math">
+                                                                        <ReactMarkdown
+                                                                            remarkPlugins={[remarkMath]}
+                                                                            rehypePlugins={[rehypeKatex]}
+                                                                        >
+                                                                            {`$${String(children)}$`}
+                                                                        </ReactMarkdown>
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            
                                                             return !inline && match ? (
                                                                 <SyntaxHighlighter
                                                                     style={dark}
@@ -257,6 +286,21 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                     components={{
                                         code({node, inline, className, children, ...props}) {
                                             const match = /language-(\w+)/.exec(className || '');
+                                            
+                                            // Handle inline LaTeX patterns
+                                            if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
+                                                return (
+                                                    <span className="inline-math">
+                                                        <ReactMarkdown
+                                                            remarkPlugins={[remarkMath]}
+                                                            rehypePlugins={[rehypeKatex]}
+                                                        >
+                                                            {`$${String(children)}$`}
+                                                        </ReactMarkdown>
+                                                    </span>
+                                                );
+                                            }
+                                            
                                             return !inline && match ? (
                                                 <SyntaxHighlighter
                                                     style={dark}
