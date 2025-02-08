@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 
 // Local Imports
-import Message from "./Message";
 import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
 import {
@@ -31,6 +30,7 @@ import {
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
+import Message from "./components/Message";
 
 function getMessages(id: string, folders: ConversationFolder[]) {
     const conversation = findConversation(folders, id);
@@ -142,6 +142,7 @@ function App() {
         }
     };
 
+    // move the "main-content" div to it's own component, Messages. AI!
     return (
         <ReducerContext.Provider value={providerState} >
             <Box sx={{ display: "flex" }}>
