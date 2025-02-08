@@ -101,15 +101,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                     content.map((item, idx) => {
                         if (item.type === 'text') {
                             const text = item.text || '';
-                            // First handle \boxed{} expressions specifically
-                            const processedText = text.replace(/\\boxed{([^}]+)}/g, (_, content) => {
-                                return `<box>${content}</box>`;
-                            });
-                            // Then handle other LaTeX expressions
-                            const finalText = processedText.replace(/\\[a-zA-Z]+{[^}]+}/g, (match) => {
-                                return `$${match}$`;
-                            });
-                            const thinkMatches = Array.from(finalText.matchAll(/<think>(.*?)<\/think>/gs));
+                            const thinkMatches = Array.from(text.matchAll(/<think>(.*?)<\/think>/gs));
                             
                             if (thinkMatches.length > 0) {
                                 let lastIndex = 0;
