@@ -23,6 +23,7 @@ import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
 
+// Change the return type to be ReducerState and create an interface for it AI!
 function initializeState(): ConversationsState {
     const folders = getPersistedConversations();
     const currentConversationId = getPersistedCurrentConversationId();
