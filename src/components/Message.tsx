@@ -17,7 +17,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// codeComponent is still being called. One more time, go through the code and either make sure it's not being called, or that it is defined. AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -203,10 +202,9 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                         } else if (part.trim()) {
                                             elements.push(
                                                 <ReactMarkdown 
-                                                    key={`${idx}-final-text-${partIdx}`} 
-                                                    components={{
-                                                        code: codeComponent
-                                                    }}
+                                                    key={`${idx}-final-text-${partIdx}`}
+                                                    remarkPlugins={[remarkMath]}
+                                                    rehypePlugins={[rehypeKatex, rehypeHighlight]}
                                                 >
                                                     {part}
                                                 </ReactMarkdown>
