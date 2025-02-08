@@ -197,15 +197,46 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 });
                                 
                                 // Add any remaining text after the last think tag
-                                // split by \boxed{}, and use BlockMath for the boxed items and ReactMarkdown for everything else AI!
                                 if (lastIndex < text.length) {
-                                    elements.push(
-                                        <ReactMarkdown key={`${idx}-final`} components={{
-                                            code: codeComponent
-                                        }}>
-                                            {text.slice(lastIndex)}
-                                        </ReactMarkdown>
-                                    );
+                                    const remainingText = text.slice(lastIndex);
+                                    const parts = remainingText.split(/(?=\\boxed{)|(?<=})/);
+                                    
+                                    parts.forEach((part, partIdx) => {
+                                        if (part.startsWith('\\boxed{') && part.endsWith('}')) {
+                                            const content = part.slice(7, -1); // Remove \boxed{ and }
+                                            elements.push(
+                                                <Box 
+                                                    key={`${idx}-final-box-${partIdx}`}
+                                                    sx={{ 
+                                                        border: 1, 
+                                                        borderRadius: 1, 
+                                                        p: 1, 
+                                                        display: 'inline-block', 
+                                                        mx: 1,
+                                                        borderColor: 'primary.main',
+                                                        bgcolor: 'background.paper'
+                                                    }}
+                                                >
+                                                    <ReactMarkdown components={{
+                                                        code: codeComponent
+                                                    }}>
+                                                        {content}
+                                                    </ReactMarkdown>
+                                                </Box>
+                                            );
+                                        } else if (part.trim()) {
+                                            elements.push(
+                                                <ReactMarkdown 
+                                                    key={`${idx}-final-text-${partIdx}`} 
+                                                    components={{
+                                                        code: codeComponent
+                                                    }}
+                                                >
+                                                    {part}
+                                                </ReactMarkdown>
+                                            );
+                                        }
+                                    });
                                 }
                                 
                                 return <>{elements}</>;
