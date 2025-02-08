@@ -32,18 +32,16 @@ import {
 import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
-import { SaveConversationDialog } from "./SaveConversationDialog";
 import { useReducerContext } from "../reducers/ReducerContext";
 
 export default function AppHeader() {
-    const { folders, currentConversationId, messages, dispatch } = useReducerContext();
+    const { dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
     const [showSettings, setShowSettings] = React.useState(false);
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
-    const [showSave, setShowSave] = React.useState(false);
     const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
     const [apiKey, setApiKey] = useState(getPersistedApiKey());
     const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
@@ -124,14 +122,6 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
-                                setShowSave(true);
-                            }}
-                        >
-                            Save
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                mainMenuClose();
                                 setShowAbout(true);
                             }}
                         >
@@ -202,61 +192,6 @@ export default function AppHeader() {
                 adminApiKey={adminApiKey}
             />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
-            <SaveConversationDialog
-                open={showSave}
-                onClose={() => setShowSave(false)}
-                onSave={(format) => {
-                    const currentConversation = folders
-                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id === currentConversationId);
-                    
-                    if (currentConversation) {
-                        const content = {
-                            name: currentConversation.name,
-                            messages: messages
-                        };
-                        
-                        // Create and trigger download
-                        const getFormattedContent = () => {
-                            switch (format) {
-                                case 'json':
-                                    return JSON.stringify(content, null, 2);
-                                case 'txt':
-                                    return content.messages
-                                        .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
-                                        .join('\n\n');
-                                case 'md':
-                                    return `# ${content.name}\n\n` +
-                                        content.messages
-                                            .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
-                                            .join('\n\n');
-                                default:
-                                    return '';
-                            }
-                        };
-                        
-                        const blob = new Blob(
-                            [getFormattedContent()],
-                            { type: 'text/plain' }
-                        );
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${currentConversation.name}.${format}`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                    }
-                    setShowSave(false);
-                }}
-                conversation={{
-                    name: folders
-                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id === currentConversationId)?.name || 'Untitled',
-                    messages: messages
-                }}
-            />
         </>
     );
 }

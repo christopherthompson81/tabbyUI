@@ -2,6 +2,7 @@ import { useState } from "react";
 import ConversationList from "./ConversationList";
 import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
+import { SaveConversationDialog } from "./SaveConversationDialog";
 import {
     ConversationFolder,
     findConversation,
@@ -24,7 +25,8 @@ function findFolder(
 }
 
 export function AppDrawer() {
-    const { folders, currentConversationId, dispatch } = useReducerContext();
+    const { folders, currentConversationId, messages, dispatch } = useReducerContext();
+    const [showSave, setShowSave] = useState(false);
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
     >(null);
@@ -216,6 +218,60 @@ export function AppDrawer() {
                 }
                 onSave={onSaveConversation}
                 onCancel={() => setEditingConversationId(null)}
+            />
+            <SaveConversationDialog
+                open={showSave}
+                onClose={() => setShowSave(false)}
+                onSave={(format) => {
+                    const currentConversation = folders
+                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
+                        .find(c => c.id === currentConversationId);
+                    
+                    if (currentConversation) {
+                        const content = {
+                            name: currentConversation.name,
+                            messages: messages
+                        };
+                        
+                        const getFormattedContent = () => {
+                            switch (format) {
+                                case 'json':
+                                    return JSON.stringify(content, null, 2);
+                                case 'txt':
+                                    return content.messages
+                                        .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
+                                        .join('\n\n');
+                                case 'md':
+                                    return `# ${content.name}\n\n` +
+                                        content.messages
+                                            .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
+                                            .join('\n\n');
+                                default:
+                                    return '';
+                            }
+                        };
+                        
+                        const blob = new Blob(
+                            [getFormattedContent()],
+                            { type: 'text/plain' }
+                        );
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${currentConversation.name}.${format}`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
+                    setShowSave(false);
+                }}
+                conversation={{
+                    name: folders
+                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
+                        .find(c => c.id === currentConversationId)?.name || 'Untitled',
+                    messages: messages
+                }}
             />
         </Drawer>
     );
