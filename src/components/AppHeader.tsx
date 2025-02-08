@@ -32,10 +32,8 @@ import {
 import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
-import { useReducerContext } from "../reducers/ReducerContext";
 
 export default function AppHeader() {
-    const { dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
