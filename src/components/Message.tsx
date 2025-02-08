@@ -1,5 +1,7 @@
 import { useCallback, useState, useRef, useMemo } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
 import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -24,6 +26,11 @@ const codeComponent = ({ node, inline, className, children, ...props }: {
     [key: string]: any;
 }) => {
     const match = /language-(\w+)/.exec(className || '');
+    // Handle inline LaTeX
+    if (inline && /^\$.*\$$/.test(String(children))) {
+        const math = String(children).slice(1, -1);
+        return <InlineMath>{math}</InlineMath>;
+    }
     return !inline && match ? (
         <SyntaxHighlighter
             children={String(children).replace(/\n$/, '')}
@@ -39,7 +46,6 @@ const codeComponent = ({ node, inline, className, children, ...props }: {
     );
 };
 
-// Add a handler for LaTeX like \boxed{3} AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
