@@ -174,6 +174,7 @@ function FolderItem({
                             onAddFolder={onAddFolder}
                             onEditFolder={onEditFolder}
                             onDelete={onDelete}
+                            onSave={onSave}
                         />
                     ))}
                     {folder.conversations.map((conv) => (
