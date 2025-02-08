@@ -33,6 +33,7 @@ interface ConversationListProps {
     onAddFolder: (parentFolderId?: string) => void;
     onEditFolder: (id: string) => void;
     onDelete: (id: string) => void;
+    onSave: () => void;
 }
 
 interface FolderItemProps {
@@ -44,6 +45,7 @@ interface FolderItemProps {
     onAddFolder: (parentFolderId?: string) => void;
     onEditFolder: (id: string) => void;
     onDelete: (id: string) => void;
+    onSave: () => void;
 }
 
 const isParentOfCurrentConversation = (
@@ -69,6 +71,7 @@ function FolderItem({
     onAddFolder,
     onEditFolder,
     onDelete,
+    onSave,
 }: FolderItemProps) {
     const [open, setOpen] = useState(
         isParentOfCurrentConversation(folder, currentConversationId)
@@ -219,11 +222,7 @@ function FolderItem({
                                 </MenuItem>
                                 <MenuItem
                                     onClick={() => {
-                                        // TODO: Implement save conversation
-                                        console.log(
-                                            "Save conversation:",
-                                            selectedConversation?.id
-                                        );
+                                        onSave();
                                     }}
                                 >
                                     Save Conversation
@@ -257,6 +256,7 @@ export default function ConversationList({
     onAddFolder,
     onEditFolder,
     onDelete,
+    onSave,
 }: ConversationListProps) {
     const currentConversationId = getPersistedCurrentConversationId();
     return (
@@ -276,6 +276,7 @@ export default function ConversationList({
                         onAddFolder={onAddFolder}
                         onEditFolder={onEditFolder}
                         onDelete={onDelete}
+                        onSave={onSave}
                     />
                 ))}
                 <ListItem>
