@@ -17,6 +17,7 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
+// Code highlighting does not appear to be working, can you ensure that it is being handled? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
