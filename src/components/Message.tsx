@@ -130,9 +130,8 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                         if (item.type === 'text') {
                             const text = item.text || '';
                             // First handle \boxed{} expressions specifically
-                            // Make this render in a box AI!
                             const processedText = text.replace(/\\boxed{([^}]+)}/g, (_, content) => {
-                                return `$\\boxed{${content}}$`;
+                                return `<box>${content}</box>`;
                             });
                             // Then handle other LaTeX expressions
                             const finalText = processedText.replace(/\\[a-zA-Z]+{[^}]+}/g, (match) => {
@@ -217,6 +216,21 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 <ReactMarkdown
                                     key={idx}
                                     components={{
+                                        box: ({ children }) => (
+                                            <Box 
+                                                sx={{ 
+                                                    border: 1, 
+                                                    borderRadius: 1, 
+                                                    p: 1, 
+                                                    display: 'inline-block', 
+                                                    mx: 1,
+                                                    borderColor: 'primary.main',
+                                                    bgcolor: 'background.paper'
+                                                }}
+                                            >
+                                                {children}
+                                            </Box>
+                                        ),
                                         code: ({ node, inline, className, children, ...props }) => {
                                             // Handle LaTeX code blocks
                                             if (className === 'language-latex' || className === 'language-math') {
