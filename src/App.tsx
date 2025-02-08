@@ -30,7 +30,7 @@ import {
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
-import Message from "./components/Message";
+import Messages from "./components/Messages";
 
 function getMessages(id: string, folders: ConversationFolder[]) {
     const conversation = findConversation(folders, id);
@@ -153,28 +153,21 @@ function App() {
                     onSwitchConversation={switchConversation}
                 />
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
-                    <div className="main-content">
-                        {state.messages.map((message, index) => (
-                            <Message
-                                key={index}
-                                role={message.role}
-                                content={message.content}
-                                onEdit={(i, newContent) => {
-                                    const updatedMessages = [...state.messages];
-                                    updatedMessages[i].content = newContent;
-                                    saveConversation(updatedMessages);
-                                }}
-                                onDelete={(i) => {
-                                    const updatedMessages = state.messages.filter(
-                                        (_, idx) => idx !== i
-                                    );
-                                    saveConversation(updatedMessages);
-                                }}
-                                index={index}
-                            />
-                        ))}
-                        <div ref={messagesEndRef} />
-                    </div>
+                    <Messages
+                        messages={state.messages}
+                        messagesEndRef={messagesEndRef}
+                        onEditMessage={(index, newContent) => {
+                            const updatedMessages = [...state.messages];
+                            updatedMessages[index].content = newContent;
+                            saveConversation(updatedMessages);
+                        }}
+                        onDeleteMessage={(index) => {
+                            const updatedMessages = state.messages.filter(
+                                (_, idx) => idx !== index
+                            );
+                            saveConversation(updatedMessages);
+                        }}
+                    />
 
                     <ChatInput
                         onSend={(content: MessageContent[]) => {
