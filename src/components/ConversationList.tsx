@@ -1,11 +1,27 @@
-import { useState } from 'react';
-import { List, ListItem, ListItemButton, ListItemText, IconButton, Button, Collapse, Box, Typography, Menu, MenuItem } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FolderIcon from '@mui/icons-material/Folder';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { Conversation, ConversationFolder, getPersistedCurrentConversationId } from '../utils/persistence';
+import { useState } from "react";
+import {
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    IconButton,
+    Button,
+    Collapse,
+    Box,
+    Typography,
+    Menu,
+    MenuItem,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import FolderIcon from "@mui/icons-material/Folder";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import {
+    Conversation,
+    ConversationFolder,
+    getPersistedCurrentConversationId,
+} from "../utils/persistence";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
 
 interface ConversationListProps {
@@ -30,13 +46,18 @@ interface FolderItemProps {
     onDelete: (id: string) => void;
 }
 
-const isParentOfCurrentConversation = (folder: ConversationFolder, currentId: string): boolean => {
+const isParentOfCurrentConversation = (
+    folder: ConversationFolder,
+    currentId: string
+): boolean => {
     // Check if any direct conversation is the current one
-    if (folder.conversations.some(conv => conv.id == currentId)) {
+    if (folder.conversations.some((conv) => conv.id == currentId)) {
         return true;
     }
     // Recursively check subfolders
-    return folder.subfolders.some(subfolder => isParentOfCurrentConversation(subfolder, currentId));
+    return folder.subfolders.some((subfolder) =>
+        isParentOfCurrentConversation(subfolder, currentId)
+    );
 };
 
 function FolderItem({
@@ -47,16 +68,23 @@ function FolderItem({
     onEditConversation,
     onAddFolder,
     onEditFolder,
-    onDelete
+    onDelete,
 }: FolderItemProps) {
-    const [open, setOpen] = useState(isParentOfCurrentConversation(folder, currentConversationId));
+    const [open, setOpen] = useState(
+        isParentOfCurrentConversation(folder, currentConversationId)
+    );
     const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
-    const [conversationMenuAnchorEl, setConversationMenuAnchorEl] = useState<null | HTMLElement>(null);
-    const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
+    const [conversationMenuAnchorEl, setConversationMenuAnchorEl] =
+        useState<null | HTMLElement>(null);
+    const [selectedConversation, setSelectedConversation] =
+        useState<Conversation | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const menuOpen = Boolean(menuAnchorEl);
 
-    const handleConversationMenuClick = (event: React.MouseEvent<HTMLElement>, conversation: Conversation) => {
+    const handleConversationMenuClick = (
+        event: React.MouseEvent<HTMLElement>,
+        conversation: Conversation
+    ) => {
         event.stopPropagation();
         setConversationMenuAnchorEl(event.currentTarget);
         setSelectedConversation(conversation);
@@ -81,20 +109,21 @@ function FolderItem({
                 <Box
                     onClick={() => setOpen(!open)}
                     sx={{
-                        display: 'flex',
-                        alignItems: 'center',
+                        display: "flex",
+                        alignItems: "center",
                         flexGrow: 1,
-                        p: '8px 16px' // Match ListItemButton padding
+                        p: "8px 16px", // Match ListItemButton padding
                     }}
                 >
-                    {open ? <FolderOpenIcon fontSize="small" /> : <FolderIcon fontSize="small" />}
+                    {open ? (
+                        <FolderOpenIcon fontSize="small" />
+                    ) : (
+                        <FolderIcon fontSize="small" />
+                    )}
                     <ListItemText primary={folder.name} sx={{ ml: 1 }} />
                     {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </Box>
-                <IconButton
-                    onClick={handleMenuClick}
-                    sx={{ mr: 1 }}
-                >
+                <IconButton onClick={handleMenuClick} sx={{ mr: 1 }}>
                     <MoreVertIcon fontSize="small" />
                 </IconButton>
                 <Menu
@@ -103,73 +132,34 @@ function FolderItem({
                     onClose={handleMenuClose}
                     onClick={handleMenuClose}
                 >
-                    <MenuItem onClick={() => {
-                        onEditFolder(folder.id);
-                        handleMenuClose();
-                    }}>
+                    <MenuItem
+                        onClick={() => {
+                            onEditFolder(folder.id);
+                            handleMenuClose();
+                        }}
+                    >
                         Rename Folder
                     </MenuItem>
-                    <MenuItem onClick={() => {
-                        onAddConversation(folder.id);
-                        handleMenuClose();
-                    }}>
+                    <MenuItem
+                        onClick={() => {
+                            onAddConversation(folder.id);
+                            handleMenuClose();
+                        }}
+                    >
                         Add Conversation
                     </MenuItem>
-                    <MenuItem onClick={() => {
-                        onAddFolder(folder.id);
-                        handleMenuClose();
-                    }}>
+                    <MenuItem
+                        onClick={() => {
+                            onAddFolder(folder.id);
+                            handleMenuClose();
+                        }}
+                    >
                         Add Subfolder
                     </MenuItem>
                 </Menu>
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Box sx={{ pl: 2 }}>
-                    {folder.conversations.map((conv) => (
-                        <ListItemButton
-                            key={conv.id}
-                            onClick={() => onSwitchConversation(conv.id)}
-                            selected={conv.id === currentConversationId}
-                            sx={{ pl: 4 }}
-                        >
-                            <ListItemText
-                                primary={conv.name}
-                                secondary={new Date(conv.timestamp).toLocaleString()}
-                            />
-                            <IconButton
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleConversationMenuClick(e, conv);
-                                }}
-                                style={{ marginLeft: 'auto' }}
-                            >
-                                <MoreVertIcon fontSize="small" />
-                            </IconButton>
-                            <Menu
-                                anchorEl={conversationMenuAnchorEl}
-                                open={Boolean(conversationMenuAnchorEl)}
-                                onClose={handleConversationMenuClose}
-                                onClick={handleConversationMenuClose}
-                            >
-                                <MenuItem onClick={() => {
-                                    onEditConversation(selectedConversation?.id || '');
-                                }}>
-                                    Rename
-                                </MenuItem>
-                                <MenuItem onClick={() => {
-                                    setDeleteDialogOpen(true);
-                                }}>
-                                    Delete
-                                </MenuItem>
-                                <MenuItem onClick={() => {
-                                    // TODO: Implement save conversation
-                                    console.log('Save conversation:', selectedConversation?.id);
-                                }}>
-                                    Save Conversation
-                                </MenuItem>
-                            </Menu>
-                        </ListItemButton>
-                    ))}
                     {folder.subfolders.map((subfolder) => (
                         <FolderItem
                             key={subfolder.id}
@@ -183,6 +173,64 @@ function FolderItem({
                             onDelete={onDelete}
                         />
                     ))}
+                    {folder.conversations.map((conv) => (
+                        <ListItemButton
+                            key={conv.id}
+                            onClick={() => onSwitchConversation(conv.id)}
+                            selected={conv.id === currentConversationId}
+                            sx={{ pl: 4 }}
+                        >
+                            <ListItemText
+                                primary={conv.name}
+                                secondary={new Date(
+                                    conv.timestamp
+                                ).toLocaleString()}
+                            />
+                            <IconButton
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleConversationMenuClick(e, conv);
+                                }}
+                                style={{ marginLeft: "auto" }}
+                            >
+                                <MoreVertIcon fontSize="small" />
+                            </IconButton>
+                            <Menu
+                                anchorEl={conversationMenuAnchorEl}
+                                open={Boolean(conversationMenuAnchorEl)}
+                                onClose={handleConversationMenuClose}
+                                onClick={handleConversationMenuClose}
+                            >
+                                <MenuItem
+                                    onClick={() => {
+                                        onEditConversation(
+                                            selectedConversation?.id || ""
+                                        );
+                                    }}
+                                >
+                                    Rename
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        setDeleteDialogOpen(true);
+                                    }}
+                                >
+                                    Delete
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        // TODO: Implement save conversation
+                                        console.log(
+                                            "Save conversation:",
+                                            selectedConversation?.id
+                                        );
+                                    }}
+                                >
+                                    Save Conversation
+                                </MenuItem>
+                            </Menu>
+                        </ListItemButton>
+                    ))}
                 </Box>
             </Collapse>
             <DeleteConfirmationDialog
@@ -195,7 +243,7 @@ function FolderItem({
                     setSelectedConversation(null);
                 }}
                 onCancel={() => setDeleteDialogOpen(false)}
-                itemName={selectedConversation?.name || ''}
+                itemName={selectedConversation?.name || ""}
             />
         </>
     );
@@ -208,7 +256,7 @@ export default function ConversationList({
     onEditConversation,
     onAddFolder,
     onEditFolder,
-    onDelete
+    onDelete,
 }: ConversationListProps) {
     const currentConversationId = getPersistedCurrentConversationId();
     return (
