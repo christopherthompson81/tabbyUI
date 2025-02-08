@@ -92,7 +92,8 @@ export function persistConversations(folders: ConversationFolder[]) {
 }
 
 export function getPersistedCurrentConversationId() {
-    return JSON.parse(localStorage.getItem("currentConversationId") || '{}');
+    const currentConversationId = localStorage.getItem("currentConversationId");
+    return currentConversationId ? JSON.parse(currentConversationId) : false;
 }
 
 export function persistCurrentConversationId(id: number) {

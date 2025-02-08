@@ -15,9 +15,11 @@ import { conversationsReducer } from "./reducers/conversationsReducer";
 import { MessageProps } from "./services/tabbyAPI";
 import {
     ConversationFolder,
+    findConversation,
     getPersistedConversations,
     getPersistedCurrentConversationId,
-    findConversation,
+    persistConversations,
+    persistCurrentConversationId,
 } from "./utils/persistence";
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
@@ -45,7 +47,7 @@ function initializeState(): ReducerState {
         };
         
         // Add to root folder
-        if (folders.length == 0) {
+        if (folders.length > 0) {
             folders[0].conversations.push(newConversation);
         }
         
