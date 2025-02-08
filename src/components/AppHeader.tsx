@@ -217,10 +217,27 @@ export default function AppHeader() {
                         };
                         
                         // Create and trigger download
-                        // There's a linting error on the format === 'json' line. Can you fix that? AI!
+                        const getFormattedContent = () => {
+                            switch (format) {
+                                case 'json':
+                                    return JSON.stringify(content, null, 2);
+                                case 'txt':
+                                    return content.messages
+                                        .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
+                                        .join('\n\n');
+                                case 'md':
+                                    return `# ${content.name}\n\n` +
+                                        content.messages
+                                            .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
+                                            .join('\n\n');
+                                default:
+                                    return '';
+                            }
+                        };
+                        
                         const blob = new Blob(
-                            [format === 'json' ? JSON.stringify(content, null, 2) : content], 
-                            { type: `text/${format === 'json' ? 'json' : 'plain'}` }
+                            [getFormattedContent()],
+                            { type: 'text/plain' }
                         );
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
