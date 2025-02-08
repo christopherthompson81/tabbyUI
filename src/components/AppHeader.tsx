@@ -34,9 +34,10 @@ import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
 import { SaveConversationDialog } from "./SaveConversationDialog";
-import { ReducerContext } from "../reducers/ReducerContext";
+import { useReducerContext } from "../reducers/ReducerContext";
 
 export default function AppHeader() {
+    const { folders, currentConversationId, messages, dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -44,7 +45,6 @@ export default function AppHeader() {
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
     const [showSave, setShowSave] = React.useState(false);
-    const { state } = useContext(ReducerContext);
     const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
     const [apiKey, setApiKey] = useState(getPersistedApiKey());
     const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
@@ -206,19 +206,22 @@ export default function AppHeader() {
                 open={showSave}
                 onClose={() => setShowSave(false)}
                 onSave={(format) => {
-                    const currentConversation = state.folders
+                    const currentConversation = folders
                         .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id === state.currentConversationId);
+                        .find(c => c.id === currentConversationId);
                     
                     if (currentConversation) {
                         const content = {
                             name: currentConversation.name,
-                            messages: state.messages
+                            messages: messages
                         };
                         
                         // Create and trigger download
-                        const blob = new Blob([format === 'json' ? JSON.stringify(content, null, 2) : content], 
-                            { type: `text/${format === 'json' ? 'json' : 'plain'}` });
+                        // There's a linting error on the format === 'json' line. Can you fix that? AI!
+                        const blob = new Blob(
+                            [format === 'json' ? JSON.stringify(content, null, 2) : content], 
+                            { type: `text/${format === 'json' ? 'json' : 'plain'}` }
+                        );
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
                         a.href = url;
@@ -231,10 +234,10 @@ export default function AppHeader() {
                     setShowSave(false);
                 }}
                 conversation={{
-                    name: state.folders
+                    name: folders
                         .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id === state.currentConversationId)?.name || 'Untitled',
-                    messages: state.messages
+                        .find(c => c.id === currentConversationId)?.name || 'Untitled',
+                    messages: messages
                 }}
             />
         </>
