@@ -87,7 +87,6 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
             persistConversations(newState.folders);
             return newState;
         }
-        // For the ADD_FOLDER case, sort subfolders (recursively) before persisting or returning AI!
         case 'ADD_FOLDER': {
             const addFolder = (
                 folders: ConversationFolder[],
@@ -97,7 +96,7 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     if (folder.id === parentFolderId) {
                         return {
                             ...folder,
-                            subfolders: [...folder.subfolders, action.folder]
+                            subfolders: [...folder.subfolders, action.folder].sort((a, b) => a.name.localeCompare(b.name))
                         };
                     }
                     return {
@@ -106,7 +105,13 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     };
                 });
             };
-            const newFolders = addFolder(state.folders, action.parentFolderId);
+            const sortFoldersRecursively = (folders: ConversationFolder[]): ConversationFolder[] => {
+                return folders.map(folder => ({
+                    ...folder,
+                    subfolders: sortFoldersRecursively(folder.subfolders.sort((a, b) => a.name.localeCompare(b.name)))
+                }));
+            };
+            const newFolders = sortFoldersRecursively(addFolder(state.folders, action.parentFolderId));
             const newState = { ...state, folders: newFolders };
             persistConversations(newState.folders);
             return newState;
