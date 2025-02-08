@@ -130,6 +130,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                         if (item.type === 'text') {
                             const text = item.text || '';
                             // First handle \boxed{} expressions specifically
+                            // Make this render in a box AI!
                             const processedText = text.replace(/\\boxed{([^}]+)}/g, (_, content) => {
                                 return `$\\boxed{${content}}$`;
                             });
