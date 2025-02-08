@@ -197,7 +197,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 });
                                 
                                 // Add any remaining text after the last think tag
-                                // split by 
+                                // split by \boxed{}, and use BlockMath for the boxed items and ReactMarkdown for everything else AI!
                                 if (lastIndex < text.length) {
                                     elements.push(
                                         <ReactMarkdown key={`${idx}-final`} components={{
