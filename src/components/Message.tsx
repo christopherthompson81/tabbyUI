@@ -15,6 +15,30 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
+// Define code component separately for reuse
+const codeComponent = ({ node, inline, className, children, ...props }: {
+    node?: any;
+    inline?: boolean;
+    className?: string;
+    children: React.ReactNode;
+    [key: string]: any;
+}) => {
+    const match = /language-(\w+)/.exec(className || '');
+    return !inline && match ? (
+        <SyntaxHighlighter
+            children={String(children).replace(/\n$/, '')}
+            style={oneDark}
+            language={match[1]}
+            PreTag="div"
+            {...props}
+        />
+    ) : (
+        <code className={className} {...props}>
+            {children}
+        </code>
+    );
+};
+
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -198,30 +222,6 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                 )}
             </div>
         </div>
-    );
-};
-
-// Define code component separately for reuse
-const codeComponent = ({ node, inline, className, children, ...props }: {
-    node?: any;
-    inline?: boolean;
-    className?: string;
-    children: React.ReactNode;
-    [key: string]: any;
-}) => {
-    const match = /language-(\w+)/.exec(className || '');
-    return !inline && match ? (
-        <SyntaxHighlighter
-            children={String(children).replace(/\n$/, '')}
-            style={oneDark}
-            language={match[1]}
-            PreTag="div"
-            {...props}
-        />
-    ) : (
-        <code className={className} {...props}>
-            {children}
-        </code>
     );
 };
 
