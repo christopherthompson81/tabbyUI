@@ -17,7 +17,7 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-
+// codeComponent is not defined. This might be intentional because of the plugin use. Can you review the code and make sure that codeComponent is either not called, or has a definition as needed? AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
