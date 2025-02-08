@@ -41,7 +41,6 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
         onDelete(index);
     }, [onDelete, index]);
 
-    // Add import for Typography, AI!
     return (
         <div className={`message ${role}`}>
             <div className="menu-icon" onClick={handleMenuToggle}>
