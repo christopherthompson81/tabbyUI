@@ -127,6 +127,7 @@ export function AppDrawer() {
         }
     };
 
+    // Update this to recursively look in subfolders AI!
     const onSaveConversation = () => {
         if (editingConversationId !== null) {
             dispatch({
