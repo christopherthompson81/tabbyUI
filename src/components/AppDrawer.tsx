@@ -95,14 +95,20 @@ export function AppDrawer() {
         }
     };
 
-    // Recursively look in subfolders AI!
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
+            const deleteFolderRecursive = (folders: ConversationFolder[]): ConversationFolder[] => {
+                return folders.map(folder => ({
+                    ...folder,
+                    subfolders: folder.id === editingFolderId 
+                        ? [] 
+                        : deleteFolderRecursive(folder.subfolders)
+                })).filter(folder => folder.id !== editingFolderId);
+            };
+
             dispatch({
                 type: "UPDATE_FOLDERS",
-                folders: folders.filter(
-                    (folder) => folder.id !== editingFolderId
-                ),
+                folders: deleteFolderRecursive(folders)
             });
             setEditingFolderId(null);
         }
