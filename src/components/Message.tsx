@@ -39,6 +39,7 @@ const codeComponent = ({ node, inline, className, children, ...props }: {
     );
 };
 
+// Add a handler for LaTeX like \boxed{3} AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
