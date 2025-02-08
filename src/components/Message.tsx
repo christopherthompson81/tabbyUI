@@ -129,7 +129,11 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                     content.map((item, idx) => {
                         if (item.type === 'text') {
                             const text = item.text || '';
-                            const thinkMatches = Array.from(text.matchAll(/<think>(.*?)<\/think>/gs));
+                            // First handle any LaTeX expressions in the text
+                            const processedText = text.replace(/\\[a-zA-Z]+{[^}]+}/g, (match) => {
+                                return `$${match}$`;
+                            });
+                            const thinkMatches = Array.from(processedText.matchAll(/<think>(.*?)<\/think>/gs));
                             
                             if (thinkMatches.length > 0) {
                                 let lastIndex = 0;
