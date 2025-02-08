@@ -142,7 +142,6 @@ function App() {
         }
     };
 
-    // move the "main-content" div to it's own component, Messages. AI!
     return (
         <ReducerContext.Provider value={providerState} >
             <Box sx={{ display: "flex" }}>
