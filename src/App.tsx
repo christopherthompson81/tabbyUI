@@ -45,7 +45,7 @@ function initializeState(): ReducerState {
         };
         
         // Add to root folder
-        if (folders.length > 0) {
+        if (folders.length == 0) {
             folders[0].conversations.push(newConversation);
         }
         
