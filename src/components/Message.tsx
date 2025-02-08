@@ -207,7 +207,33 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 <ReactMarkdown
                                     key={idx}
                                     components={{
-                                        code: codeComponent
+                                        code: ({ node, inline, className, children, ...props }) => {
+                                            // Handle LaTeX code blocks
+                                            if (className === 'language-latex' || className === 'language-math') {
+                                                return <BlockMath>{String(children).replace(/\n$/, '')}</BlockMath>;
+                                            }
+                                            
+                                            const match = /language-(\w+)/.exec(className || '');
+                                            // Handle inline LaTeX
+                                            if (inline && /^\$.*\$$/.test(String(children))) {
+                                                const math = String(children).slice(1, -1);
+                                                return <InlineMath>{math}</InlineMath>;
+                                            }
+                                            
+                                            return !inline && match ? (
+                                                <SyntaxHighlighter
+                                                    children={String(children).replace(/\n$/, '')}
+                                                    style={oneDark}
+                                                    language={match[1]}
+                                                    PreTag="div"
+                                                    {...props}
+                                                />
+                                            ) : (
+                                                <code className={className} {...props}>
+                                                    {children}
+                                                </code>
+                                            );
+                                        }
                                     }}
                                 >
                                     {text}
