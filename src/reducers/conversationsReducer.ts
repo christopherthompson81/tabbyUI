@@ -87,7 +87,7 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
             persistConversations(newState.folders);
             return newState;
         }
-
+        // For the ADD_FOLDER case, sort subfolders (recursively) before persisting or returning AI!
         case 'ADD_FOLDER': {
             const addFolder = (
                 folders: ConversationFolder[],
