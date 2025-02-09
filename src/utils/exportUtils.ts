@@ -144,6 +144,7 @@ customMarked.use({
     ],
 });
 
+// The latex in the export doesn't look right. Can you embed them as images? AI!
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
