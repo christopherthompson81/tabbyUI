@@ -49,8 +49,15 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
                     downloadFile(content, `${conversation.name}.json`, 'application/json');
                     break;
                 case 'docx':
-                    content = await exportToDocx(conversation.messages, options);
-                    downloadFile(content, `${conversation.name}.docx`, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                    const docxBlob = await exportToDocx(conversation.messages, options);
+                    const url = URL.createObjectURL(docxBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${conversation.name}.docx`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
                     break;
                 case 'pdf':
                     const htmlContent = await exportToPdf(conversation.messages, options);

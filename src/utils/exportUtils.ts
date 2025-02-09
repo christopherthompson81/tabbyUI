@@ -39,8 +39,7 @@ export async function exportToMarkdown(messages: MessageProps[], options: Export
     return markdown;
 }
 
-// This returns an error: nodebuffer is not supported by this platform. Please fix. AI!
-export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Buffer> {
+export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
             properties: {},
@@ -100,7 +99,7 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
         }],
     });
 
-    return await Packer.toBuffer(doc);
+    return await Packer.toBlob(doc);
 }
 
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<string> {
