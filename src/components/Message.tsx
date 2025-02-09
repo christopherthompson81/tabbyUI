@@ -2,7 +2,6 @@ import { useCallback, useState, useRef } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
 import "../styles.css";
-import MathRenderer from './MathRenderer';
 import LLMOutputRenderer from './LLMOutputRenderer';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
