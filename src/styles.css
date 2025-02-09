@@ -64,11 +64,26 @@
   vertical-align: middle;
 }
 
+.inline-math .katex {
+  font-size: 1.1em; /* Slightly larger than normal text */
+  line-height: 1.2;
+}
+
 .display-math {
   display: block;
   margin: 1em 0;
   overflow-x: auto;
   text-align: center;
+}
+
+.display-math .katex-display {
+  margin: 0.5em 0;
+  padding: 0.5em 0;
+}
+
+.display-math .katex {
+  font-size: 1.21em; /* Larger than inline math */
+  line-height: 1.4;
 }
 
 .message.user {
