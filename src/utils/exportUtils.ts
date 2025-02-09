@@ -39,6 +39,7 @@ export async function exportToMarkdown(messages: MessageProps[], options: Export
     return markdown;
 }
 
+// Is there any way to apply the formatting that LLMOutputRenderer would to the content? AI!
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
