@@ -106,7 +106,6 @@ function FolderItem({
         setMenuAnchorEl(null);
     };
 
-    // for toLocaleString, I want it to display as YYYY-MM-DD HH:MM:SS. Please make that change AI!
     return (
         <>
             <ListItemButton sx={{ p: 0 }}>
@@ -187,9 +186,15 @@ function FolderItem({
                         >
                             <ListItemText
                                 primary={conv.name}
-                                secondary={new Date(
-                                    conv.timestamp
-                                ).toLocaleString()}
+                                secondary={new Date(conv.timestamp).toLocaleString('en-CA', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                    hour12: false
+                                })}
                             />
                             <IconButton
                                 onClick={(e) => {
