@@ -144,7 +144,22 @@ customMarked.use({
     ],
 });
 
-// The latex in the export doesn't look right. Can you embed them as images? AI!
+// Helper function to convert HTML to image data URL
+async function htmlToImageDataUrl(html: string): Promise<string> {
+    const div = document.createElement('div');
+    div.style.position = 'absolute';
+    div.style.left = '-9999px';
+    div.innerHTML = html;
+    document.body.appendChild(div);
+
+    const canvas = await html2canvas(div, {
+        backgroundColor: null,
+        scale: 2
+    });
+    document.body.removeChild(div);
+    return canvas.toDataURL('image/png');
+}
+
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
@@ -184,9 +199,11 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
                         if (content.type === 'text') {
                             // Parse the content with marked
                             const tokens = customMarked.lexer(content.text);
-                            return tokens.map(token => {
+                            const paragraphs = [];
+
+                            for (const token of tokens) {
                                 if (token.type === 'code') {
-                                    return new Paragraph({
+                                    paragraphs.push(new Paragraph({
                                         children: [
                                             new TextRun({
                                                 text: token.text,
@@ -195,7 +212,25 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
                                             })
                                         ],
                                         spacing: { before: 240, after: 240 },
-                                    });
+                                    }));
+                                } else if (token.type === 'inlineLatex' || token.type === 'displayLatex' || token.type === 'boxedLatex') {
+                                    const latex = token.latex || token.text;
+                                    const rendered = renderLatex(latex, token.type === 'displayLatex');
+                                    const imageDataUrl = await htmlToImageDataUrl(rendered);
+                                    const imageData = base64ToBuffer(imageDataUrl.split(',')[1]);
+                                    
+                                    paragraphs.push(new Paragraph({
+                                        children: [
+                                            new ImageRun({
+                                                data: imageData,
+                                                transformation: {
+                                                    width: 200,
+                                                    height: 50,
+                                                },
+                                            }),
+                                        ],
+                                        alignment: token.type === 'displayLatex' ? 'center' : 'left',
+                                    }));
                                 } else {
                                     const html = customMarked.parser([token]);
                                     // Remove HTML tags and convert entities
@@ -204,11 +239,12 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
                                         div.innerHTML = match;
                                         return div.textContent || match;
                                     });
-                                    return new Paragraph({
+                                    paragraphs.push(new Paragraph({
                                         children: [new TextRun({ text })],
-                                    });
+                                    }));
                                 }
-                            });
+                            }
+                            return paragraphs;
                         } else if (content.type === 'image_url' && content.image_url) {
                             return [new Paragraph({
                                 children: [
