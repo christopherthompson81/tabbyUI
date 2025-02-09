@@ -182,47 +182,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             );
                                         } else if (part.trim()) {
                                             elements.push(
-                                                <ReactMarkdown 
+                                                <MathRenderer
                                                     key={`${idx}-final-text-${partIdx}`}
-                                                    remarkPlugins={[remarkMath]}
-                                                    rehypePlugins={[rehypeKatex]}
-                                                    components={{
-                                                        code({node, inline, className, children, ...props}) {
-                                                            const match = /language-(\w+)/.exec(className || '');
-                                                            
-                                                            // Handle inline LaTeX patterns
-                                                            if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
-                                                                return (
-                                                                    <span className="inline-math">
-                                                                        <ReactMarkdown
-                                                                            remarkPlugins={[remarkMath]}
-                                                                            rehypePlugins={[rehypeKatex]}
-                                                                        >
-                                                                            {`$${String(children)}$`}
-                                                                        </ReactMarkdown>
-                                                                    </span>
-                                                                );
-                                                            }
-                                                            
-                                                            return !inline && match ? (
-                                                                <SyntaxHighlighter
-                                                                    style={oneDark}
-                                                                    language={match[1]}
-                                                                    PreTag="div"
-                                                                    {...props}
-                                                                >
-                                                                    {String(children).replace(/\n$/, '')}
-                                                                </SyntaxHighlighter>
-                                                            ) : (
-                                                                <code className={className} {...props}>
-                                                                    {children}
-                                                                </code>
-                                                            );
-                                                        }
-                                                    }}
-                                                >
-                                                    {part}
-                                                </ReactMarkdown>
+                                                    content={part}
+                                                />
                                             );
                                         }
                                     });
