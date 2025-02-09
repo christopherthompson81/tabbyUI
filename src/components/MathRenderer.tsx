@@ -19,15 +19,15 @@ const MathRenderer = ({ content }: MathRendererProps) => {
                     const content = String(children);
 
                     // Handle display math patterns
-                    // These probably won't match startsWith, and endsWith. This should probably use a regex to split the content by these items. AI!
-                    if (content.startsWith('\\[') && content.endsWith('\\]')) {
+                    const displayMathMatch = content.match(/\\?\[([^\]]*?)\\?\]/);
+                    if (displayMathMatch) {
                         return (
                             <div className="display-math">
                                 <ReactMarkdown
                                     remarkPlugins={[remarkMath]}
                                     rehypePlugins={[rehypeKatex]}
                                 >
-                                    {content.slice(2, -2)} {/* Remove \[ and \] */}
+                                    {displayMathMatch[1]} {/* Use captured math content */}
                                 </ReactMarkdown>
                             </div>
                         );
