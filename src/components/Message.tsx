@@ -5,7 +5,7 @@ import "../styles.css";
 import ReactMarkdown from "react-markdown";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
@@ -18,6 +18,7 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
+// The inline-math class is not defined in styles.css. Please make it. AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -135,7 +136,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                         
                                                         return !inline && match ? (
                                                             <SyntaxHighlighter
-                                                                style={dark}
+                                                                style={oneDark}
                                                                 language={match[1]}
                                                                 PreTag="div"
                                                                 {...props}
@@ -252,7 +253,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                             
                                                             return !inline && match ? (
                                                                 <SyntaxHighlighter
-                                                                    style={dark}
+                                                                    style={oneDark}
                                                                     language={match[1]}
                                                                     PreTag="div"
                                                                     {...props}
@@ -303,7 +304,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             
                                             return !inline && match ? (
                                                 <SyntaxHighlighter
-                                                    style={dark}
+                                                    style={oneDark}
                                                     language={match[1]}
                                                     PreTag="div"
                                                     {...props}
