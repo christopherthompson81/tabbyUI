@@ -102,56 +102,41 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBuffer(doc);
 }
 
-export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        const doc = new PDFDocument();
-        
-        doc.on('data', chunk => chunks.push(chunk));
-        doc.on('end', () => resolve(Buffer.concat(chunks)));
-        doc.on('error', reject);
+export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<string> {
+    // Create HTML content for PDF
+    let html = '<html><head><style>';
+    html += `
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .title { font-size: 24px; text-align: center; margin-bottom: 20px; }
+        .metadata { font-style: italic; text-align: center; margin-bottom: 30px; }
+        .message { margin-bottom: 20px; }
+        .role { font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+        .content { margin-left: 20px; }
+        img { max-width: 400px; display: block; margin: 10px auto; }
+    `;
+    html += '</style></head><body>';
 
-        // Title
-        if (options.title) {
-            doc.fontSize(24).text(options.title, { align: 'center' });
-            doc.moveDown();
-        }
+    if (options.title) {
+        html += `<div class="title">${options.title}</div>`;
+    }
+    if (options.author || options.date) {
+        html += `<div class="metadata">${options.author || 'Anonymous'} - ${options.date || new Date().toLocaleDateString()}</div>`;
+    }
 
-        // Metadata
-        if (options.author || options.date) {
-            doc.fontSize(12)
-               .text(`${options.author || 'Anonymous'} - ${options.date || new Date().toLocaleDateString()}`, 
-                     { align: 'center', italic: true });
-            doc.moveDown();
-        }
-
-        // Messages
-        messages.forEach(message => {
-            doc.fontSize(16)
-               .text(message.role === 'user' ? 'User' : 'Assistant', { bold: true });
-            doc.moveDown(0.5);
-
-            message.content.forEach(async content => {
-                if (content.type === 'text') {
-                    doc.fontSize(12).text(content.text);
-                    doc.moveDown();
-                } else if (content.type === 'image_url' && content.image_url) {
-                    try {
-                        const imgBuffer = base64ToBuffer(content.image_url.url);
-                        doc.image(imgBuffer, {
-                            fit: [400, 300],
-                            align: 'center',
-                        });
-                        doc.moveDown();
-                    } catch (error) {
-                        console.error('Error embedding image:', error);
-                    }
-                }
-            });
-
-            doc.moveDown();
+    messages.forEach(message => {
+        html += '<div class="message">';
+        html += `<div class="role">${message.role === 'user' ? 'User' : 'Assistant'}</div>`;
+        html += '<div class="content">';
+        message.content.forEach(content => {
+            if (content.type === 'text') {
+                html += `<p>${content.text.replace(/\n/g, '<br>')}</p>`;
+            } else if (content.type === 'image_url' && content.image_url) {
+                html += `<img src="${content.image_url.url}" alt="Conversation image">`;
+            }
         });
-
-        doc.end();
+        html += '</div></div>';
     });
+
+    html += '</body></html>';
+    return html;
 }

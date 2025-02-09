@@ -37,7 +37,6 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                  date: new Date().toLocaleDateString()
              };
 
-             // something in this switch is causing an uncaught exception in Pair: Uncaught TypeError: class heritage import_events.EventEmitter is not an object or null AI!
              switch (format) {
                  case 'markdown':
                      content = await exportToMarkdown(conversation.messages, options);
@@ -52,8 +51,13 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                      downloadFile(content, `${conversation.name}.docx`, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
                      break;
                  case 'pdf':
-                     content = await exportToPdf(conversation.messages, options);
-                     downloadFile(content, `${conversation.name}.pdf`, 'application/pdf');
+                     const htmlContent = await exportToPdf(conversation.messages, options);
+                     const printWindow = window.open('', '_blank');
+                     if (printWindow) {
+                         printWindow.document.write(htmlContent);
+                         printWindow.document.close();
+                         printWindow.print();
+                     }
                      break;
              }
              onClose();
