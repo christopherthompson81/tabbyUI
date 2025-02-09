@@ -1,17 +1,17 @@
-import * as React from 'react';                                                                                                                                            
- import {                                                                                                                                                              
-     Dialog,                                                                                                                                                           
-     DialogTitle,                                                                                                                                                      
-     DialogContent,                                                                                                                                                    
-     DialogActions,                                                                                                                                                    
-     Button,                                                                                                                                                           
-     RadioGroup,                                                                                                                                                       
-     FormControlLabel,                                                                                                                                                 
-     Radio,                                                                                                                                                            
-     Box,                                                                                                                                                              
-     Typography,                                                                                                                                                       
-     Paper                                                                                                                                                             
- } from '@mui/material';                                                                                                                                               
+import * as React from 'react';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    List,
+    ListItem,
+    ListItemText,
+    Typography,
+    Box
+} from '@mui/material';
+import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtils';
                                                                                                                                                                        
  interface SaveConversationDialogProps {                                                                                                                               
      open: boolean;                                                                                                                                                    
@@ -53,36 +53,28 @@ import * as React from 'react';
          <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>                                                                                                
              <DialogTitle>Save Conversation</DialogTitle>                                                                                                              
              <DialogContent>                                                                                                                                           
-                 <Box sx={{ mb: 2 }}>                                                                                                                                  
-                     <Typography variant="subtitle1" gutterBottom>                                                                                                     
-                         Export Format                                                                                                                                 
-                     </Typography>                                                                                                                                     
-                     <RadioGroup                                                                                                                                       
-                         row                                                                                                                                           
-                         value={selectedFormat}                                                                                                                        
-                         onChange={(e) => setSelectedFormat(e.target.value)}                                                                                           
-                     >                                                                                                                                                 
-                         <FormControlLabel value="json" control={<Radio />} label="JSON" />                                                                            
-                         <FormControlLabel value="txt" control={<Radio />} label="Plain Text" />                                                                       
-                         <FormControlLabel value="md" control={<Radio />} label="Markdown" />                                                                          
-                     </RadioGroup>                                                                                                                                     
-                 </Box>                                                                                                                                                
-                                                                                                                                                                       
-                 <Typography variant="subtitle1" gutterBottom>                                                                                                         
-                     Preview                                                                                                                                           
-                 </Typography>                                                                                                                                         
-                 <Paper                                                                                                                                                
-                     variant="outlined"                                                                                                                                
-                     sx={{                                                                                                                                             
-                         p: 2,                                                                                                                                         
-                         maxHeight: '300px',                                                                                                                           
-                         overflow: 'auto',                                                                                                                             
-                         fontFamily: 'monospace',                                                                                                                      
-                         whiteSpace: 'pre-wrap'                                                                                                                        
-                     }}                                                                                                                                                
-                 >                                                                                                                                                     
-                     {getPreview()}                                                                                                                                    
-                 </Paper>                                                                                                                                              
+                <Box sx={{ width: '100%' }}>
+                    <Typography variant="subtitle1" gutterBottom>
+                        Choose Export Format
+                    </Typography>
+                    <List>
+                        {formats.map((format) => (
+                            <ListItem
+                                button
+                                key={format}
+                                onClick={() => handleExport(format)}
+                            >
+                                <ListItemText 
+                                    primary={format.toUpperCase()} 
+                                    secondary={format === 'markdown' ? 'Includes images and formatting' :
+                                             format === 'docx' ? 'Microsoft Word format' :
+                                             format === 'pdf' ? 'Portable Document Format' :
+                                             'Raw data format'}
+                                />
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
              </DialogContent>                                                                                                                                          
              <DialogActions>                                                                                                                                           
                  <Button onClick={onClose}>Cancel</Button>                                                                                                             
