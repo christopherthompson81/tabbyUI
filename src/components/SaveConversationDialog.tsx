@@ -37,6 +37,7 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                  date: new Date().toLocaleDateString()
              };
 
+             // something in this switch is causing an uncaught exception in Pair: Uncaught TypeError: class heritage import_events.EventEmitter is not an object or null AI!
              switch (format) {
                  case 'markdown':
                      content = await exportToMarkdown(conversation.messages, options);
