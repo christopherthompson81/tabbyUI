@@ -2,11 +2,7 @@ import { useCallback, useState, useRef } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
 import "../styles.css";
-import ReactMarkdown from "react-markdown";
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import MathRenderer from './MathRenderer';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
@@ -111,47 +107,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                     // Add text before the think tag
                                     if (match.index && match.index > lastIndex) {
                                         elements.push(
-                                            <ReactMarkdown 
+                                            <MathRenderer
                                                 key={`${idx}-${matchIdx}-pre`}
-                                                remarkPlugins={[remarkMath]}
-                                                rehypePlugins={[rehypeKatex]}
-                                                components={{
-                                                    code({node, inline, className, children, ...props}) {
-                                                        const match = /language-(\w+)/.exec(className || '');
-                                                        
-                                                        // Handle inline LaTeX patterns
-                                                        if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
-                                                            return (
-                                                                <span className="inline-math">
-                                                                    <ReactMarkdown
-                                                                        remarkPlugins={[remarkMath]}
-                                                                        rehypePlugins={[rehypeKatex]}
-                                                                    >
-                                                                        {`$${String(children)}$`}
-                                                                    </ReactMarkdown>
-                                                                </span>
-                                                            );
-                                                        }
-                                                        
-                                                        return !inline && match ? (
-                                                            <SyntaxHighlighter
-                                                                style={oneDark}
-                                                                language={match[1]}
-                                                                PreTag="div"
-                                                                {...props}
-                                                            >
-                                                                {String(children).replace(/\n$/, '')}
-                                                            </SyntaxHighlighter>
-                                                        ) : (
-                                                            <code className={className} {...props}>
-                                                                {children}
-                                                            </code>
-                                                        );
-                                                    }
-                                                }}
-                                            >
-                                                {text.slice(lastIndex, match.index)}
-                                            </ReactMarkdown>
+                                                content={text.slice(lastIndex, match.index)}
+                                            />
                                         );
                                     }
                                     
@@ -183,12 +142,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             </Typography>
                                             <Collapse in={isExpanded}>
                                                 <Box sx={{ mt: 1 }}>
-                                                    <ReactMarkdown
-                                                        remarkPlugins={[remarkMath]}
-                                                        rehypePlugins={[rehypeKatex]}
-                                                    >
-                                                        {thinkContent}
-                                                    </ReactMarkdown>
+                                                    <MathRenderer content={thinkContent} />
                                                 </Box>
                                             </Collapse>
                                         </Box>
@@ -278,59 +232,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                             }
                             
                             // If no think tags, render normally
-                            // the handler for \[ and \] math enclosures needs to be applied in the thining case too. If we're starting to repeat ourselves too much, create a new common component. AI!
                             return (
-                                <ReactMarkdown
+                                <MathRenderer
                                     key={idx}
-                                    remarkPlugins={[remarkMath]}
-                                    rehypePlugins={[rehypeKatex]}
-                                    components={{
-                                        code({node, inline, className, children, ...props}) {
-                                            const match = /language-(\w+)/.exec(className || '');
-                                            
-                                            const content = String(children);
-                                            // Handle display math patterns
-                                            if (content.startsWith('\\[') && content.endsWith('\\]')) {
-                                                return (
-                                                    <div className="display-math">
-                                                        <ReactMarkdown
-                                                            remarkPlugins={[remarkMath]}
-                                                            rehypePlugins={[rehypeKatex]}
-                                                        >
-                                                            {content.slice(2, -2)} {/* Remove \[ and \] */}
-                                                        </ReactMarkdown>
-                                                    </div>
-                                                );
-                                            }
-                                            // Handle inline LaTeX patterns
-                                            if (inline && content.match(/\\(frac|sqrt|text|sum|prod|int)/)) {
-                                                return (
-                                                    <span className="inline-math">
-                                                        <ReactMarkdown
-                                                            remarkPlugins={[remarkMath]}
-                                                            rehypePlugins={[rehypeKatex]}
-                                                        >
-                                                            {`$${String(children)}$`}
-                                                        </ReactMarkdown>
-                                                    </span>
-                                                );
-                                            }
-                                            
-                                            return !inline && match ? (
-                                                <SyntaxHighlighter
-                                                    style={oneDark}
-                                                    language={match[1]}
-                                                    PreTag="div"
-                                                    {...props}
-                                                >
-                                                    {String(children).replace(/\n$/, '')}
-                                                </SyntaxHighlighter>
-                                            ) : (
-                                                <code className={className} {...props}>
-                                                    {children}
-                                                </code>
-                                            );
-                                        },
+                                    content={text}
                                         box: ({ children }) => (
                                             <Box 
                                                 sx={{ 
