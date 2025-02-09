@@ -3,7 +3,7 @@ import { Marked } from "marked";
 import * as katex from "katex";
 import "katex/dist/katex.min.css";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vs } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const LLMOutputRenderer = ({ content }) => {
     // Function to render LaTeX
@@ -19,10 +19,30 @@ const LLMOutputRenderer = ({ content }) => {
         }
     };
 
-    // Create a new marked instance
-    const customMarked = new Marked();
+    // Create a new marked instance with syntax highlighting priority
+    const customMarked = new Marked({
+        async: false,
+        gfm: true,
+        breaks: true,
+        pedantic: false,
+    });
 
-    // Add custom tokenizers and renderers for LaTeX
+    // Configure code block rendering first (higher priority)
+    customMarked.setOptions({
+        highlight: function(code, lang) {
+            if (lang && SyntaxHighlighter.supportedLanguages.includes(lang)) {
+                return SyntaxHighlighter.highlight(code, {
+                    language: lang,
+                    style: vscDarkPlus,
+                    showLineNumbers: true,
+                    wrapLines: true,
+                });
+            }
+            return code;
+        }
+    });
+
+    // Add custom tokenizers and renderers for LaTeX (lower priority)
     customMarked.use({
         extensions: [
             // Inline LaTeX
@@ -93,8 +113,15 @@ const LLMOutputRenderer = ({ content }) => {
                 return (
                     <SyntaxHighlighter
                         language={language || "text"}
-                        style={vs}
-                        className="my-4"
+                        style={vscDarkPlus}
+                        showLineNumbers={true}
+                        wrapLines={true}
+                        customStyle={{
+                            margin: '1em 0',
+                            padding: '1em',
+                            borderRadius: '4px',
+                            fontSize: '0.9em',
+                        }}
                     >
                         {code}
                     </SyntaxHighlighter>
