@@ -36,6 +36,28 @@ const LLMOutputRenderer = ({ content }) => {
     // Add custom tokenizers and renderers for LaTeX (lower priority)
     customMarked.use({
         extensions: [
+            // Boxed LaTeX
+            {
+                name: "boxedLatex",
+                level: "inline",
+                start(src) {
+                    return src.indexOf("\\boxed{");
+                },
+                tokenizer(src) {
+                    const rule = /^\\boxed\{([^}]+)\}/;
+                    const match = src.match(rule);
+                    if (match) {
+                        return {
+                            type: "boxedLatex",
+                            raw: match[0],
+                            latex: match[1],
+                        };
+                    }
+                },
+                renderer(token) {
+                    return `<span style="border: 1px solid; padding: 0.2em;">${renderLatex(token.latex, false)}</span>`;
+                },
+            },
             // Inline LaTeX
             {
                 name: "inlineLatex",
