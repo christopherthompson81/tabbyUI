@@ -16,14 +16,11 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
  interface SaveConversationDialogProps {
      open: boolean;
      onClose: () => void;
-     onSave: (format: string) => void;
      conversation: {
          name: string;
          messages: any[];
      };
  }
-
- // There is an error saying selectedFormat is not defined. Can you fix that? AI!
  export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
      open,
      onClose,
@@ -89,7 +86,7 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                             <ListItem
                                 button
                                 key={format}
-                                onClick={() => {}}
+                                onClick={() => handleExport(format)}
                             >
                                 <ListItemText
                                     primary={format.toUpperCase()}
@@ -105,13 +102,6 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
              </DialogContent>
              <DialogActions>
                  <Button onClick={onClose}>Cancel</Button>
-                 <Button
-                     onClick={() => onSave(selectedFormat)}
-                     variant="contained"
-                     color="primary"
-                 >
-                     Save
-                 </Button>
              </DialogActions>
          </Dialog>
      );
