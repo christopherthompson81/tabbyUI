@@ -77,6 +77,7 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
         URL.revokeObjectURL(url);
     };
 
+    // instead of each list item being clickable to initiate the download, make a radio selection for each format type and then use a Button that says Download. AI!
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Save Conversation</DialogTitle>
