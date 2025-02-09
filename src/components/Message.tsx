@@ -12,6 +12,12 @@ import { Box } from '@mui/material';
 
 import { MessageProps } from '../services/tabbyAPI';
 
+// Part of the things that I want the math style to be applied to are aspects that look like the following example. Can you do that? AI!
+/*
+    \[
+    \frac{d\Omega}{dt}_{\text{J2}} = \frac{3 G J_2 R^2}{4 a^3 (1 - e^2)^{3/2}} \cos i
+    \]
+*/
 interface MessagePropsExtended extends MessageProps {
     onEdit: (index: number, newContent: { type: 'text', text: string }[]) => void;
     onDelete: (index: number) => void;
