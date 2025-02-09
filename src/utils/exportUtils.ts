@@ -1,5 +1,6 @@
 import { Document, Packer, Paragraph, TextRun, ImageRun } from 'docx';
-import PDFDocument from 'pdfkit';
+import { Marked } from "marked";
+import * as katex from "katex";
 import { MessageProps } from '../services/tabbyAPI';
 
 interface ExportOptions {
@@ -39,7 +40,110 @@ export async function exportToMarkdown(messages: MessageProps[], options: Export
     return markdown;
 }
 
-// Is there any way to apply the formatting that LLMOutputRenderer would to the content? AI!
+// Helper function to render LaTeX
+function renderLatex(latex: string, displayMode = false): string {
+    try {
+        return katex.renderToString(latex, {
+            throwOnError: false,
+            displayMode,
+        });
+    } catch (error) {
+        console.error("LaTeX rendering error:", error);
+        return latex;
+    }
+}
+
+// Create a marked instance with custom extensions
+const customMarked = new Marked({
+    async: false,
+    gfm: true,
+    breaks: true,
+    pedantic: false,
+});
+
+// Add LaTeX extensions
+customMarked.use({
+    extensions: [
+        // Boxed LaTeX
+        {
+            name: "boxedLatex",
+            level: "inline",
+            start(src) {
+                return src.indexOf("\\boxed{");
+            },
+            tokenizer(src) {
+                const rule = /^\\boxed\{([^}]+)\}/;
+                const match = src.match(rule);
+                if (match) {
+                    return {
+                        type: "boxedLatex",
+                        raw: match[0],
+                        latex: match[1],
+                    };
+                }
+            },
+            renderer(token) {
+                return renderLatex(token.latex, false);
+            },
+        },
+        // Inline LaTeX
+        {
+            name: "inlineLatex",
+            level: "inline",
+            start(src) {
+                return Math.min(
+                    src.indexOf("$") !== -1 ? src.indexOf("$") : Infinity,
+                    src.indexOf("\\(") !== -1 ? src.indexOf("\\(") : Infinity
+                );
+            },
+            tokenizer(src) {
+                const rule = /^\$([^\$]+)\$|^\\\(([^\)]+)\\\)/;
+                const match = src.match(rule);
+                if (match) {
+                    return {
+                        type: "inlineLatex",
+                        raw: match[0],
+                        latex: match[1] || match[2],
+                    };
+                }
+            },
+            renderer(token) {
+                return renderLatex(token.latex, false);
+            },
+        },
+        // Display LaTeX
+        {
+            name: "displayLatex",
+            level: "block",
+            start(src) {
+                const match = src.match(/^(\$\$|\\\[)/);
+                return match ? 0 : -1;
+            },
+            tokenizer(src) {
+                let match = src.match(/^\$\$([\s\S]+?)\$\$/);
+                if (match) {
+                    return {
+                        type: "displayLatex",
+                        raw: match[0],
+                        latex: match[1],
+                    };
+                }
+                match = src.match(/^\\\[([\s\S]+?)\\\]/);
+                if (match) {
+                    return {
+                        type: "displayLatex",
+                        raw: match[0],
+                        latex: match[1],
+                    };
+                }
+            },
+            renderer(token) {
+                return renderLatex(token.latex, true);
+            },
+        },
+    ],
+});
+
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
@@ -77,9 +181,33 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
                     }),
                     ...message.content.flatMap(content => {
                         if (content.type === 'text') {
-                            return [new Paragraph({
-                                children: [new TextRun({ text: content.text })],
-                            })];
+                            // Parse the content with marked
+                            const tokens = customMarked.lexer(content.text);
+                            return tokens.map(token => {
+                                if (token.type === 'code') {
+                                    return new Paragraph({
+                                        children: [
+                                            new TextRun({
+                                                text: token.text,
+                                                font: 'Consolas',
+                                                size: 20,
+                                            })
+                                        ],
+                                        spacing: { before: 240, after: 240 },
+                                    });
+                                } else {
+                                    const html = customMarked.parser([token]);
+                                    // Remove HTML tags and convert entities
+                                    const text = html.replace(/<[^>]+>/g, '').replace(/&[^;]+;/g, match => {
+                                        const div = document.createElement('div');
+                                        div.innerHTML = match;
+                                        return div.textContent || match;
+                                    });
+                                    return new Paragraph({
+                                        children: [new TextRun({ text })],
+                                    });
+                                }
+                            });
                         } else if (content.type === 'image_url' && content.image_url) {
                             return [new Paragraph({
                                 children: [
