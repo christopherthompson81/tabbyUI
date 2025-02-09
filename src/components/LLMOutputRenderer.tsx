@@ -30,22 +30,7 @@ const LLMOutputRenderer = ({ content }) => {
 
     // Configure code block rendering first (higher priority)
     customMarked.setOptions({
-        highlight: function(code, lang) {
-            if (lang && SyntaxHighlighter.supportedLanguages.includes(lang)) {
-                try {
-                    return SyntaxHighlighter.highlight(code, {
-                        language: lang,
-                        style: vscDarkPlus,
-                        showLineNumbers: true,
-                        wrapLines: true,
-                    }).props.children;
-                } catch (error) {
-                    console.error('Syntax highlighting error:', error);
-                    return code;
-                }
-            }
-            return code;
-        }
+        highlight: null // Disable highlight option as we'll handle it in the renderer
     });
 
     // Add custom tokenizers and renderers for LaTeX (lower priority)
@@ -136,51 +121,43 @@ const LLMOutputRenderer = ({ content }) => {
         },
     });
 
-    // Process the content
-    const processContent = (text) => {
-        const html = customMarked.parse(text);
-        // Create a temporary container
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
+    const [renderedContent, setRenderedContent] = React.useState<React.ReactNode[]>([]);
+
+    React.useEffect(() => {
+        const tokens = customMarked.lexer(content);
+        const result: React.ReactNode[] = [];
         
-        // Replace code blocks with React components
-        const codeBlocks = temp.getElementsByTagName('pre');
-        Array.from(codeBlocks).forEach((pre) => {
-            const code = pre.getElementsByTagName('code')[0];
-            if (code) {
-                const language = code.className.replace('language-', '');
-                const content = code.textContent || '';
-                const preElement = document.createElement('pre');
-                preElement.className = `language-${language}`;
-                preElement.style.margin = '1em 0';
-                preElement.style.padding = '1em';
-                preElement.style.borderRadius = '4px';
-                preElement.style.fontSize = '0.9em';
-                preElement.style.backgroundColor = '#1E1E1E'; // vscDarkPlus background
-                preElement.style.color = '#D4D4D4'; // vscDarkPlus text color
-                
-                const codeElement = document.createElement('code');
-                codeElement.className = `language-${language}`;
-                codeElement.textContent = content;
-                
-                preElement.appendChild(codeElement);
-                pre.parentNode?.replaceChild(preElement, pre);
+        tokens.forEach((token: any, index: number) => {
+            if (token.type === 'code') {
+                result.push(
+                    <SyntaxHighlighter
+                        key={index}
+                        language={token.lang || 'text'}
+                        style={vscDarkPlus}
+                        showLineNumbers={true}
+                        wrapLines={true}
+                        customStyle={{
+                            margin: '1em 0',
+                            padding: '1em',
+                            borderRadius: '4px',
+                            fontSize: '0.9em',
+                        }}
+                    >
+                        {token.text}
+                    </SyntaxHighlighter>
+                );
+            } else {
+                const html = customMarked.parser([token]);
+                result.push(
+                    <div key={index} dangerouslySetInnerHTML={{ __html: html }} />
+                );
             }
         });
         
-        return temp.innerHTML;
-    };
+        setRenderedContent(result);
+    }, [content]);
 
-    // Create a ref for the container
-    const containerRef = React.useRef<HTMLDivElement>(null);
-
-
-    return (
-        <div
-            ref={containerRef}
-            className="prose max-w-none"
-            dangerouslySetInnerHTML={{ __html: processContent(content) }}
-        />
+    return <div className="prose max-w-none">{renderedContent}</div>;
     );
 };
 
