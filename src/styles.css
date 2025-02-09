@@ -58,6 +58,12 @@
   background: #f5f5f5;
 }
 
+.inline-math {
+  display: inline-block;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+
 .message.user {
   background-color: #e0f7fa; /* Light blue-green */
   align-self: flex-end;

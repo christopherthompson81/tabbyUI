@@ -18,7 +18,6 @@ interface MessagePropsExtended extends MessageProps {
     index: number;
 }
 
-// The inline-math class is not defined in styles.css. Please make it. AI!
 function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
