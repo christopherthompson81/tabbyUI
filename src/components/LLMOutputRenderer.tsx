@@ -32,12 +32,17 @@ const LLMOutputRenderer = ({ content }) => {
     customMarked.setOptions({
         highlight: function(code, lang) {
             if (lang && SyntaxHighlighter.supportedLanguages.includes(lang)) {
-                return SyntaxHighlighter.highlight(code, {
-                    language: lang,
-                    style: vscDarkPlus,
-                    showLineNumbers: true,
-                    wrapLines: true,
-                });
+                try {
+                    return SyntaxHighlighter.highlight(code, {
+                        language: lang,
+                        style: vscDarkPlus,
+                        showLineNumbers: true,
+                        wrapLines: true,
+                    }).props.children;
+                } catch (error) {
+                    console.error('Syntax highlighting error:', error);
+                    return code;
+                }
             }
             return code;
         }
@@ -145,23 +150,21 @@ const LLMOutputRenderer = ({ content }) => {
             if (code) {
                 const language = code.className.replace('language-', '');
                 const content = code.textContent || '';
-                const highlightedCode = (
-                    <SyntaxHighlighter
-                        language={language || "text"}
-                        style={vscDarkPlus}
-                        showLineNumbers={true}
-                        wrapLines={true}
-                        customStyle={{
-                            margin: '1em 0',
-                            padding: '1em',
-                            borderRadius: '4px',
-                            fontSize: '0.9em',
-                        }}
-                    >
-                        {content}
-                    </SyntaxHighlighter>
-                );
-                pre.outerHTML = `<div class="syntax-highlighter-placeholder" data-content="${encodeURIComponent(content)}" data-language="${language}"></div>`;
+                const preElement = document.createElement('pre');
+                preElement.className = `language-${language}`;
+                preElement.style.margin = '1em 0';
+                preElement.style.padding = '1em';
+                preElement.style.borderRadius = '4px';
+                preElement.style.fontSize = '0.9em';
+                preElement.style.backgroundColor = '#1E1E1E'; // vscDarkPlus background
+                preElement.style.color = '#D4D4D4'; // vscDarkPlus text color
+                
+                const codeElement = document.createElement('code');
+                codeElement.className = `language-${language}`;
+                codeElement.textContent = content;
+                
+                preElement.appendChild(codeElement);
+                pre.parentNode?.replaceChild(preElement, pre);
             }
         });
         
@@ -171,39 +174,6 @@ const LLMOutputRenderer = ({ content }) => {
     // Create a ref for the container
     const containerRef = React.useRef<HTMLDivElement>(null);
 
-    // Effect to replace placeholders with React components
-    React.useEffect(() => {
-        if (containerRef.current) {
-            const placeholders = containerRef.current.getElementsByClassName('syntax-highlighter-placeholder');
-            Array.from(placeholders).forEach((placeholder) => {
-                const div = placeholder as HTMLElement;
-                const content = decodeURIComponent(div.dataset.content || '');
-                const language = div.dataset.language || '';
-                
-                const root = document.createElement('div');
-                div.parentNode?.replaceChild(root, div);
-                
-                const highlightedCode = (
-                    <SyntaxHighlighter
-                        language={language || "text"}
-                        style={vscDarkPlus}
-                        showLineNumbers={true}
-                        wrapLines={true}
-                        customStyle={{
-                            margin: '1em 0',
-                            padding: '1em',
-                            borderRadius: '4px',
-                            fontSize: '0.9em',
-                        }}
-                    >
-                        {content}
-                    </SyntaxHighlighter>
-                );
-                
-                ReactDOM.render(highlightedCode, root);
-            });
-        }
-    }, [content]);
 
     return (
         <div
