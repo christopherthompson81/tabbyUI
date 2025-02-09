@@ -28,12 +28,12 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
         setShowMenu(prev => !prev);
     }, []);
 
-    // Update the handleEditClick fundtion so that editedContent is set to the current content AI!
     const handleEditClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(false);
         setIsEditing(true);
-    }, []);
+        setEditedContent(content.find(c => c.type === 'text')?.text || '');
+    }, [content]);
 
     const handleDeleteClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
