@@ -158,7 +158,6 @@ const LLMOutputRenderer = ({ content }) => {
     }, [content]);
 
     return <div className="prose max-w-none">{renderedContent}</div>;
-    );
 };
 
 export default LLMOutputRenderer;
