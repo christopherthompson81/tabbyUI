@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 import { Marked } from "marked";
 import * as katex from "katex";
 import "katex/dist/katex.min.css";
@@ -132,11 +133,81 @@ const LLMOutputRenderer = ({ content }) => {
 
     // Process the content
     const processContent = (text) => {
-        return customMarked.parse(text);
+        const html = customMarked.parse(text);
+        // Create a temporary container
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        
+        // Replace code blocks with React components
+        const codeBlocks = temp.getElementsByTagName('pre');
+        Array.from(codeBlocks).forEach((pre) => {
+            const code = pre.getElementsByTagName('code')[0];
+            if (code) {
+                const language = code.className.replace('language-', '');
+                const content = code.textContent || '';
+                const highlightedCode = (
+                    <SyntaxHighlighter
+                        language={language || "text"}
+                        style={vscDarkPlus}
+                        showLineNumbers={true}
+                        wrapLines={true}
+                        customStyle={{
+                            margin: '1em 0',
+                            padding: '1em',
+                            borderRadius: '4px',
+                            fontSize: '0.9em',
+                        }}
+                    >
+                        {content}
+                    </SyntaxHighlighter>
+                );
+                pre.outerHTML = `<div class="syntax-highlighter-placeholder" data-content="${encodeURIComponent(content)}" data-language="${language}"></div>`;
+            }
+        });
+        
+        return temp.innerHTML;
     };
+
+    // Create a ref for the container
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
+    // Effect to replace placeholders with React components
+    React.useEffect(() => {
+        if (containerRef.current) {
+            const placeholders = containerRef.current.getElementsByClassName('syntax-highlighter-placeholder');
+            Array.from(placeholders).forEach((placeholder) => {
+                const div = placeholder as HTMLElement;
+                const content = decodeURIComponent(div.dataset.content || '');
+                const language = div.dataset.language || '';
+                
+                const root = document.createElement('div');
+                div.parentNode?.replaceChild(root, div);
+                
+                const highlightedCode = (
+                    <SyntaxHighlighter
+                        language={language || "text"}
+                        style={vscDarkPlus}
+                        showLineNumbers={true}
+                        wrapLines={true}
+                        customStyle={{
+                            margin: '1em 0',
+                            padding: '1em',
+                            borderRadius: '4px',
+                            fontSize: '0.9em',
+                        }}
+                    >
+                        {content}
+                    </SyntaxHighlighter>
+                );
+                
+                ReactDOM.render(highlightedCode, root);
+            });
+        }
+    }, [content]);
 
     return (
         <div
+            ref={containerRef}
             className="prose max-w-none"
             dangerouslySetInnerHTML={{ __html: processContent(content) }}
         />
