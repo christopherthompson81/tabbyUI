@@ -18,6 +18,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [expandedThinkTags, setExpandedThinkTags] = useState<number[]>([]);
+    // Pull up the this state to the Messages component AI!
     const [editedContent, setEditedContent] = useState(
         content.find(c => c.type === 'text')?.text || ''
     );
