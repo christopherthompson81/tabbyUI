@@ -89,7 +89,7 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                             <ListItem
                                 button
                                 key={format}
-                                onClick={() => handleExport(format)}
+                                onClick={() => {}}
                             >
                                 <ListItemText
                                     primary={format.toUpperCase()}
