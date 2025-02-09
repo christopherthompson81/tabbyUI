@@ -7,7 +7,9 @@ import {
     Button,
     List,
     ListItem,
-    ListItemText,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
     Typography,
     Box
 } from '@mui/material';
@@ -27,6 +29,7 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
     conversation
 }) => {
     const formats = ['markdown', 'json', 'docx', 'pdf'];
+    const [selectedFormat, setSelectedFormat] = React.useState('markdown');
 
     const handleExport = async (format: string) => {
         try {
@@ -77,7 +80,6 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
         URL.revokeObjectURL(url);
     };
 
-    // instead of each list item being clickable to initiate the download, make a radio selection for each format type and then use a Button that says Download. AI!
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle>Save Conversation</DialogTitle>
@@ -88,18 +90,29 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
                     </Typography>
                     <List>
                         {formats.map((format) => (
-                            <ListItem
-                                button
-                                key={format}
-                                onClick={() => handleExport(format)}
-                            >
-                                <ListItemText
-                                    primary={format.toUpperCase()}
-                                    secondary={format === 'markdown' ? 'Includes images and formatting' :
-                                        format === 'docx' ? 'Microsoft Word format' :
-                                            format === 'pdf' ? 'Portable Document Format' :
-                                                'Raw data format'}
-                                />
+                            <ListItem key={format}>
+                                <RadioGroup
+                                    value={selectedFormat}
+                                    onChange={(e) => setSelectedFormat(e.target.value)}
+                                >
+                                    <FormControlLabel
+                                        value={format}
+                                        control={<Radio />}
+                                        label={
+                                            <Box>
+                                                <Typography variant="body1">
+                                                    {format.toUpperCase()}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {format === 'markdown' ? 'Includes images and formatting' :
+                                                     format === 'docx' ? 'Microsoft Word format' :
+                                                     format === 'pdf' ? 'Portable Document Format' :
+                                                     'Raw data format'}
+                                                </Typography>
+                                            </Box>
+                                        }
+                                    />
+                                </RadioGroup>
                             </ListItem>
                         ))}
                     </List>
@@ -107,6 +120,13 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancel</Button>
+                <Button 
+                    onClick={() => handleExport(selectedFormat)}
+                    variant="contained" 
+                    color="primary"
+                >
+                    Download
+                </Button>
             </DialogActions>
         </Dialog>
     );
