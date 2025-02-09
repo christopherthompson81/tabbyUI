@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import { SyntaxHighlighter } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 interface MathRendererProps {
@@ -19,6 +19,7 @@ const MathRenderer = ({ content }: MathRendererProps) => {
                     const content = String(children);
 
                     // Handle display math patterns
+                    // These probably won't match startsWith, and endsWith. This should probably use a regex to split the content by these items. AI!
                     if (content.startsWith('\\[') && content.endsWith('\\]')) {
                         return (
                             <div className="display-math">
