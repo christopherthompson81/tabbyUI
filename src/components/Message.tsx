@@ -278,6 +278,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                             }
                             
                             // If no think tags, render normally
+                            // the handler for \[ and \] math enclosures needs to be applied in the thining case too. If we're starting to repeat ourselves too much, create a new common component. AI!
                             return (
                                 <ReactMarkdown
                                     key={idx}
