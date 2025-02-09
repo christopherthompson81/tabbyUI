@@ -64,6 +64,13 @@
   vertical-align: middle;
 }
 
+.display-math {
+  display: block;
+  margin: 1em 0;
+  overflow-x: auto;
+  text-align: center;
+}
+
 .message.user {
   background-color: #e0f7fa; /* Light blue-green */
   align-self: flex-end;

@@ -12,12 +12,6 @@ import { Box } from '@mui/material';
 
 import { MessageProps } from '../services/tabbyAPI';
 
-// Part of the things that I want the math style to be applied to are aspects that look like the following example. Can you do that? AI!
-/*
-    \[
-    \frac{d\Omega}{dt}_{\text{J2}} = \frac{3 G J_2 R^2}{4 a^3 (1 - e^2)^{3/2}} \cos i
-    \]
-*/
 interface MessagePropsExtended extends MessageProps {
     onEdit: (index: number, newContent: { type: 'text', text: string }[]) => void;
     onDelete: (index: number) => void;
@@ -293,8 +287,22 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                         code({node, inline, className, children, ...props}) {
                                             const match = /language-(\w+)/.exec(className || '');
                                             
+                                            const content = String(children);
+                                            // Handle display math patterns
+                                            if (content.startsWith('\\[') && content.endsWith('\\]')) {
+                                                return (
+                                                    <div className="display-math">
+                                                        <ReactMarkdown
+                                                            remarkPlugins={[remarkMath]}
+                                                            rehypePlugins={[rehypeKatex]}
+                                                        >
+                                                            {content.slice(2, -2)} {/* Remove \[ and \] */}
+                                                        </ReactMarkdown>
+                                                    </div>
+                                                );
+                                            }
                                             // Handle inline LaTeX patterns
-                                            if (inline && String(children).match(/\\(frac|sqrt|text|sum|prod|int)/)) {
+                                            if (inline && content.match(/\\(frac|sqrt|text|sum|prod|int)/)) {
                                                 return (
                                                     <span className="inline-math">
                                                         <ReactMarkdown
