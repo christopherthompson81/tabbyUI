@@ -29,25 +29,51 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
      onSave,                                                                                                                                                           
      conversation                                                                                                                                                      
  }) => {                                                                                                                                                               
-     const [selectedFormat, setSelectedFormat] = React.useState('json');                                                                                               
-                                                                                                                                                                       
-     const getPreview = () => {                                                                                                                                        
-         switch (selectedFormat) {                                                                                                                                     
-             case 'json':                                                                                                                                              
-                 return JSON.stringify(conversation, null, 2);                                                                                                         
-             case 'txt':                                                                                                                                               
-                 return conversation.messages                                                                                                                          
-                     .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)                                                                     
-                     .join('\n\n');                                                                                                                                    
-             case 'md':                                                                                                                                                
-                 return `# ${conversation.name}\n\n` +                                                                                                                 
-                     conversation.messages                                                                                                                             
-                         .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)                                                            
-                         .join('\n\n');                                                                                                                                
-             default:                                                                                                                                                  
-                 return '';                                                                                                                                            
-         }                                                                                                                                                             
-     };                                                                                                                                                                
+     const formats = ['markdown', 'json', 'docx', 'pdf'];
+
+     const handleExport = async (format: string) => {
+         try {
+             let content: string | Buffer;
+             const options = {
+                 title: conversation.name,
+                 date: new Date().toLocaleDateString()
+             };
+
+             switch (format) {
+                 case 'markdown':
+                     content = await exportToMarkdown(conversation.messages, options);
+                     downloadFile(content, `${conversation.name}.md`, 'text/markdown');
+                     break;
+                 case 'json':
+                     content = JSON.stringify(conversation, null, 2);
+                     downloadFile(content, `${conversation.name}.json`, 'application/json');
+                     break;
+                 case 'docx':
+                     content = await exportToDocx(conversation.messages, options);
+                     downloadFile(content, `${conversation.name}.docx`, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+                     break;
+                 case 'pdf':
+                     content = await exportToPdf(conversation.messages, options);
+                     downloadFile(content, `${conversation.name}.pdf`, 'application/pdf');
+                     break;
+             }
+             onClose();
+         } catch (error) {
+             console.error('Export failed:', error);
+         }
+     };
+
+     const downloadFile = (content: string | Buffer, filename: string, mimeType: string) => {
+         const blob = new Blob([content], { type: mimeType });
+         const url = URL.createObjectURL(blob);
+         const link = document.createElement('a');
+         link.href = url;
+         link.download = filename;
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         URL.revokeObjectURL(url);
+     };
                                                                                                                                                                        
      return (                                                                                                                                                          
          <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>                                                                                                
