@@ -12,23 +12,24 @@ import {
     Box
 } from '@mui/material';
 import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtils';
-                                                                                                                                                                       
- interface SaveConversationDialogProps {                                                                                                                               
-     open: boolean;                                                                                                                                                    
-     onClose: () => void;                                                                                                                                              
-     onSave: (format: string) => void;                                                                                                                                 
-     conversation: {                                                                                                                                                   
-         name: string;                                                                                                                                                 
-         messages: any[];                                                                                                                                              
-     };                                                                                                                                                                
- }                                                                                                                                                                     
-                                                                                                                                                                       
- export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({                                                                                       
-     open,                                                                                                                                                             
-     onClose,                                                                                                                                                          
-     onSave,                                                                                                                                                           
-     conversation                                                                                                                                                      
- }) => {                                                                                                                                                               
+
+ interface SaveConversationDialogProps {
+     open: boolean;
+     onClose: () => void;
+     onSave: (format: string) => void;
+     conversation: {
+         name: string;
+         messages: any[];
+     };
+ }
+
+ // There is an error saying selectedFormat is not defined. Can you fix that? AI!
+ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
+     open,
+     onClose,
+     onSave,
+     conversation
+ }) => {
      const formats = ['markdown', 'json', 'docx', 'pdf'];
 
      const handleExport = async (format: string) => {
@@ -74,11 +75,11 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
          document.body.removeChild(link);
          URL.revokeObjectURL(url);
      };
-                                                                                                                                                                       
-     return (                                                                                                                                                          
-         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>                                                                                                
-             <DialogTitle>Save Conversation</DialogTitle>                                                                                                              
-             <DialogContent>                                                                                                                                           
+
+     return (
+         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+             <DialogTitle>Save Conversation</DialogTitle>
+             <DialogContent>
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="subtitle1" gutterBottom>
                         Choose Export Format
@@ -90,8 +91,8 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                                 key={format}
                                 onClick={() => handleExport(format)}
                             >
-                                <ListItemText 
-                                    primary={format.toUpperCase()} 
+                                <ListItemText
+                                    primary={format.toUpperCase()}
                                     secondary={format === 'markdown' ? 'Includes images and formatting' :
                                              format === 'docx' ? 'Microsoft Word format' :
                                              format === 'pdf' ? 'Portable Document Format' :
@@ -101,17 +102,17 @@ import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtil
                         ))}
                     </List>
                 </Box>
-             </DialogContent>                                                                                                                                          
-             <DialogActions>                                                                                                                                           
-                 <Button onClick={onClose}>Cancel</Button>                                                                                                             
-                 <Button                                                                                                                                               
-                     onClick={() => onSave(selectedFormat)}                                                                                                            
-                     variant="contained"                                                                                                                               
-                     color="primary"                                                                                                                                   
-                 >                                                                                                                                                     
-                     Save                                                                                                                                              
-                 </Button>                                                                                                                                             
-             </DialogActions>                                                                                                                                          
-         </Dialog>                                                                                                                                                     
-     );                                                                                                                                                                
- };                
+             </DialogContent>
+             <DialogActions>
+                 <Button onClick={onClose}>Cancel</Button>
+                 <Button
+                     onClick={() => onSave(selectedFormat)}
+                     variant="contained"
+                     color="primary"
+                 >
+                     Save
+                 </Button>
+             </DialogActions>
+         </Dialog>
+     );
+ };
