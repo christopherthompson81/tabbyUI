@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
 import "../styles.css";
 import MathRenderer from './MathRenderer';
+import LLMOutputRenderer from './LLMOutputRenderer';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
 
@@ -107,7 +108,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                     // Add text before the think tag
                                     if (match.index && match.index > lastIndex) {
                                         elements.push(
-                                            <MathRenderer
+                                            <LLMOutputRenderer
                                                 key={`${idx}-${matchIdx}-pre`}
                                                 content={text.slice(lastIndex, match.index)}
                                             />
@@ -142,7 +143,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                             </Typography>
                                             <Collapse in={isExpanded}>
                                                 <Box sx={{ mt: 1 }}>
-                                                    <MathRenderer content={thinkContent} />
+                                                    <LLMOutputRenderer content={thinkContent} />
                                                 </Box>
                                             </Collapse>
                                         </Box>
@@ -154,38 +155,11 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 // Add any remaining text after the last think tag
                                 if (lastIndex < text.length) {
                                     const remainingText = text.slice(lastIndex);
-                                    const parts = remainingText.split(/(?=\\boxed{)|(?<=})/);
-                                    
-                                    parts.forEach((part, partIdx) => {
-                                        if (part.startsWith('\\boxed{') && part.endsWith('}')) {
-                                            const content = part.slice(7, -1); // Remove \boxed{ and }
-                                            elements.push(
-                                                <Box 
-                                                    key={`${idx}-final-box-${partIdx}`}
-                                                    sx={{ 
-                                                        border: 1, 
-                                                        borderRadius: 1, 
-                                                        p: 1, 
-                                                        display: 'inline-block', 
-                                                        mx: 1,
-                                                        borderColor: 'primary.main',
-                                                        bgcolor: 'background.paper'
-                                                    }}
-                                                >
-                                                    <MathRenderer
-                                                        content={content}
-                                                    />
-                                                </Box>
-                                            );
-                                        } else if (part.trim()) {
-                                            elements.push(
-                                                <MathRenderer
-                                                    key={`${idx}-final-text-${partIdx}`}
-                                                    content={part}
-                                                />
-                                            );
-                                        }
-                                    });
+                                    elements.push(
+                                        <LLMOutputRenderer
+                                            content={remainingText}
+                                        />
+                                    );
                                 }
                                 
                                 return <>{elements}</>;
@@ -193,7 +167,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                             
                             // If no think tags, render normally
                             return (
-                                <MathRenderer
+                                <LLMOutputRenderer
                                     key={idx}
                                     content={text}
                                 />

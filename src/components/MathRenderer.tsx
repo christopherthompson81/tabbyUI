@@ -3,6 +3,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import 'katex/dist/katex.min.css' // `rehype-katex` does not import the CSS for you
 
 interface MathRendererProps {
     content: string;
@@ -18,36 +19,22 @@ const MathRenderer = ({ content }: MathRendererProps) => {
                     const match = /language-(\w+)/.exec(className || '');
                     const content = String(children);
 
-                    // Handle display math patterns
-                    const displayMathMatch = content.match(/\\?\[([^\]]*?)\\?\]/);
-                    if (displayMathMatch) {
-                        return (
-                            <div className="display-math">
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkMath]}
-                                    rehypePlugins={[rehypeKatex]}
-                                >
-                                    {displayMathMatch[1]} {/* Use captured math content */}
-                                </ReactMarkdown>
-                            </div>
-                        );
-                    }
-
                     // Handle inline LaTeX patterns
-                    if (inline && content.match(/\\(frac|sqrt|text|sum|prod|int)/)) {
+                    console.log(content);
+                    if (content.match(/\\(frac|sqrt|text|sum|prod|int)/)) {
                         return (
                             <span className="inline-math">
                                 <ReactMarkdown
                                     remarkPlugins={[remarkMath]}
                                     rehypePlugins={[rehypeKatex]}
                                 >
-                                    {`$${content}$`}
+                                    {`$$${content}$$`}
                                 </ReactMarkdown>
                             </span>
                         );
                     }
                     
-                    return !inline && match ? (
+                    return match ? (
                         <SyntaxHighlighter
                             style={oneDark}
                             language={match[1]}
