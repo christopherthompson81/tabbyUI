@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Marked } from "marked";
 import * as katex from "katex";
 import "katex/dist/katex.min.css";
@@ -107,7 +107,7 @@ const LLMOutputRenderer = ({ content }) => {
     const processContent = (text) => {
         return customMarked.parse(text);
     };
-    console.log(content, processContent(content));
+
     return (
         <div
             className="prose max-w-none"
