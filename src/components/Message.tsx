@@ -172,12 +172,9 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                         bgcolor: 'background.paper'
                                                     }}
                                                 >
-                                                    <ReactMarkdown
-                                                        remarkPlugins={[remarkMath]}
-                                                        rehypePlugins={[rehypeKatex]}
-                                                    >
-                                                        {content}
-                                                    </ReactMarkdown>
+                                                    <MathRenderer
+                                                        content={content}
+                                                    />
                                                 </Box>
                                             );
                                         } else if (part.trim()) {
@@ -199,25 +196,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 <MathRenderer
                                     key={idx}
                                     content={text}
-                                        box: ({ children }) => (
-                                            <Box 
-                                                sx={{ 
-                                                    border: 1, 
-                                                    borderRadius: 1, 
-                                                    p: 1, 
-                                                    display: 'inline-block', 
-                                                    mx: 1,
-                                                    borderColor: 'primary.main',
-                                                    bgcolor: 'background.paper'
-                                                }}
-                                            >
-                                                {children}
-                                            </Box>
-                                        )
-                                    }}
-                                >
-                                    {text}
-                                </ReactMarkdown>
+                                />
                             );
                         } else if (item.type === 'image_url' && item.image_url) {
                             return (
