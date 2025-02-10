@@ -1,5 +1,6 @@
 import { Document, Packer, Paragraph, TextRun, ImageRun } from 'docx';
 import { Marked } from "marked";
+import html2canvas from 'html2canvas';
 import * as katex from "katex";
 import { MessageProps } from '../services/tabbyAPI';
 
@@ -10,6 +11,7 @@ interface ExportOptions {
 }
 
 // Helper function to convert base64 to buffer
+// This function exhibits an error: Uncaught (in promise) ReferenceError: Buffer is not defined AI!
 function base64ToBuffer(base64: string): Buffer {
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
     return Buffer.from(base64Data, 'base64');
@@ -195,7 +197,7 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
                             }),
                         ],
                     }),
-                    ...message.content.flatMap(content => {
+                    ...message.content.flatMap(async content => {
                         if (content.type === 'text') {
                             // Parse the content with marked
                             const tokens = customMarked.lexer(content.text);
