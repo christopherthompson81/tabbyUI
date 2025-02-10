@@ -3,6 +3,7 @@ import ConversationList from "./ConversationList";
 import ConversationEditor from "./ConversationEditor";
 import FolderEditor from "./FolderEditor";
 import { SaveConversationDialog } from "./SaveConversationDialog";
+import { exportToPdf } from "../utils/pdfExport";
 import {
     ConversationFolder,
     findConversation,
@@ -229,41 +230,48 @@ export function AppDrawer() {
                         .find(c => c.id === currentConversationId);
                     
                     if (currentConversation) {
-                        const content = {
-                            name: currentConversation.name,
-                            messages: messages
-                        };
-                        
-                        const getFormattedContent = () => {
-                            switch (format) {
-                                case 'json':
-                                    return JSON.stringify(content, null, 2);
-                                case 'txt':
-                                    return content.messages
-                                        .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
-                                        .join('\n\n');
-                                case 'md':
-                                    return `# ${content.name}\n\n` +
-                                        content.messages
-                                            .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
+                        if (format === 'pdf') {
+                            exportToPdf(messages, {
+                                title: currentConversation.name,
+                                date: new Date().toLocaleDateString()
+                            });
+                        } else {
+                            const content = {
+                                name: currentConversation.name,
+                                messages: messages
+                            };
+                            
+                            const getFormattedContent = () => {
+                                switch (format) {
+                                    case 'json':
+                                        return JSON.stringify(content, null, 2);
+                                    case 'txt':
+                                        return content.messages
+                                            .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
                                             .join('\n\n');
-                                default:
-                                    return '';
-                            }
-                        };
-                        
-                        const blob = new Blob(
-                            [getFormattedContent()],
-                            { type: 'text/plain' }
-                        );
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `${currentConversation.name}.${format}`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
+                                    case 'md':
+                                        return `# ${content.name}\n\n` +
+                                            content.messages
+                                                .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
+                                                .join('\n\n');
+                                    default:
+                                        return '';
+                                }
+                            };
+                            
+                            const blob = new Blob(
+                                [getFormattedContent()],
+                                { type: 'text/plain' }
+                            );
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `${currentConversation.name}.${format}`;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }
                     }
                     setShowSave(false);
                 }}
