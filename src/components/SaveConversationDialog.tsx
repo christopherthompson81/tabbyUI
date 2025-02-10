@@ -64,25 +64,30 @@ import * as React from 'react';
                      >                                                                                                                                                 
                          <FormControlLabel value="json" control={<Radio />} label="JSON" />                                                                            
                          <FormControlLabel value="txt" control={<Radio />} label="Plain Text" />                                                                       
-                         <FormControlLabel value="md" control={<Radio />} label="Markdown" />                                                                          
+                         <FormControlLabel value="md" control={<Radio />} label="Markdown" />
+                         <FormControlLabel value="pdf" control={<Radio />} label="PDF" />                                                                          
                      </RadioGroup>                                                                                                                                     
                  </Box>                                                                                                                                                
                                                                                                                                                                        
-                 <Typography variant="subtitle1" gutterBottom>                                                                                                         
-                     Preview                                                                                                                                           
-                 </Typography>                                                                                                                                         
-                 <Paper                                                                                                                                                
-                     variant="outlined"                                                                                                                                
-                     sx={{                                                                                                                                             
-                         p: 2,                                                                                                                                         
-                         maxHeight: '300px',                                                                                                                           
-                         overflow: 'auto',                                                                                                                             
-                         fontFamily: 'monospace',                                                                                                                      
-                         whiteSpace: 'pre-wrap'                                                                                                                        
-                     }}                                                                                                                                                
-                 >                                                                                                                                                     
-                     {getPreview()}                                                                                                                                    
-                 </Paper>                                                                                                                                              
+                 {selectedFormat !== 'pdf' && (
+                     <>
+                         <Typography variant="subtitle1" gutterBottom>                                                                                                         
+                             Preview                                                                                                                                           
+                         </Typography>                                                                                                                                         
+                         <Paper                                                                                                                                                
+                             variant="outlined"                                                                                                                                
+                             sx={{                                                                                                                                             
+                                 p: 2,                                                                                                                                         
+                                 maxHeight: '300px',                                                                                                                           
+                                 overflow: 'auto',                                                                                                                             
+                                 fontFamily: 'monospace',                                                                                                                      
+                                 whiteSpace: 'pre-wrap'                                                                                                                        
+                             }}                                                                                                                                                
+                         >                                                                                                                                                     
+                             {getPreview()}                                                                                                                                    
+                         </Paper>
+                     </>
+                 )}
              </DialogContent>                                                                                                                                          
              <DialogActions>                                                                                                                                           
                  <Button onClick={onClose}>Cancel</Button>                                                                                                             
