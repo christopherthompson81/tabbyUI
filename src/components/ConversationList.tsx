@@ -212,7 +212,8 @@ function FolderItem({
                                 onClick={handleConversationMenuClose}
                             >
                                 <MenuItem
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         onEditConversation(
                                             selectedConversation?.id || ""
                                         );
@@ -221,14 +222,16 @@ function FolderItem({
                                     Rename
                                 </MenuItem>
                                 <MenuItem
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         setDeleteDialogOpen(true);
                                     }}
                                 >
                                     Delete
                                 </MenuItem>
                                 <MenuItem
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         onSave();
                                     }}
                                 >
