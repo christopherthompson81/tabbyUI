@@ -106,7 +106,6 @@ function FolderItem({
         setMenuAnchorEl(null);
     };
 
-    // for toLocaleString, I want it to display as YYYY-MM-DD HH:MM:SS. Please make that change AI!
     return (
         <>
             <ListItemButton sx={{ p: 0 }}>
