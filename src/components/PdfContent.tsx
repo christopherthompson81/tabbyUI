@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { MessageProps } from '../services/tabbyAPI';
 import LLMOutputRenderer from './LLMOutputRenderer';
+// this export does not exist
 import { ExportOptions } from '../utils/exportUtils';
 
 interface PdfContentProps {

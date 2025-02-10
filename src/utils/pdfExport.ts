@@ -3,6 +3,7 @@ import { MessageProps } from '../services/tabbyAPI';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { PdfContent } from '../components/PdfContent';
+// this import does not exist AI!
 import { ExportOptions } from './exportUtils';
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
     const element = document.createElement('div');
