@@ -56,22 +56,24 @@ const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], 
 );
 
 export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
-    const element = document.createElement('div');
-    document.body.appendChild(element);
-
+    const containerRef = React.useRef<HTMLDivElement>(null);
     const { toPDF } = usePDF({
         filename: `${options.title || 'conversation'}.pdf`,
         page: { margin: 20 }
     });
 
-    const root = ReactDOM.createRoot(element);
-    root.render(<PdfContent ref={element} messages={messages} options={options} />);
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+    const root = ReactDOM.createRoot(container);
+    
+    root.render(<PdfContent ref={containerRef} messages={messages} options={options} />);
 
     try {
-        // There is a linting error: Type 'HTMLDivElement' has no properties in common with type 'Options'. AI!
-        await toPDF(element);
+        if (containerRef.current) {
+            await toPDF(containerRef.current);
+        }
     } finally {
         root.unmount();
-        document.body.removeChild(element);
+        document.body.removeChild(container);
     }
 }
