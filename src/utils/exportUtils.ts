@@ -307,6 +307,7 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBlob(doc);
 }
 
+// Could you change this to using react-to-pdf and the LLMOutputRenderer component? AI!
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<string> {
     // Create HTML content for PDF
     let html = '<html><head><style>';
