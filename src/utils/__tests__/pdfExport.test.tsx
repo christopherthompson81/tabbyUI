@@ -42,10 +42,12 @@ vi.mock('react', async () => {
         }),
         useEffect: vi.fn((fn) => {
             console.log('🎣 useEffect hook triggered');
-            // Execute effect function and ensure promise resolution
-            Promise.resolve(fn()).then(() => {
-                console.log('✅ Effect function completed');
-            });
+            // Execute effect function immediately
+            fn();
+            console.log('✅ Effect function started');
+            return () => {
+                console.log('🧹 Effect cleanup');
+            };
         })
     };
 });
