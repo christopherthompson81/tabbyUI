@@ -5,19 +5,32 @@ import * as ReactDOM from 'react-dom/client';
 import * as PDF from 'react-to-pdf';
 
 // Mock react-to-pdf
+const mockToPDF = vi.fn().mockResolvedValue(undefined);
 vi.mock('react-to-pdf', () => ({
     usePDF: vi.fn(() => ({
-        toPDF: vi.fn().mockResolvedValue(undefined)
+        toPDF: mockToPDF
     }))
 }));
 
 // Mock ReactDOM
+const mockUnmount = vi.fn();
+const mockRender = vi.fn();
 vi.mock('react-dom/client', () => ({
     createRoot: vi.fn(() => ({
-        render: vi.fn(),
-        unmount: vi.fn()
+        render: mockRender,
+        unmount: mockUnmount
     }))
 }));
+
+// Mock React hooks
+vi.mock('react', async () => {
+    const actual = await vi.importActual('react');
+    return {
+        ...actual,
+        useRef: vi.fn((val) => ({ current: val })),
+        useEffect: vi.fn((fn) => fn())
+    };
+});
 
 describe('exportToPdf', () => {
     const mockMessages: MessageProps[] = [
@@ -44,23 +57,15 @@ describe('exportToPdf', () => {
     });
 
     it('should create and cleanup DOM elements correctly', async () => {
-        const exportPromise = exportToPdf(mockMessages);
-        
-        // Get the mock toPDF function
-        const { usePDF } = PDF;
-        const toPDFMock = usePDF().toPDF;
-        
-        // Resolve the toPDF promise
-        await toPDFMock();
-        
-        // Wait for the export to complete
-        await exportPromise;
+        const promise = exportToPdf(mockMessages);
+        await promise;
 
         expect(document.createElement).toHaveBeenCalledWith('div');
         expect(document.body.appendChild).toHaveBeenCalled();
-        expect(ReactDOM.createRoot).toHaveBeenCalled();
+        expect(mockRender).toHaveBeenCalled();
+        expect(mockUnmount).toHaveBeenCalled();
         expect(document.body.removeChild).toHaveBeenCalled();
-    }, 10000);
+    });
 
     it('should handle export options correctly', async () => {
         const options = {
@@ -69,34 +74,24 @@ describe('exportToPdf', () => {
             date: '2024-02-10'
         };
 
-        const exportPromise = exportToPdf(mockMessages, options);
-        
-        // Get the mock toPDF function and resolve it
-        const { usePDF } = PDF;
-        const toPDFMock = usePDF().toPDF;
-        await toPDFMock();
-        
-        // Wait for the export to complete
-        await exportPromise;
+        const promise = exportToPdf(mockMessages, options);
+        await promise;
 
+        expect(mockToPDF).toHaveBeenCalled();
+        const { usePDF } = PDF;
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'Test Conversation.pdf'
         }));
-    }, 10000);
+    });
 
     it('should use default filename when no title provided', async () => {
-        const exportPromise = exportToPdf(mockMessages);
-        
-        // Get the mock toPDF function and resolve it
-        const { usePDF } = PDF;
-        const toPDFMock = usePDF().toPDF;
-        await toPDFMock();
-        
-        // Wait for the export to complete
-        await exportPromise;
+        const promise = exportToPdf(mockMessages);
+        await promise;
 
+        expect(mockToPDF).toHaveBeenCalled();
+        const { usePDF } = PDF;
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'conversation.pdf'
         }));
-    }, 10000);
+    });
 });
