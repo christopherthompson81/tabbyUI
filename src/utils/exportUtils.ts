@@ -315,6 +315,7 @@ interface PdfContentProps {
     options: ExportOptions;
 }
 
+// This needs to be in a tsx file in src/components. It's not being recognized properly when defined here AI!
 export const PdfContent = React.forwardRef<HTMLDivElement, PdfContentProps>(
     ({ messages, options }, ref) => {
         return (
