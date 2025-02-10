@@ -166,6 +166,7 @@ async function htmlToImageDataUrl(html: string): Promise<string> {
     return canvas.toDataURL('image/png');
 }
 
+// I'm getting more errors: #1 15ms Unable to access cssRules property DOMException: CSSStyleSheet.cssRules getter: Not allowed to access cross-origin stylesheet createStyleClone document-cloner.ts:185 AI!
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
