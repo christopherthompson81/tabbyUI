@@ -89,11 +89,11 @@ describe('exportToPdf', () => {
         console.log('📝 Creating PDF export promise...');
         const exportPromise = exportToPdf(mockMessages);
         
-        console.log('⏳ Waiting for mockToPDF to resolve...');
-        await mockToPDF.mock.results[0].value;
-        
         console.log('⏳ Waiting for export promise to resolve...');
         await exportPromise;
+        
+        console.log('📄 Verifying mockToPDF was called...');
+        expect(mockToPDF).toHaveBeenCalled();
         
         console.log('🔍 Verifying expectations...');
         expect(document.createElement).toHaveBeenCalledWith('div');
@@ -118,11 +118,11 @@ describe('exportToPdf', () => {
         console.log('📝 Creating PDF export promise...');
         const exportPromise = exportToPdf(mockMessages, options);
         
-        console.log('⏳ Waiting for mockToPDF to resolve...');
-        await mockToPDF.mock.results[0].value;
-        
         console.log('⏳ Waiting for export promise to resolve...');
         await exportPromise;
+        
+        console.log('📄 Verifying mockToPDF was called...');
+        expect(mockToPDF).toHaveBeenCalled();
 
         console.log('🔍 Verifying expectations...');
         expect(mockToPDF).toHaveBeenCalled();
@@ -140,11 +140,11 @@ describe('exportToPdf', () => {
         console.log('📝 Creating PDF export promise...');
         const exportPromise = exportToPdf(mockMessages);
         
-        console.log('⏳ Waiting for mockToPDF to resolve...');
-        await mockToPDF.mock.results[0].value;
-        
         console.log('⏳ Waiting for export promise to resolve...');
         await exportPromise;
+        
+        console.log('📄 Verifying mockToPDF was called...');
+        expect(mockToPDF).toHaveBeenCalled();
 
         console.log('🔍 Verifying expectations...');
         expect(mockToPDF).toHaveBeenCalled();
