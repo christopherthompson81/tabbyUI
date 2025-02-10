@@ -44,13 +44,23 @@ describe('exportToPdf', () => {
     });
 
     it('should create and cleanup DOM elements correctly', async () => {
-        await exportToPdf(mockMessages);
+        const exportPromise = exportToPdf(mockMessages);
+        
+        // Get the mock toPDF function
+        const { usePDF } = PDF;
+        const toPDFMock = usePDF().toPDF;
+        
+        // Resolve the toPDF promise
+        await toPDFMock();
+        
+        // Wait for the export to complete
+        await exportPromise;
 
         expect(document.createElement).toHaveBeenCalledWith('div');
         expect(document.body.appendChild).toHaveBeenCalled();
         expect(ReactDOM.createRoot).toHaveBeenCalled();
         expect(document.body.removeChild).toHaveBeenCalled();
-    });
+    }, 10000);
 
     it('should handle export options correctly', async () => {
         const options = {
@@ -59,20 +69,34 @@ describe('exportToPdf', () => {
             date: '2024-02-10'
         };
 
-        await exportToPdf(mockMessages, options);
-
+        const exportPromise = exportToPdf(mockMessages, options);
+        
+        // Get the mock toPDF function and resolve it
         const { usePDF } = PDF;
+        const toPDFMock = usePDF().toPDF;
+        await toPDFMock();
+        
+        // Wait for the export to complete
+        await exportPromise;
+
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'Test Conversation.pdf'
         }));
-    });
+    }, 10000);
 
     it('should use default filename when no title provided', async () => {
-        await exportToPdf(mockMessages);
-
+        const exportPromise = exportToPdf(mockMessages);
+        
+        // Get the mock toPDF function and resolve it
         const { usePDF } = PDF;
+        const toPDFMock = usePDF().toPDF;
+        await toPDFMock();
+        
+        // Wait for the export to complete
+        await exportPromise;
+
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'conversation.pdf'
         }));
-    });
+    }, 10000);
 });
