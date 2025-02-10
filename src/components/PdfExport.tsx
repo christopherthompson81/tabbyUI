@@ -5,6 +5,7 @@ import { ExportOptions } from '../utils/exportUtils';
 import { PdfContent } from './PdfContent';
 
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
+    // Is the createRoot and local import approach necessary?  Could it be done without it? AI!
     const { usePDF } = await import('react-to-pdf');
     const element = document.createElement('div');
     document.body.appendChild(element);
