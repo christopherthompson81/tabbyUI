@@ -68,12 +68,26 @@ const PdfExporter = ({ messages, options, onComplete }: {
 
     React.useEffect(() => {
         const generatePdf = async () => {
+            console.log('📝 Starting PDF generation');
             if (containerRef.current) {
-                await toPDF(containerRef.current);
-                onComplete();
+                try {
+                    console.log('📄 Calling toPDF');
+                    await toPDF(containerRef.current);
+                    console.log('✅ PDF generation successful');
+                    onComplete();
+                    console.log('🎯 Completion callback executed');
+                } catch (error) {
+                    console.error('❌ PDF generation failed:', error);
+                    throw error;
+                }
+            } else {
+                console.warn('⚠️ Container ref is null');
             }
         };
-        generatePdf();
+
+        generatePdf().catch(error => {
+            console.error('❌ generatePdf error:', error);
+        });
     }, [toPDF, onComplete]);
 
     return <PdfContent ref={containerRef} messages={messages} options={options} />;
