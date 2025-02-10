@@ -7,9 +7,7 @@ import * as PDF from 'react-to-pdf';
 // Mock react-to-pdf
 const mockToPDF = vi.fn().mockImplementation(() => {
     console.log('📄 Generating PDF...');
-    return Promise.resolve().then(() => {
-        console.log('✅ PDF generated');
-    });
+    return Promise.resolve();
 });
 vi.mock('react-to-pdf', () => ({
     usePDF: vi.fn(() => {
