@@ -5,21 +5,30 @@ import * as ReactDOM from 'react-dom/client';
 import * as PDF from 'react-to-pdf';
 
 // Mock react-to-pdf
-const mockToPDF = vi.fn().mockResolvedValue(undefined);
+const mockToPDF = vi.fn().mockImplementation(() => {
+    console.log('📄 Generating PDF...');
+    return Promise.resolve().then(() => {
+        console.log('✅ PDF generated');
+    });
+});
 vi.mock('react-to-pdf', () => ({
-    usePDF: vi.fn(() => ({
-        toPDF: mockToPDF
-    }))
+    usePDF: vi.fn(() => {
+        console.log('🎣 usePDF hook called');
+        return { toPDF: mockToPDF };
+    })
 }));
 
 // Mock ReactDOM
-const mockUnmount = vi.fn();
-const mockRender = vi.fn();
+const mockUnmount = vi.fn(() => console.log('🧹 React root unmounted'));
+const mockRender = vi.fn(() => console.log('🎨 React component rendered'));
 vi.mock('react-dom/client', () => ({
-    createRoot: vi.fn(() => ({
-        render: mockRender,
-        unmount: mockUnmount
-    }))
+    createRoot: vi.fn(() => {
+        console.log('🌱 React root created');
+        return {
+            render: mockRender,
+            unmount: mockUnmount
+        };
+    })
 }));
 
 // Mock React hooks
@@ -27,8 +36,16 @@ vi.mock('react', async () => {
     const actual = await vi.importActual('react');
     return {
         ...actual,
-        useRef: vi.fn((val) => ({ current: val })),
-        useEffect: vi.fn((fn) => fn())
+        useRef: vi.fn((val) => {
+            console.log('📌 useRef hook called');
+            const div = document.createElement('div');
+            console.log('📦 Created div reference');
+            return { current: div };
+        }),
+        useEffect: vi.fn((fn) => {
+            console.log('🎣 useEffect hook triggered');
+            return fn();
+        })
     };
 });
 
@@ -45,53 +62,97 @@ describe('exportToPdf', () => {
     ];
 
     beforeEach(() => {
+        console.log('\n🔄 Test setup starting...');
         // Set up a mock document and React
         const div = document.createElement('div');
         document.body.appendChild(div);
-        vi.spyOn(document.body, 'appendChild');
-        vi.spyOn(document.body, 'removeChild');
+        vi.spyOn(document.body, 'appendChild').mockImplementation(() => {
+            console.log('➕ Element added to document.body');
+            return div;
+        });
+        vi.spyOn(document.body, 'removeChild').mockImplementation(() => {
+            console.log('➖ Element removed from document.body');
+            return div;
+        });
+        console.log('✅ Test setup complete\n');
     });
 
     afterEach(() => {
+        console.log('\n🧹 Cleaning up test...');
         vi.clearAllMocks();
+        console.log('✅ Test cleanup complete\n');
     });
 
     it('should create and cleanup DOM elements correctly', async () => {
-        const promise = exportToPdf(mockMessages);
-        await promise;
-
+        console.log('🧪 Starting DOM elements test');
+        
+        console.log('📝 Creating PDF export promise...');
+        const exportPromise = exportToPdf(mockMessages);
+        
+        console.log('⏳ Waiting for mockToPDF to resolve...');
+        await mockToPDF.mock.results[0].value;
+        
+        console.log('⏳ Waiting for export promise to resolve...');
+        await exportPromise;
+        
+        console.log('🔍 Verifying expectations...');
         expect(document.createElement).toHaveBeenCalledWith('div');
         expect(document.body.appendChild).toHaveBeenCalled();
         expect(mockRender).toHaveBeenCalled();
         expect(mockUnmount).toHaveBeenCalled();
         expect(document.body.removeChild).toHaveBeenCalled();
+        
+        console.log('✅ DOM elements test complete');
     });
 
     it('should handle export options correctly', async () => {
+        console.log('🧪 Starting export options test');
+        
         const options = {
             title: 'Test Conversation',
             author: 'Test Author',
             date: '2024-02-10'
         };
+        console.log('📋 Test options:', options);
 
-        const promise = exportToPdf(mockMessages, options);
-        await promise;
+        console.log('📝 Creating PDF export promise...');
+        const exportPromise = exportToPdf(mockMessages, options);
+        
+        console.log('⏳ Waiting for mockToPDF to resolve...');
+        await mockToPDF.mock.results[0].value;
+        
+        console.log('⏳ Waiting for export promise to resolve...');
+        await exportPromise;
 
+        console.log('🔍 Verifying expectations...');
         expect(mockToPDF).toHaveBeenCalled();
         const { usePDF } = PDF;
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'Test Conversation.pdf'
         }));
+        
+        console.log('✅ Export options test complete');
     });
 
     it('should use default filename when no title provided', async () => {
-        const promise = exportToPdf(mockMessages);
-        await promise;
+        console.log('🧪 Starting default filename test');
+        
+        console.log('📝 Creating PDF export promise...');
+        const exportPromise = exportToPdf(mockMessages);
+        
+        console.log('⏳ Waiting for mockToPDF to resolve...');
+        await mockToPDF.mock.results[0].value;
+        
+        console.log('⏳ Waiting for export promise to resolve...');
+        await exportPromise;
 
+        console.log('🔍 Verifying expectations...');
         expect(mockToPDF).toHaveBeenCalled();
         const { usePDF } = PDF;
         expect(usePDF).toHaveBeenCalledWith(expect.objectContaining({
             filename: 'conversation.pdf'
         }));
+        
+        console.log('✅ Default filename test complete');
     });
 });
