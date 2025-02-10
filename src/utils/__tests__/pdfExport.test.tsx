@@ -58,7 +58,7 @@ vi.mock('../components/LLMOutputRenderer', () => ({
 }));
 
 // Mock PdfExporter component
-vi.mock('../pdfExport', async (importOriginal) => {
+vi.mock('../components/PdfExporter', async (importOriginal) => {
     const actual = await importOriginal();
     return {
         ...actual,

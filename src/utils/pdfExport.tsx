@@ -1,16 +1,16 @@
-import { usePDF } from 'react-to-pdf';
 import { MessageProps } from '../services/tabbyAPI';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import LLMOutputRenderer from '../components/LLMOutputRenderer';
+import { PdfExporter } from '../components/PdfExporter';
 
-interface PdfExportOptions {
+export interface PdfExportOptions {
     title?: string;
     author?: string;
     date?: string;
 }
 
-const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: PdfExportOptions }>(
+export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: PdfExportOptions }>(
     ({ messages, options }, ref) => {
         return (
             <div ref={ref} style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
@@ -55,7 +55,7 @@ const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], 
     }
 );
 
-const PdfExporter = ({ messages, options, onComplete }: {
+export const PdfExporter = ({ messages, options, onComplete }: {
     messages: MessageProps[];
     options: PdfExportOptions;
     onComplete: () => void;
