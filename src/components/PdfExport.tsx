@@ -15,6 +15,7 @@ export async function exportToPdf(messages: MessageProps[], options: ExportOptio
     // Wait for content to render
     await new Promise(resolve => setTimeout(resolve, 100));
 
+    // Property 'instance' does not exist on type 'UsePDFResult'. AI!
     const { instance } = usePDF({
         filename: `${options.title || 'conversation'}.pdf`,
     });
