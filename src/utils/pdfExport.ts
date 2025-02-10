@@ -10,6 +10,7 @@ interface PdfExportOptions {
     date?: string;
 }
 
+// use src/components/LLMOutputRenderer to format the content AI!
 export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
     const element = document.createElement('div');
     document.body.appendChild(element);
