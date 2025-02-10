@@ -55,42 +55,6 @@ export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessagePr
     }
 );
 
-export const PdfExporter = ({ messages, options, onComplete }: {
-    messages: MessageProps[];
-    options: PdfExportOptions;
-    onComplete: () => void;
-}) => {
-    console.log('We do not make it this far');
-    const containerRef = React.useRef<HTMLDivElement>(null);
-    const { toPDF } = usePDF({
-        filename: `${options.title || 'conversation'}.pdf`,
-        page: { margin: 20 }
-    });
-
-    React.useEffect(() => {
-        console.log('📝 Starting PDF generation');
-        const generatePdf = async () => {
-            if (!containerRef.current) {
-                console.warn('⚠️ Container ref is null');
-                return;
-            }
-            try {
-                console.log('📄 Calling toPDF');
-                const result = await toPDF(containerRef.current);
-                console.log('✅ PDF generation successful', result);
-                onComplete();
-                console.log('🎯 Completion callback executed');
-            } catch (error) {
-                console.error('❌ PDF generation failed:', error);
-            }
-        };
-
-        // Execute immediately
-        generatePdf();
-    }, [toPDF, onComplete]);
-
-    return <PdfContent ref={containerRef} messages={messages} options={options} />;
-};
 
 export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
     return new Promise((resolve) => {
