@@ -56,22 +56,38 @@ export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessagePr
 );
 
 
-export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
-    return new Promise((resolve) => {
-        const container = document.createElement('div');
-        document.body.appendChild(container);
-        const root = ReactDOM.createRoot(container);
-        
-        root.render(
-            <PdfExporter 
-                messages={messages} 
-                options={options} 
-                onComplete={() => {
-                    root.unmount();
-                    document.body.removeChild(container);
-                    resolve();
-                }}
-            />
-        );
-    });
+export function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): void {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        console.error('Failed to open print window');
+        return;
+    }
+
+    // Add necessary styles
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>${options.title || 'Conversation'}</title>
+                <style>
+                    @media print {
+                        body { margin: 0; }
+                        pre { white-space: pre-wrap; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div id="root"></div>
+            </body>
+        </html>
+    `);
+
+    const root = ReactDOM.createRoot(printWindow.document.getElementById('root')!);
+    root.render(
+        <PrintPreview 
+            messages={messages}
+            title={options.title}
+            author={options.author}
+            date={options.date}
+        />
+    );
 }
