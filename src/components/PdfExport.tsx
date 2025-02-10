@@ -19,8 +19,7 @@ export async function exportToPdf(messages: MessageProps[], options: ExportOptio
         filename: `${options.title || 'conversation'}.pdf`,
         page: { margin: 20 }
     });
-    // Type 'HTMLDivElement' has no properties in common with type 'Options'.ts(2559) AI!
-    await toPDF(element);
+    await toPDF(element as unknown as React.ReactElement);
 
     // Cleanup
     root.unmount();
