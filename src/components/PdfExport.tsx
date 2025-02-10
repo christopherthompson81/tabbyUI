@@ -16,6 +16,7 @@ export async function exportToPdf(messages: MessageProps[], options: ExportOptio
     await new Promise(resolve => setTimeout(resolve, 100));
 
     const { toPDF } = usePDF();
+    // expected 0-1 arguments, but got 2 AI!
     await toPDF(element, {
         filename: `${options.title || 'conversation'}.pdf`,
         page: { margin: 20 }
