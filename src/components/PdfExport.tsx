@@ -1,20 +1,12 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
+import { usePDF } from 'react-to-pdf';
 import { MessageProps } from '../services/tabbyAPI';
 import { ExportOptions } from '../utils/exportUtils';
 import { PdfContent } from './PdfContent';
+import { createRoot } from 'react-dom/client';
 
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
-    // Is the createRoot and local import approach necessary?  Could it be done without it? AI!
-    const { usePDF } = await import('react-to-pdf');
     const element = document.createElement('div');
     document.body.appendChild(element);
-
-    const root = ReactDOM.createRoot(element);
-    root.render(<PdfContent ref={element} messages={messages} options={options} />);
-
-    // Wait for content to render
-    await new Promise(resolve => setTimeout(resolve, 100));
 
     const { toPDF } = usePDF({
         filename: `${options.title || 'conversation'}.pdf`,
