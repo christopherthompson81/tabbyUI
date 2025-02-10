@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { TextField, Button, Typography, Collapse } from '@mui/material';
 import 'katex/dist/katex.min.css';
 import "../styles.css";
@@ -23,6 +23,21 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
     );
     const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleMenuToggle = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         setShowMenu(prev => !prev);
@@ -43,19 +58,18 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
 
     return (
         <div className={`message ${role}`}>
-            <div className="menu-icon" onClick={handleMenuToggle}>
+            <div className="menu-icon" onClick={handleMenuToggle} ref={menuRef}>
                 <MoreVertIcon fontSize="small" />
-            </div>
-            {showMenu && (
-                <div className="menu">
+                {showMenu && (
+                    <div className="menu">
                     <div className="menu-item" onClick={handleEditClick}>
                         Edit
                     </div>
                     <div className="menu-item" onClick={handleDeleteClick}>
                         Delete
                     </div>
-                </div>
-            )}
+                    </div>
+                )}
             <div className="message-role">
                 <strong>{role === "user" ? "You" : "Assistant"}</strong>
             </div>
