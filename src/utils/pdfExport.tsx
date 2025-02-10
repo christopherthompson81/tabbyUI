@@ -1,17 +1,19 @@
-import * as React from 'react';
+import { usePDF } from 'react-to-pdf';
 import { MessageProps } from '../services/tabbyAPI';
-import LLMOutputRenderer from './LLMOutputRenderer';
-import { ExportOptions } from '../utils/exportUtils';
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import LLMOutputRenderer from '../components/LLMOutputRenderer';
 
-interface PdfContentProps {
-    messages: MessageProps[];
-    options: ExportOptions;
+interface PdfExportOptions {
+    title?: string;
+    author?: string;
+    date?: string;
 }
 
-export const PdfContent = React.forwardRef<HTMLDivElement, PdfContentProps>(
+const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: PdfExportOptions }>(
     ({ messages, options }, ref) => {
         return (
-            <div ref={ref} style={{ padding: '40px' }}>
+            <div ref={ref} style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
                 {options.title && (
                     <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>
                         {options.title}
@@ -52,3 +54,23 @@ export const PdfContent = React.forwardRef<HTMLDivElement, PdfContentProps>(
         );
     }
 );
+
+export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+
+    const { toPDF } = usePDF({
+        filename: `${options.title || 'conversation'}.pdf`,
+        page: { margin: 20 }
+    });
+
+    const root = ReactDOM.createRoot(element);
+    root.render(<PdfContent ref={element} messages={messages} options={options} />);
+
+    try {
+        await toPDF(element as unknown as React.ReactElement);
+    } finally {
+        root.unmount();
+        document.body.removeChild(element);
+    }
+}
