@@ -7,10 +7,7 @@ import * as PDF from 'react-to-pdf';
 // Mock react-to-pdf
 const mockToPDF = vi.fn().mockImplementation(() => {
     console.log('📄 Generating PDF...');
-    return Promise.resolve().then(() => {
-        console.log('✅ PDF generation complete');
-        return true; // Return a value to indicate success
-    });
+    return Promise.resolve(true);
 });
 vi.mock('react-to-pdf', () => ({
     usePDF: vi.fn(() => {
@@ -45,9 +42,10 @@ vi.mock('react', async () => {
         }),
         useEffect: vi.fn((fn) => {
             console.log('🎣 useEffect hook triggered');
-            // Execute effect function synchronously
-            fn();
-            console.log('✅ Effect function started');
+            // Execute effect function and ensure promise resolution
+            Promise.resolve(fn()).then(() => {
+                console.log('✅ Effect function completed');
+            });
         })
     };
 });
