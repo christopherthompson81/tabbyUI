@@ -1,8 +1,6 @@
 import { MessageProps } from '../services/tabbyAPI';
 import * as React from 'react';
 import LLMOutputRenderer from './LLMOutputRenderer';
-import 'katex/dist/katex.min.css';
-import "../styles.css";
 
 interface PrintPreviewProps {
     messages: MessageProps[];
