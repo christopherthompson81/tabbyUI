@@ -275,7 +275,6 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     }));
 
     // Create document with processed content
-    // ...processedContent.flat() says ERROR: Expected "]" but found "new" AI!
     const doc = new Document({
         sections: [{
             properties: {},
@@ -301,81 +300,6 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
 
                 // Flattened processed content
                 ...processedContent.flat()
-                    new Paragraph({
-                        children: [
-                            new TextRun({ 
-                                text: message.role === 'user' ? 'User' : 'Assistant',
-                                bold: true,
-                                size: 24,
-                            }),
-                        ],
-                    }),
-                    ...message.content.flatMap(async content => {
-                        if (content.type === 'text') {
-                            // Parse the content with marked
-                            const tokens = customMarked.lexer(content.text);
-                            const paragraphs = [];
-
-                            for (const token of tokens) {
-                                if (token.type === 'code') {
-                                    paragraphs.push(new Paragraph({
-                                        children: [
-                                            new TextRun({
-                                                text: token.text,
-                                                font: 'Consolas',
-                                                size: 20,
-                                            })
-                                        ],
-                                        spacing: { before: 240, after: 240 },
-                                    }));
-                                } else if (token.type === 'inlineLatex' || token.type === 'displayLatex' || token.type === 'boxedLatex') {
-                                    const latex = token.latex || token.text;
-                                    const rendered = renderLatex(latex, token.type === 'displayLatex');
-                                    const imageDataUrl = await htmlToImageDataUrl(rendered);
-                                    const imageData = base64ToBuffer(imageDataUrl.split(',')[1]);
-                                    
-                                    paragraphs.push(new Paragraph({
-                                        children: [
-                                            new ImageRun({
-                                                data: imageData,
-                                                transformation: {
-                                                    width: 200,
-                                                    height: 50,
-                                                },
-                                            }),
-                                        ],
-                                        alignment: token.type === 'displayLatex' ? 'center' : 'left',
-                                    }));
-                                } else {
-                                    const html = customMarked.parser([token]);
-                                    // Remove HTML tags and convert entities
-                                    const text = html.replace(/<[^>]+>/g, '').replace(/&[^;]+;/g, match => {
-                                        const div = document.createElement('div');
-                                        div.innerHTML = match;
-                                        return div.textContent || match;
-                                    });
-                                    paragraphs.push(new Paragraph({
-                                        children: [new TextRun({ text })],
-                                    }));
-                                }
-                            }
-                            return paragraphs;
-                        } else if (content.type === 'image_url' && content.image_url) {
-                            return [new Paragraph({
-                                children: [
-                                    new ImageRun({
-                                        data: base64ToBuffer(content.image_url.url),
-                                        transformation: {
-                                            width: 400,
-                                            height: 300,
-                                        },
-                                    }),
-                                ],
-                            })];
-                        }
-                        return [];
-                    }),
-                ]),
             ],
         }],
     });
