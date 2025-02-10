@@ -7,7 +7,7 @@ import * as ReactDOM from 'react-dom/client';
 import { MessageProps } from '../services/tabbyAPI';
 import { PdfContent } from '../components/PdfContent';
 
-interface ExportOptions {
+export interface ExportOptions {
     title?: string;
     author?: string;
     date?: string;

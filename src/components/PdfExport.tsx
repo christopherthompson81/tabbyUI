@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { MessageProps } from '../services/tabbyAPI';
-// This is not exported from exportUtils. Make it exported AI!
 import { ExportOptions } from '../utils/exportUtils';
 import { PdfContent } from './PdfContent';
 
