@@ -3,15 +3,8 @@ import { MessageProps } from '../services/tabbyAPI';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { PdfContent } from '../components/PdfContent';
-
-interface PdfExportOptions {
-    title?: string;
-    author?: string;
-    date?: string;
-}
-
-// use src/components/LLMOutputRenderer to format the content AI!
-export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
+import { ExportOptions } from './exportUtils';
+export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
     const element = document.createElement('div');
     document.body.appendChild(element);
 
