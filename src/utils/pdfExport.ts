@@ -10,6 +10,7 @@ interface PdfExportOptions {
     date?: string;
 }
 
+// make this a tsx file AI!
 const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: PdfExportOptions }>(
     ({ messages, options }, ref) => {
         return (
