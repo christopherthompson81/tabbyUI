@@ -57,6 +57,23 @@ vi.mock('../components/LLMOutputRenderer', () => ({
     default: vi.fn(() => null)
 }));
 
+// Mock PdfExporter component
+vi.mock('../pdfExport', async (importOriginal) => {
+    const actual = await importOriginal();
+    return {
+        ...actual,
+        PdfExporter: vi.fn(({ onComplete }) => {
+            console.log('🖨️ PdfExporter component rendered');
+            // Simulate the PDF generation and completion
+            setTimeout(() => {
+                console.log('✨ Simulating PDF generation complete');
+                onComplete();
+            }, 100);
+            return null;
+        })
+    };
+});
+
 describe('exportToPdf', () => {
     const mockMessages: MessageProps[] = [
         {
