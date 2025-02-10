@@ -13,7 +13,8 @@ import {
     Typography,
     Box
 } from '@mui/material';
-import { exportToMarkdown, exportToDocx, exportToPdf } from '../utils/exportUtils';
+import { exportToMarkdown, exportToDocx } from '../utils/exportUtils';
+import { exportToPdf } from './PdfExport';
 
 interface SaveConversationDialogProps {
     open: boolean;
