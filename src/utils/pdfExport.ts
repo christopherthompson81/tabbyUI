@@ -13,6 +13,8 @@ export async function exportToPdf(messages: MessageProps[], options: ExportOptio
         page: { margin: 20 }
     });
 
+    /* */
+
     const root = ReactDOM.createRoot(element);
     // There's a linting error: PdfContent' refers to a value, but is being used as a type here. Did you mean 'typeof PdfContent'? AI!
     root.render(<PdfContent ref={element} messages={messages} options={options} />);
