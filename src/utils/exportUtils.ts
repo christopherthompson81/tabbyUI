@@ -195,6 +195,7 @@ async function htmlToImageDataUrl(html: string): Promise<string> {
     return canvas.toDataURL('image/png');
 }
 
+// This no longer produces errors, but the output is nearly blank. Why would that be? AI!
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
