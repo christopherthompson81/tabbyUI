@@ -310,7 +310,7 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBlob(doc);
 }
 
-
+// This still has issues because it's not a tsx file. move the exportToPdf function to a src/components file on its own and then import it into SaveConversationDialog separately AI!
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
     const { toPDF } = await import('react-to-pdf');
     const element = document.createElement('div');
