@@ -9,6 +9,7 @@ const mockToPDF = vi.fn().mockImplementation(() => {
     console.log('📄 Generating PDF...');
     return Promise.resolve().then(() => {
         console.log('✅ PDF generation complete');
+        return true; // Return a value to indicate success
     });
 });
 vi.mock('react-to-pdf', () => ({
@@ -44,10 +45,12 @@ vi.mock('react', async () => {
         }),
         useEffect: vi.fn((fn) => {
             console.log('🎣 useEffect hook triggered');
-            // Immediately execute the effect function
-            fn();
-            // Return cleanup function if one was provided
-            return () => console.log('🧹 useEffect cleanup');
+            // Immediately execute the effect function and handle the returned promise
+            Promise.resolve(fn()).then(() => {
+                console.log('✅ Effect function completed');
+            }).catch(error => {
+                console.error('❌ Effect error:', error);
+            });
         })
     };
 });
