@@ -146,7 +146,9 @@ const LLMOutputRenderer = ({ content }) => {
     const [renderedContent, setRenderedContent] = React.useState<React.ReactNode[]>([]);
 
     React.useEffect(() => {
-        const tokens = customMarked.lexer(content);
+        // Remove any leading spaces before ``` but preserve the internal content indentation
+        const preprocessedContent = content.replace(/^[ \t]+(```)/gm, '$1');
+        const tokens = customMarked.lexer(preprocessedContent);
         const result: React.ReactNode[] = [];
         
         tokens.forEach((token: any, index: number) => {
