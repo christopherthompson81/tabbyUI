@@ -10,11 +10,15 @@ interface ExportOptions {
     date?: string;
 }
 
-// Helper function to convert base64 to buffer
-// This function exhibits an error: Uncaught (in promise) ReferenceError: Buffer is not defined AI!
-function base64ToBuffer(base64: string): Buffer {
+// Helper function to convert base64 to Uint8Array
+function base64ToBuffer(base64: string): Uint8Array {
     const base64Data = base64.replace(/^data:image\/\w+;base64,/, '');
-    return Buffer.from(base64Data, 'base64');
+    const binaryString = window.atob(base64Data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
 }
 
 export async function exportToMarkdown(messages: MessageProps[], options: ExportOptions = {}): Promise<string> {
