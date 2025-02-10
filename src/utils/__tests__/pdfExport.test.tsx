@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { jsdom } from 'vitest/config';
 import { exportToPdf } from '../pdfExport';
 import { MessageProps } from '../../services/tabbyAPI';
 import * as ReactDOM from 'react-dom/client';
@@ -32,11 +33,9 @@ describe('exportToPdf', () => {
     ];
 
     beforeEach(() => {
-        // Create a mock div for document.createElement
-        const mockDiv = document.createElement('div');
-        vi.spyOn(document, 'createElement').mockReturnValue(mockDiv);
-        vi.spyOn(document.body, 'appendChild').mockImplementation(() => mockDiv);
-        vi.spyOn(document.body, 'removeChild').mockImplementation(() => mockDiv);
+        // Set up a mock document
+        const div = document.createElement('div');
+        document.body.appendChild(div);
     });
 
     afterEach(() => {
