@@ -217,6 +217,7 @@ function FolderItem({
                                         onEditConversation(
                                             selectedConversation?.id || ""
                                         );
+                                        handleConversationMenuClose();
                                     }}
                                 >
                                     Rename
@@ -225,6 +226,7 @@ function FolderItem({
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setDeleteDialogOpen(true);
+                                        handleConversationMenuClose();
                                     }}
                                 >
                                     Delete
@@ -233,6 +235,7 @@ function FolderItem({
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onSave();
+                                        handleConversationMenuClose();
                                     }}
                                 >
                                     Save Conversation
