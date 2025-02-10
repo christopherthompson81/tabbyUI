@@ -68,6 +68,7 @@ export async function exportToPdf(messages: MessageProps[], options: PdfExportOp
     root.render(<PdfContent ref={element} messages={messages} options={options} />);
 
     try {
+        // There is a linting error: Type 'ReactElement<any, string | JSXElementConstructor<any>>' has no properties in common with type 'Options'. AI!
         await toPDF(element as unknown as React.ReactElement);
     } finally {
         root.unmount();
