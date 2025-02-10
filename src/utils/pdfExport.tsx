@@ -60,6 +60,7 @@ const PdfExporter = ({ messages, options, onComplete }: {
     options: PdfExportOptions;
     onComplete: () => void;
 }) => {
+    console.log('We do not make it this far');
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { toPDF } = usePDF({
         filename: `${options.title || 'conversation'}.pdf`,
