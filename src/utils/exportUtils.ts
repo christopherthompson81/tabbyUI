@@ -158,15 +158,43 @@ async function htmlToImageDataUrl(html: string): Promise<string> {
     div.innerHTML = html;
     document.body.appendChild(div);
 
+    // Add KaTeX styles inline
+    const katexStyle = document.querySelector('link[href*="katex"]');
+    if (katexStyle) {
+        const style = document.createElement('style');
+        style.textContent = Array.from(document.styleSheets)
+            .filter(sheet => sheet.href && sheet.href.includes('katex'))
+            .map(sheet => {
+                try {
+                    return Array.from(sheet.cssRules)
+                        .map(rule => rule.cssText)
+                        .join('\n');
+                } catch (e) {
+                    return '';
+                }
+            })
+            .join('\n');
+        div.appendChild(style);
+    }
+
     const canvas = await html2canvas(div, {
         backgroundColor: null,
-        scale: 2
+        scale: 2,
+        logging: false,
+        allowTaint: true,
+        useCORS: true,
+        onclone: (clonedDoc) => {
+            // Ensure KaTeX styles are applied in the cloned document
+            Array.from(clonedDoc.getElementsByClassName('katex'))
+                .forEach(el => {
+                    el.style.fontFamily = 'KaTeX_Main';
+                });
+        }
     });
     document.body.removeChild(div);
     return canvas.toDataURL('image/png');
 }
 
-// I'm getting more errors: #1 15ms Unable to access cssRules property DOMException: CSSStyleSheet.cssRules getter: Not allowed to access cross-origin stylesheet createStyleClone document-cloner.ts:185 AI!
 export async function exportToDocx(messages: MessageProps[], options: ExportOptions = {}): Promise<Blob> {
     const doc = new Document({
         sections: [{
