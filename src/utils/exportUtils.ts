@@ -5,7 +5,7 @@ import * as katex from "katex";
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { MessageProps } from '../services/tabbyAPI';
-import LLMOutputRenderer from '../components/LLMOutputRenderer';
+import { PdfContent } from '../components/PdfContent';
 
 interface ExportOptions {
     title?: string;
@@ -310,56 +310,6 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBlob(doc);
 }
 
-interface PdfContentProps {
-    messages: MessageProps[];
-    options: ExportOptions;
-}
-
-// This needs to be in a tsx file in src/components. It's not being recognized properly when defined here AI!
-export const PdfContent = React.forwardRef<HTMLDivElement, PdfContentProps>(
-    ({ messages, options }, ref) => {
-        return (
-            <div ref={ref} style={{ padding: '40px' }}>
-                {options.title && (
-                    <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        {options.title}
-                    </h1>
-                )}
-                {(options.author || options.date) && (
-                    <p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: '30px' }}>
-                        {options.author || 'Anonymous'} - {options.date || new Date().toLocaleDateString()}
-                    </p>
-                )}
-                {messages.map((message, index) => (
-                    <div key={index} style={{ marginBottom: '20px' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>
-                            {message.role === 'user' ? 'User' : 'Assistant'}
-                        </div>
-                        <div style={{ marginLeft: '20px' }}>
-                            {message.content.map((content, idx) => (
-                                <div key={idx}>
-                                    {content.type === 'text' ? (
-                                        <LLMOutputRenderer content={content.text} />
-                                    ) : content.type === 'image_url' && content.image_url ? (
-                                        <img 
-                                            src={content.image_url.url} 
-                                            alt="Conversation image"
-                                            style={{ 
-                                                maxWidth: '400px', 
-                                                display: 'block', 
-                                                margin: '10px auto' 
-                                            }} 
-                                        />
-                                    ) : null}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-);
 
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
     const { toPDF } = await import('react-to-pdf');
