@@ -47,6 +47,14 @@ vi.mock('../components/LLMOutputRenderer', () => ({
     default: vi.fn(() => null)
 }));
 
+// Mock PrintPreview component
+vi.mock('../components/PrintPreview', () => ({
+    PrintPreview: vi.fn(({ messages, title, author, date }) => {
+        console.log('🖨️ PrintPreview rendered with:', { messages, title, author, date });
+        return null;
+    })
+}));
+
 describe('exportToPdf', () => {
     const mockMessages: MessageProps[] = [
         {

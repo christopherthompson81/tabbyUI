@@ -2,7 +2,7 @@ import { MessageProps } from '../services/tabbyAPI';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import LLMOutputRenderer from '../components/LLMOutputRenderer';
-import { PdfExporter } from '../components/PdfExporter';
+import { PrintPreview } from '../components/PrintPreview';
 
 export interface PdfExportOptions {
     title?: string;
