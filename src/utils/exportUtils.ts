@@ -275,6 +275,7 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     }));
 
     // Create document with processed content
+    // ...processedContent.flat() says ERROR: Expected "]" but found "new" AI!
     const doc = new Document({
         sections: [{
             properties: {},
