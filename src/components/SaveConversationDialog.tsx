@@ -60,13 +60,7 @@ export const SaveConversationDialog: React.FC<SaveConversationDialogProps> = ({
                     URL.revokeObjectURL(url);
                     break;
                 case 'pdf':
-                    const htmlContent = await exportToPdf(conversation.messages, options);
-                    const printWindow = window.open('', '_blank');
-                    if (printWindow) {
-                        printWindow.document.write(htmlContent);
-                        printWindow.document.close();
-                        printWindow.print();
-                    }
+                    await exportToPdf(conversation.messages, options);
                     break;
             }
             onClose();

@@ -2,7 +2,10 @@ import { Document, Packer, Paragraph, TextRun, ImageRun } from 'docx';
 import { Marked } from "marked";
 import html2canvas from 'html2canvas';
 import * as katex from "katex";
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
 import { MessageProps } from '../services/tabbyAPI';
+import LLMOutputRenderer from '../components/LLMOutputRenderer';
 
 interface ExportOptions {
     title?: string;
@@ -307,42 +310,68 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBlob(doc);
 }
 
-// Could you change this to using react-to-pdf and the LLMOutputRenderer component? AI!
-export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<string> {
-    // Create HTML content for PDF
-    let html = '<html><head><style>';
-    html += `
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .title { font-size: 24px; text-align: center; margin-bottom: 20px; }
-        .metadata { font-style: italic; text-align: center; margin-bottom: 30px; }
-        .message { margin-bottom: 20px; }
-        .role { font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-        .content { margin-left: 20px; }
-        img { max-width: 400px; display: block; margin: 10px auto; }
-    `;
-    html += '</style></head><body>';
-
-    if (options.title) {
-        html += `<div class="title">${options.title}</div>`;
+export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: ExportOptions }>(
+    ({ messages, options }, ref) => {
+        return (
+            <div ref={ref} style={{ padding: '40px' }}>
+                {options.title && (
+                    <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>
+                        {options.title}
+                    </h1>
+                )}
+                {(options.author || options.date) && (
+                    <p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: '30px' }}>
+                        {options.author || 'Anonymous'} - {options.date || new Date().toLocaleDateString()}
+                    </p>
+                )}
+                {messages.map((message, index) => (
+                    <div key={index} style={{ marginBottom: '20px' }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>
+                            {message.role === 'user' ? 'User' : 'Assistant'}
+                        </div>
+                        <div style={{ marginLeft: '20px' }}>
+                            {message.content.map((content, idx) => (
+                                <div key={idx}>
+                                    {content.type === 'text' ? (
+                                        <LLMOutputRenderer content={content.text} />
+                                    ) : content.type === 'image_url' && content.image_url ? (
+                                        <img 
+                                            src={content.image_url.url} 
+                                            alt="Conversation image"
+                                            style={{ 
+                                                maxWidth: '400px', 
+                                                display: 'block', 
+                                                margin: '10px auto' 
+                                            }} 
+                                        />
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
     }
-    if (options.author || options.date) {
-        html += `<div class="metadata">${options.author || 'Anonymous'} - ${options.date || new Date().toLocaleDateString()}</div>`;
-    }
+);
 
-    messages.forEach(message => {
-        html += '<div class="message">';
-        html += `<div class="role">${message.role === 'user' ? 'User' : 'Assistant'}</div>`;
-        html += '<div class="content">';
-        message.content.forEach(content => {
-            if (content.type === 'text') {
-                html += `<p>${content.text.replace(/\n/g, '<br>')}</p>`;
-            } else if (content.type === 'image_url' && content.image_url) {
-                html += `<img src="${content.image_url.url}" alt="Conversation image">`;
-            }
-        });
-        html += '</div></div>';
+export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
+    const { toPDF } = await import('react-to-pdf');
+    const element = document.createElement('div');
+    document.body.appendChild(element);
+
+    const root = ReactDOM.createRoot(element);
+    root.render(<PdfContent ref={element} messages={messages} options={options} />);
+
+    // Wait for content to render
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    await toPDF(element, {
+        filename: `${options.title || 'conversation'}.pdf`,
+        page: { margin: 20 }
     });
 
-    html += '</body></html>';
-    return html;
+    // Cleanup
+    root.unmount();
+    document.body.removeChild(element);
 }
