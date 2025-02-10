@@ -70,6 +70,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                     </div>
                     </div>
                 )}
+            </div>
             <div className="message-role">
                 <strong>{role === "user" ? "You" : "Assistant"}</strong>
             </div>
