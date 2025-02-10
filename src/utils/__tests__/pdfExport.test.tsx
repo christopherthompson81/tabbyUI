@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { jsdom } from 'vitest/config';
 import { exportToPdf } from '../pdfExport';
 import { MessageProps } from '../../services/tabbyAPI';
 import * as ReactDOM from 'react-dom/client';
