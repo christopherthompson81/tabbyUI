@@ -55,25 +55,46 @@ const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], 
     }
 );
 
-export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
+const PdfExporter = ({ messages, options, onComplete }: {
+    messages: MessageProps[];
+    options: PdfExportOptions;
+    onComplete: () => void;
+}) => {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { toPDF } = usePDF({
         filename: `${options.title || 'conversation'}.pdf`,
         page: { margin: 20 }
     });
 
-    const container = document.createElement('div');
-    document.body.appendChild(container);
-    const root = ReactDOM.createRoot(container);
-    
-    root.render(<PdfContent ref={containerRef} messages={messages} options={options} />);
+    React.useEffect(() => {
+        const generatePdf = async () => {
+            if (containerRef.current) {
+                await toPDF(containerRef.current);
+                onComplete();
+            }
+        };
+        generatePdf();
+    }, [toPDF, onComplete]);
 
-    try {
-        if (containerRef.current) {
-            await toPDF(containerRef.current);
-        }
-    } finally {
-        root.unmount();
-        document.body.removeChild(container);
-    }
+    return <PdfContent ref={containerRef} messages={messages} options={options} />;
+};
+
+export async function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): Promise<void> {
+    return new Promise((resolve) => {
+        const container = document.createElement('div');
+        document.body.appendChild(container);
+        const root = ReactDOM.createRoot(container);
+        
+        root.render(
+            <PdfExporter 
+                messages={messages} 
+                options={options} 
+                onComplete={() => {
+                    root.unmount();
+                    document.body.removeChild(container);
+                    resolve();
+                }}
+            />
+        );
+    });
 }

@@ -32,9 +32,11 @@ describe('exportToPdf', () => {
     ];
 
     beforeEach(() => {
-        // Set up a mock document
+        // Set up a mock document and React
         const div = document.createElement('div');
         document.body.appendChild(div);
+        vi.spyOn(document.body, 'appendChild');
+        vi.spyOn(document.body, 'removeChild');
     });
 
     afterEach(() => {
