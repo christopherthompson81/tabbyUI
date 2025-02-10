@@ -29,7 +29,7 @@ export async function exportToDocx(messages: MessageProps[], options: DocxExport
         for (const content of message.content) {
             if (content.type === 'text') {
                 // Parse markdown content
-                const tokens = marked.lexer(content.text);
+                const tokens = marked.lexer(content.text || '');
                 for (const token of tokens) {
                     if (token.type === 'paragraph') {
                         messageContent.push(new Paragraph({
