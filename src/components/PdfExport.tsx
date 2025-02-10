@@ -4,6 +4,8 @@ import { MessageProps } from '../services/tabbyAPI';
 import { ExportOptions } from '../utils/exportUtils';
 import { PdfContent } from './PdfContent';
 
+// Export failed: TypeError: toPDF is not a function
+// Property 'toPDF' does not exist on type 'typeof import("/home/chris/Programming/tabbyUI/node_modules/react-to-pdf/dist/types")' AI!
 export async function exportToPdf(messages: MessageProps[], options: ExportOptions = {}): Promise<void> {
     const { toPDF } = await import('react-to-pdf');
     const element = document.createElement('div');
