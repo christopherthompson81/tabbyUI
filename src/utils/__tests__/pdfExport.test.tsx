@@ -7,7 +7,9 @@ import * as PDF from 'react-to-pdf';
 // Mock react-to-pdf
 const mockToPDF = vi.fn().mockImplementation(() => {
     console.log('📄 Generating PDF...');
-    return Promise.resolve();
+    return Promise.resolve().then(() => {
+        console.log('✅ PDF generation complete');
+    });
 });
 vi.mock('react-to-pdf', () => ({
     usePDF: vi.fn(() => {
@@ -34,7 +36,7 @@ vi.mock('react', async () => {
     const actual = await vi.importActual('react');
     return {
         ...actual,
-        useRef: vi.fn((val) => {
+        useRef: vi.fn(() => {
             console.log('📌 useRef hook called');
             const div = document.createElement('div');
             console.log('📦 Created div reference');
@@ -42,10 +44,18 @@ vi.mock('react', async () => {
         }),
         useEffect: vi.fn((fn) => {
             console.log('🎣 useEffect hook triggered');
-            return fn();
+            // Immediately execute the effect function
+            fn();
+            // Return cleanup function if one was provided
+            return () => console.log('🧹 useEffect cleanup');
         })
     };
 });
+
+// Mock LLMOutputRenderer to avoid rendering complexities
+vi.mock('../components/LLMOutputRenderer', () => ({
+    default: vi.fn(() => null)
+}));
 
 describe('exportToPdf', () => {
     const mockMessages: MessageProps[] = [
