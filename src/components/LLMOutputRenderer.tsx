@@ -151,10 +151,12 @@ const LLMOutputRenderer = ({ content }) => {
         
         tokens.forEach((token: any, index: number) => {
             if (token.type === 'code') {
+                // Ensure we have a valid language or fallback to text
+                const language = token.lang && token.lang.trim() ? token.lang : 'text';
                 result.push(
                     <SyntaxHighlighter
                         key={index}
-                        language={token.lang || 'text'}
+                        language={language}
                         style={vscDarkPlus}
                         showLineNumbers={true}
                         wrapLines={true}
