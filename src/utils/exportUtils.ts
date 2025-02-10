@@ -310,8 +310,12 @@ export async function exportToDocx(messages: MessageProps[], options: ExportOpti
     return await Packer.toBlob(doc);
 }
 
-//[ERROR] Expected ">" but found "ref" AI!
-export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: ExportOptions }>(
+interface PdfContentProps {
+    messages: MessageProps[];
+    options: ExportOptions;
+}
+
+export const PdfContent = React.forwardRef<HTMLDivElement, PdfContentProps>(
     ({ messages, options }, ref) => {
         return (
             <div ref={ref} style={{ padding: '40px' }}>
