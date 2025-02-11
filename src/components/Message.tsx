@@ -154,8 +154,8 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                                 );
                                             }}
                                         >
-                                            <Typography variant="body2" color="text.secondary">
-                                                {isExpanded ? '🤔 Thinking... (click to collapse)' : `🤔 Thinking... (${wordCount} words, click to expand)`}
+                                            <Typography variant="body1" color="text.secondary">
+                                                {isExpanded ? '🧠 Thinking... (click to collapse)' : `🧠 Thinking... (${wordCount} words, click to expand)`}
                                             </Typography>
                                             <Collapse in={isExpanded}>
                                                 <Box sx={{ mt: 1 }}>
