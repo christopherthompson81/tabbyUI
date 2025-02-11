@@ -12,10 +12,6 @@ interface PrintPreviewProps {
 }
 
 export const PrintPreview: React.FC<PrintPreviewProps> = ({ messages, title, author, date }) => {
-    React.useEffect(() => {
-        // Auto-print when component mounts
-        window.print();
-    }, []);
 
     return (
         <div style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>

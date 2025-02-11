@@ -91,4 +91,5 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
             date={options.date}
         />
     );
+    printWindow.print();
 }
