@@ -64,11 +64,11 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
     }
 
     // Add necessary styles
-    // can you add katex/dist/katex.min.css into the style import here? ai!
     printWindow.document.write(`
         <html>
             <head>
                 <title>${options.title || 'Conversation'}</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
                 <style>
                     @media print {
                         body { margin: 0; }
