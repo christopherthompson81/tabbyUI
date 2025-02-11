@@ -228,7 +228,6 @@ export function AppDrawer() {
                     const currentConversation = folders
                         .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
                         .find(c => c.id == currentConversationId);
-                    console.log(currentConversationId, folders, currentConversation);
                     
                     if (currentConversation) {
                         if (format === 'pdf') {
