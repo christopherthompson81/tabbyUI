@@ -10,7 +10,7 @@ export interface PdfExportOptions {
     date?: string;
 }
 
-export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessageProps[], options: PdfExportOptions }>(
+export const PdfContent = 
     ({ messages, options }, ref) => {
         return (
             <div ref={ref} style={{ padding: '40px', fontFamily: 'Arial, sans-serif' }}>
@@ -53,7 +53,7 @@ export const PdfContent = React.forwardRef<HTMLDivElement, { messages: MessagePr
             </div>
         );
     }
-);
+
 
 
 export function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): void {
@@ -82,6 +82,8 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
         </html>
     `);
 
+    printWindow.document.close();
+    printWindow.focus();
     const root = ReactDOM.createRoot(printWindow.document.getElementById('root')!);
     root.render(
         <PrintPreview 
@@ -92,5 +94,5 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
         />
     );
     printWindow.print();
-    printWindow.close();
+    //printWindow.close();
 }
