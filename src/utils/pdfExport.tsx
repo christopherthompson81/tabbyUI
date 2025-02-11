@@ -64,6 +64,7 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
     }
 
     // Add necessary styles
+    // can you add katex/dist/katex.min.css into the style import here? ai!
     printWindow.document.write(`
         <html>
             <head>
