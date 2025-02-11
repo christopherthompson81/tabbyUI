@@ -5,7 +5,7 @@ import "../styles.css";
 import LLMOutputRenderer from './LLMOutputRenderer';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box } from '@mui/material';
-import { deepPurple } from '@mui/material/colors';
+import { blueGrey } from '@mui/material/colors';
 
 import { MessageProps } from '../services/tabbyAPI';
 
@@ -140,7 +140,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                         <Box 
                                             key={`${idx}-${matchIdx}-think`}
                                             sx={{
-                                                backgroundColor: deepPurple[900],
+                                                backgroundColor: blueGrey[100],
                                                 borderRadius: 1,
                                                 p: 1,
                                                 my: 1,

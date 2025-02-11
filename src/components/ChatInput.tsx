@@ -7,6 +7,7 @@ import AdjustIcon from '@mui/icons-material/Adjust';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CodeIcon from '@mui/icons-material/Code';
+import Psychology from '@mui/icons-material/Psychology';
 
 // Local Imports
 import {
@@ -22,7 +23,7 @@ import {
 } from '../utils/persistence';
 import { useModelLoader } from './ModelLoader';
 import ProgressDialog from './ProgressDialog';
-import BrainIcon from "./BrainIcon";
+//import BrainIcon from "./BrainIcon";
 import IconRadioGroup from './IconRadioGroup';
 import { useReducerContext } from "../reducers/ReducerContext";
 
@@ -301,7 +302,7 @@ export default function ChatInput({
                             { value: 'Assistant', tooltip: "Assistant", icon: <SupportAgentIcon /> },
                             { value: 'Vision', tooltip: "Vision Model", icon: <VisibilityIcon /> },
                             { value: 'Coding', tooltip: "Coding Model", icon: <CodeIcon /> },
-                            { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <BrainIcon /> },
+                            { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <Psychology /> },
                         ]}
                     />
                     <Box sx={{ alignItems: "center" }}>

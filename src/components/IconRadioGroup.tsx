@@ -33,8 +33,8 @@ const IconButtonWrapper = styled(IconButton, {
     "& svg": {
         fontSize: "1.5rem",
         color: selected
-            ? theme.palette.text.primary
-            : theme.palette.text.secondary,
+            ? theme.palette.primary.contrastText
+            : theme.palette.primary.contrastText,
         strokeWidth: selected ? 1.5 : 1,
     },
 }));
