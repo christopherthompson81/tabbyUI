@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { Marked } from "marked";
 import * as katex from "katex";
 import "katex/dist/katex.min.css";
