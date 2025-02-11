@@ -92,4 +92,5 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
         />
     );
     printWindow.print();
+    printWindow.close();
 }
