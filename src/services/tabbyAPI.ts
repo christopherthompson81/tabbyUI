@@ -135,7 +135,8 @@ export async function sendConversation(
     userMessage: MessageContent[],
     regenerate: boolean = false,
     onUpdate: (updatedMessages: MessageProps[]) => void,
-    onComplete: (finalMessages: MessageProps[]) => void
+    onComplete: (finalMessages: MessageProps[]) => void,
+    abortSignal?: AbortSignal
 ) {
     try {
         let updatedMessages: MessageProps[];
@@ -158,6 +159,7 @@ export async function sendConversation(
                 messages: updatedMessages,
                 stream: true
             }),
+            signal: abortSignal,
         });
 
         if (!response.ok) {

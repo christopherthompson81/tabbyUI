@@ -34,6 +34,8 @@ interface ChatInputProps {
 export default function ChatInput({
     messagesEndRef
 }: ChatInputProps) {
+    const [abortController, setAbortController] = useState<AbortController | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
     const { currentConversationId, messages, dispatch } = useReducerContext();
     const serverUrl = getPersistedServerUrl();
     const adminApiKey = getPersistedAdminApiKey();
@@ -61,6 +63,9 @@ export default function ChatInput({
     const sendConversation = useCallback(
         async (userMessage: MessageContent[], regenerate: boolean = false) => {
             try {
+                setIsGenerating(true);
+                const controller = new AbortController();
+                setAbortController(controller);
                 await sendConversationToAPI(
                     getPersistedServerUrl(),
                     getPersistedApiKey(),
@@ -76,10 +81,15 @@ export default function ChatInput({
                         if (currentConversationId !== null) {
                             dispatch({ type: "UPDATE_CONVERSATION", id: currentConversationId, messages: finalMessages });
                         }
-                    }
+                        setIsGenerating(false);
+                        setAbortController(null);
+                    },
+                    controller.signal
                 );
             } catch (error) {
                 console.error("Error sending conversation:", error);
+                setIsGenerating(false);
+                setAbortController(null);
             }
         },
         [messages]
@@ -305,20 +315,32 @@ export default function ChatInput({
                             { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <Psychology /> },
                         ]}
                     />
-                    <Box sx={{ alignItems: "center" }}>
-                        <Button
-                            variant="contained"
-                            onClick={handleSend}
-                            disabled={messagePreview.length === 0 && !inputText.trim()}
-                        >
-                            Send
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={handleRegenerate}
-                        >
-                            Regenerate
-                        </Button>
+                    <Box sx={{ alignItems: "center", display: "flex", gap: 1 }}>
+                        {isGenerating ? (
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => abortController?.abort()}
+                            >
+                                Stop Generating
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSend}
+                                    disabled={messagePreview.length === 0 && !inputText.trim()}
+                                >
+                                    Send
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleRegenerate}
+                                >
+                                    Regenerate
+                                </Button>
+                            </>
+                        )}
                     </Box>
                 </Box>
             </Box>
