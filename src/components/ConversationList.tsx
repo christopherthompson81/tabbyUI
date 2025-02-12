@@ -74,7 +74,7 @@ function FolderItem({
     onDelete,
     onSave,
 }: FolderItemProps) {
-    const { folders, messages, dispatch } = useReducerContext();
+    const { dispatch } = useReducerContext();
     const [open, setOpen] = useState(
         isParentOfCurrentConversation(folder, currentConversationId)
     );
