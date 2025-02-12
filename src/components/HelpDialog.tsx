@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import HelpIntroduction from "./HelpIntroducxtion";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -69,6 +70,7 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
             <DialogContent>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)}>
+                        <Tab label="Introduction" />
                         <Tab label="Getting Started" />
                         <Tab label="Hardware Requirements" />
                         <Tab label="Use Cases" />
@@ -76,6 +78,10 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
                 </Box>
 
                 <TabPanel value={tabValue} index={0}>
+                    <HelpIntroduction />
+                </TabPanel>
+
+                <TabPanel value={tabValue} index={1}>
                     <Typography variant="h6" gutterBottom>Setting Up Your Environment</Typography>
                     
                     <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
@@ -115,7 +121,7 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
                     </Paper>
                 </TabPanel>
 
-                <TabPanel value={tabValue} index={1}>
+                <TabPanel value={tabValue} index={2}>
                     <Typography variant="h6" gutterBottom>Hardware Requirements</Typography>
                     
                     <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
@@ -146,7 +152,7 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
                     </Paper>
                 </TabPanel>
 
-                <TabPanel value={tabValue} index={2}>
+                <TabPanel value={tabValue} index={3}>
                     <Typography variant="h6" gutterBottom>Common Use Cases</Typography>
 
                     <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
