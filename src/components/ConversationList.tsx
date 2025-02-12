@@ -87,7 +87,6 @@ function FolderItem({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const menuOpen = Boolean(menuAnchorEl);
 
-    // Modify this to use dispatching. The reducer is in src/reducers/conversationsReducer.ts AI!
     const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -120,12 +119,16 @@ function FolderItem({
             const newConv = {
                 ...importedConv,
                 id: newId,
-                name: newName
+                name: newName,
+                timestamp: Date.now(),
+                author: "User"
             };
 
-            // Add conversation to current folder
-            folder.conversations.push(newConv);
-            onSwitchConversation(newId);
+            dispatch({
+                type: 'IMPORT_CONVERSATION',
+                conversation: newConv,
+                folderId: folder.id
+            });
             
         } catch (error) {
             console.error('Error importing conversation:', error);
