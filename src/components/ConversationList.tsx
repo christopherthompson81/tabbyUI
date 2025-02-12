@@ -23,6 +23,7 @@ import {
     getPersistedCurrentConversationId,
 } from "../utils/persistence";
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
+import { useReducerContext } from "../reducers/ReducerContext";
 
 interface ConversationListProps {
     folders: ConversationFolder[];
@@ -73,6 +74,7 @@ function FolderItem({
     onDelete,
     onSave,
 }: FolderItemProps) {
+    const { folders, messages, dispatch } = useReducerContext();
     const [open, setOpen] = useState(
         isParentOfCurrentConversation(folder, currentConversationId)
     );
@@ -85,6 +87,7 @@ function FolderItem({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const menuOpen = Boolean(menuAnchorEl);
 
+    // Modify this to use dispatching. The reducer is in src/reducers/conversationsReducer.ts AI!
     const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
