@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
     List,
     ListItem,
@@ -82,7 +82,58 @@ function FolderItem({
     const [selectedConversation, setSelectedConversation] =
         useState<Conversation | null>(null);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const menuOpen = Boolean(menuAnchorEl);
+
+    const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const importedConv = JSON.parse(text);
+            
+            // Find unique ID and name
+            let newId = importedConv.id;
+            let newName = importedConv.name;
+            let counter = 1;
+
+            const allConvs = folder.conversations.concat(
+                folder.subfolders.flatMap(sf => sf.conversations)
+            );
+
+            while (allConvs.some(c => c.id === newId)) {
+                newId = `${importedConv.id}_${counter}`;
+                counter++;
+            }
+
+            counter = 1;
+            let baseName = importedConv.name;
+            while (allConvs.some(c => c.name === newName)) {
+                newName = `${baseName} (${counter})`;
+                counter++;
+            }
+
+            const newConv = {
+                ...importedConv,
+                id: newId,
+                name: newName
+            };
+
+            // Add conversation to current folder
+            folder.conversations.push(newConv);
+            onSwitchConversation(newId);
+            
+        } catch (error) {
+            console.error('Error importing conversation:', error);
+            alert('Failed to import conversation. Please check the file format.');
+        }
+
+        // Reset file input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
 
     const handleConversationMenuClick = (
         event: React.MouseEvent<HTMLElement>,
@@ -159,7 +210,22 @@ function FolderItem({
                     >
                         Add Subfolder
                     </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            fileInputRef.current?.click();
+                            handleMenuClose();
+                        }}
+                    >
+                        Import Conversation
+                    </MenuItem>
                 </Menu>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    accept="application/json"
+                    onChange={handleImportFile}
+                />
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <Box sx={{ pl: 2 }}>
