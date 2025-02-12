@@ -32,6 +32,7 @@ import {
 import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
+import HelpDialog from "./HelpDialog";
 
 export default function AppHeader() {
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -40,6 +41,7 @@ export default function AppHeader() {
     const [showSettings, setShowSettings] = React.useState(false);
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
+    const [showHelp, setShowHelp] = React.useState(false);
     const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
     const [apiKey, setApiKey] = useState(getPersistedApiKey());
     const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
@@ -119,6 +121,14 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
+                                setShowHelp(true);
+                            }}
+                        >
+                            Help
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
                                 setShowAbout(true);
                             }}
                         >
@@ -189,6 +199,7 @@ export default function AppHeader() {
                 adminApiKey={adminApiKey}
             />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
+            <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
         </>
     );
 }
