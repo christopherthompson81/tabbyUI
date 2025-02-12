@@ -12,6 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import HelpIntroduction from "./HelpIntroducxtion";
+import HelpGettingStarted from "./HelpGettingStarted";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -82,43 +83,7 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
-                    <Typography variant="h6" gutterBottom>Setting Up Your Environment</Typography>
-                    
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">1. Python Setup</Typography>
-                        <Typography paragraph>
-                            • Install Python 3.10 or newer<br/>
-                            • Create a virtual environment (recommended)<br/>
-                            • Install required Python packages
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">2. Install ExLlamaV2</Typography>
-                        <Typography paragraph>
-                            • Clone the ExLlamaV2 repository<br/>
-                            • Install dependencies<br/>
-                            • Build the required CUDA extensions
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">3. Install and Configure TabbyAPI</Typography>
-                        <Typography paragraph>
-                            • Install TabbyAPI using pip<br/>
-                            • Configure the server settings<br/>
-                            • Set up API keys and access controls
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">4. Model Management</Typography>
-                        <Typography paragraph>
-                            • Download models from Hugging Face using TabbyAPI<br/>
-                            • Configure model parameters<br/>
-                            • Optimize for your hardware
-                        </Typography>
-                    </Paper>
+                    <HelpGettingStarted />
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
