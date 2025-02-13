@@ -189,13 +189,19 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 />
                             );
                         } else if (item.type === 'image_url' && item.image_url) {
-                            // Can we set a maximum size for images here? AI!
                             return (
                                 <img
                                     key={idx}
                                     src={item.image_url.url}
                                     alt="User uploaded"
-                                    style={{ maxWidth: '100%', margin: '10px 0' }}
+                                    style={{ 
+                                        maxWidth: '100%',
+                                        maxHeight: '600px',
+                                        width: 'auto',
+                                        height: 'auto',
+                                        margin: '10px 0',
+                                        objectFit: 'contain'
+                                    }}
                                     loading="lazy"
                                 />
                             );
