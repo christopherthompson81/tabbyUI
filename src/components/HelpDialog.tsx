@@ -50,12 +50,11 @@ async function fetchMarkdown(filename: string) {
 
 export default function HelpDialog({ open, onClose }: HelpDialogProps) {
     const [tabValue, setTabValue] = useState(0);
-    const [helpIntroduction, setHelpIntroduction] = useState();
-    const [helpGettingStarted, setHelpGettingStarted] = useState();
-    const [helpHardwareAndRequirements, setHelpHardwareAndRequirements] = useState();
-    const [helpUseCases, setHelpUseCases] = useState();
+    const [helpIntroduction, setHelpIntroduction] = useState<string>('');
+    const [helpGettingStarted, setHelpGettingStarted] = useState<string>('');
+    const [helpHardwareAndRequirements, setHelpHardwareAndRequirements] = useState<string>('');
+    const [helpUseCases, setHelpUseCases] = useState<string>('');
     
-    // there are typescript linting errors on when the "text" parameter is being passed to the various set functions. The error is "Argument of type 'string' is not assignable to parameter of type 'SetStateAction<undefined>'". Please fix AI!
     useEffect(() => {
         fetch('/documentation/Introduction.md')
             .then((res) => res.text())
