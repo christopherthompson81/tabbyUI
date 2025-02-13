@@ -9,7 +9,7 @@ const HelpIntroduction = () => {
                 <p>
                     When using local large language models (LLMs), the ability
                     to select the most appropriate model for a given task is
-                    crucial for achieving the best results. TabbyUI is a
+                    directly related to achieving the best results. TabbyUI is a
                     web-based interface designed to work seamlessly with
                     TabbyAPI, an inference engine that powers these models. The
                     aim of it is to make dynamic model switching trivial, a
@@ -41,17 +41,17 @@ const HelpIntroduction = () => {
                     which is integrated into the chat input interface. This
                     intuitive component simplifies model selection, enabling
                     users to choose the most suitable model with just a single
-                    click. The dynamic model switching capability ensures that
-                    users can adapt to changing requirements effortlessly,
+                    click. The dynamic model switching capability lets
+                    users adapt the server to the task effortlessly,
                     enhancing both efficiency and the quality of responses.
                 </p>
                 <p>
-                    In addition, I have also tried to make good effort to ensure
-                    that LLM output is formatted correctly, handling thinking
-                    tags, inline and display LaTeX, and syntax highlighting. I
-                    also want to make sure that output continues to be
-                    well-supported so I'm interested in hearing about model
-                    output that would expand the rendering capabilities.
+                    In addition, I have also tried to ensure that LLM output is
+                    formatted correctly, handling thinking tags, inline and
+                    display LaTeX, and syntax highlighting. I also want to
+                    make sure that output continues to be well-supported, so
+                    I'm interested in hearing about model output that would
+                    expand the rendering capabilities.
                 </p>
                 <h2>Benefits</h2>
                 <ul>
