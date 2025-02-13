@@ -28,3 +28,8 @@ dist-ssr
 
 # Temporary dev notes
 aider_todo.md
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
