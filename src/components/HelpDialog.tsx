@@ -10,9 +10,8 @@ import {
     Paper,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
-import HelpIntroduction from "./HelpIntroducxtion";
-import HelpGettingStarted from "./HelpGettingStarted";
+import { useEffect, useState } from "react";
+import LLMOutputRenderer from "./LLMOutputRenderer";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -43,8 +42,34 @@ interface HelpDialogProps {
     onClose: () => void;
 }
 
+async function fetchMarkdown(filename: string) {
+    return fetch(filename)
+        .then((res) => res.text())
+        .then((text) => text);
+}
+
 export default function HelpDialog({ open, onClose }: HelpDialogProps) {
     const [tabValue, setTabValue] = useState(0);
+    const [helpIntroduction, setHelpIntroduction] = useState();
+    const [helpGettingStarted, setHelpGettingStarted] = useState();
+    const [helpHardwareAndRequirements, setHelpHardwareAndRequirements] = useState();
+    const [helpUseCases, setHelpUseCases] = useState();
+    
+    // there are typescript linting errors on when the "text" parameter is being passed to the various set functions. The error is "Argument of type 'string' is not assignable to parameter of type 'SetStateAction<undefined>'". Please fix AI!
+    useEffect(() => {
+        fetch('/documentation/Introduction.md')
+            .then((res) => res.text())
+            .then((text) => setHelpIntroduction(text));
+        fetch('/documentation/GettingStarted.md')
+            .then((res) => res.text())
+            .then((text) => setHelpGettingStarted(text));
+        fetch('/documentation/HardwareAndRequirements.md')
+            .then((res) => res.text())
+            .then((text) => setHelpHardwareAndRequirements(text));
+        fetch('/documentation/UseCases.md')
+            .then((res) => res.text())
+            .then((text) => setHelpUseCases(text));
+    },[]);
 
     return (
         <Dialog
@@ -79,73 +104,19 @@ export default function HelpDialog({ open, onClose }: HelpDialogProps) {
                 </Box>
 
                 <TabPanel value={tabValue} index={0}>
-                    <HelpIntroduction />
+                    <LLMOutputRenderer content={helpIntroduction} />
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={1}>
-                    <HelpGettingStarted />
+                    <LLMOutputRenderer content={helpGettingStarted} />
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={2}>
-                    <Typography variant="h6" gutterBottom>Hardware Requirements</Typography>
-                    
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Minimum Requirements</Typography>
-                        <Typography paragraph>
-                            • NVIDIA GPU with 8GB VRAM<br/>
-                            • 16GB System RAM<br/>
-                            • CUDA 11.7 or newer
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Recommended Setup</Typography>
-                        <Typography paragraph>
-                            • NVIDIA GPU with 24GB+ VRAM<br/>
-                            • 32GB+ System RAM<br/>
-                            • NVMe SSD for model storage
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Multi-GPU Configurations</Typography>
-                        <Typography paragraph>
-                            • Setting up tensor parallelism<br/>
-                            • Memory management across GPUs<br/>
-                            • Performance optimization tips
-                        </Typography>
-                    </Paper>
+                    <LLMOutputRenderer content={helpHardwareAndRequirements} />
                 </TabPanel>
 
                 <TabPanel value={tabValue} index={3}>
-                    <Typography variant="h6" gutterBottom>Common Use Cases</Typography>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Development Assistant</Typography>
-                        <Typography paragraph>
-                            • Using with Aider for code assistance<br/>
-                            • Code review and suggestions<br/>
-                            • Documentation generation
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Document Analysis</Typography>
-                        <Typography paragraph>
-                            • OCR with vision-language models<br/>
-                            • Processing scanned documents<br/>
-                            • Extracting information from images
-                        </Typography>
-                    </Paper>
-
-                    <Paper elevation={1} sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h6">Creative Writing</Typography>
-                        <Typography paragraph>
-                            • Story development<br/>
-                            • Content generation<br/>
-                            • Editorial assistance
-                        </Typography>
-                    </Paper>
+                    <LLMOutputRenderer content={helpUseCases} />
                 </TabPanel>
             </DialogContent>
         </Dialog>
