@@ -26,7 +26,7 @@ const CodeBlock = ({ code, language }) => {
             <SyntaxHighlighter
                 language={language}
                 style={vscDarkPlus}
-                showLineNumbers={true}
+                showLineNumbers={false}
                 wrapLines={true}
                 customStyle={{
                     margin: '1em 0',
