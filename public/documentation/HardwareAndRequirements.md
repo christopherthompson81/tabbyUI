@@ -14,3 +14,5 @@
 * Setting up tensor parallelism
 * Memory management across GPUs
 * Performance optimization tips
+
+ExLlamaV2 is reliant on CUDA, meaning that it typically requires CUDA-enabled Nvidia cards.
