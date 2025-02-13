@@ -2,12 +2,10 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    Typography,
     IconButton,
     Box,
     Tabs,
     Tab,
-    Paper,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
@@ -40,12 +38,6 @@ function TabPanel(props: TabPanelProps) {
 interface HelpDialogProps {
     open: boolean;
     onClose: () => void;
-}
-
-async function fetchMarkdown(filename: string) {
-    return fetch(filename)
-        .then((res) => res.text())
-        .then((text) => text);
 }
 
 export default function HelpDialog({ open, onClose }: HelpDialogProps) {
