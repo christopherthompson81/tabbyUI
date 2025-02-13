@@ -189,6 +189,7 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 />
                             );
                         } else if (item.type === 'image_url' && item.image_url) {
+                            // Can we set a maximum size for images here? AI!
                             return (
                                 <img
                                     key={idx}
