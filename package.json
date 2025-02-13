@@ -30,6 +30,7 @@
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
+    "vite-plugin-markdown": "^2.2.0",
     "vitest": "^3.0.5"
   },
   "devDependencies": {
