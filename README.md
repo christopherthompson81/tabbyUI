@@ -6,6 +6,7 @@ A modern chat interface for tabbyAPI that provides an intuitive way to interact 
 
 - Backendless, all code runs in your browser
 - Support for multimodal interactions (text and image)
+- Specialized rendering for Markdown, thinking, inline and display LaTeX, and programming language syntax.
 - One-click model switching for different tasks:
   - General Assistant
   - Vision tasks
