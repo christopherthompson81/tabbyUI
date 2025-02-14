@@ -10,7 +10,6 @@ export interface PdfExportOptions {
     date?: string;
 }
 
-// message.content.map((content, idx) exhibits a linting error: Parameter 'idx' implicitly has an 'any' type. Please fix AI!
 export const PdfContent = 
     ({ messages, options }, ref) => {
         return (
@@ -31,7 +30,7 @@ export const PdfContent =
                             {message.role === 'user' ? 'User' : 'Assistant'}
                         </div>
                         <div style={{ marginLeft: '20px' }}>
-                            {message.content.map((content, idx) => (
+                            {message.content.map((content, idx: number) => (
                                 <div key={idx}>
                                     {content.type === 'text' ? (
                                         <LLMOutputRenderer content={content.text} />
