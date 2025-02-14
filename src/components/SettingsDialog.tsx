@@ -1,6 +1,7 @@
 import { ChangeEvent } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
 
+// move this interface to src/reducers/settingsReducer.ts and then import it here. AI!
 interface GenerationParams {
   maxTokens: string | number;
   temperature: string | number;
