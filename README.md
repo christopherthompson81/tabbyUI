@@ -16,11 +16,12 @@ A modern chat interface for tabbyAPI that provides an intuitive way to interact 
 
 ## Getting Started
 
-1. Navigate to the AWS deployed instance: [https://main.d1nwbxsgjn09jn.amplifyapp.com/](https://main.d1nwbxsgjn09jn.amplifyapp.com/)
-2. Ensure you have a running [tabbyAPI](https://github.com/theroyallab/tabbyAPI) instance
-3. Configure your server URL and API keys in the settings
-4. Load your preferred model through the model management interface
-5. Start chatting!
+1. Ensure you have a running [tabbyAPI](https://github.com/theroyallab/tabbyAPI) instance
+2. Configure your server URL and API keys in the settings
+3. Load your preferred model through the model management interface
+4. Start chatting!
+
+An AWS deployed instance is available at: [https://main.d1nwbxsgjn09jn.amplifyapp.com/](https://main.d1nwbxsgjn09jn.amplifyapp.com/). However, this would require mixed-mode content enabled to access a conventionally-deployed local TabbyAPI server.
 
 ## Development
 
@@ -32,7 +33,7 @@ This project is built with:
 To run locally:
 ```bash
 npm install
-npm run dev
+npm run preview
 ```
 
 ## Contributing
