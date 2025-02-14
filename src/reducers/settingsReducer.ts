@@ -1,4 +1,21 @@
-import { GenerationParams } from "../components/SettingsDialog";
+export interface GenerationParams {
+    maxTokens: string | number;
+    temperature: string | number;
+    topP: string | number;
+    topK: string | number;
+    frequencyPenalty: string | number;
+    presencePenalty: string | number;
+    repetitionPenalty: string | number;
+    typicalP: string | number;
+    minTokens: string | number;
+    generateWindow: string | number;
+    tokenHealing: string;
+    mirostatMode: string | number;
+    mirostatTau: string | number;
+    mirostatEta: string | number;
+    addBosToken: string;
+    banEosToken: string;
+}
 
 export interface SettingsState {
     serverUrl: string;

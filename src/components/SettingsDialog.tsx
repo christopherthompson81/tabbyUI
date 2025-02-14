@@ -1,25 +1,6 @@
 import { ChangeEvent } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
-
-// move this interface to src/reducers/settingsReducer.ts and then import it here. AI!
-interface GenerationParams {
-  maxTokens: string | number;
-  temperature: string | number;
-  topP: string | number;
-  topK: string | number;
-  frequencyPenalty: string | number;
-  presencePenalty: string | number;
-  repetitionPenalty: string | number;
-  typicalP: string | number;
-  minTokens: string | number;
-  generateWindow: string | number;
-  tokenHealing: string;
-  mirostatMode: string | number;
-  mirostatTau: string | number;
-  mirostatEta: string | number;
-  addBosToken: string;
-  banEosToken: string;
-}
+import { GenerationParams } from '../reducers/settingsReducer';
 
 interface SettingsDialogProps {
   open: boolean;
