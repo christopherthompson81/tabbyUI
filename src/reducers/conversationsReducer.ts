@@ -1,5 +1,10 @@
 import { MessageProps } from "../services/tabbyAPI";
-import { ConversationFolder, persistConversations, persistCurrentConversationId } from "../utils/persistence";
+import {
+    Conversation,
+    ConversationFolder,
+    persistConversations,
+    persistCurrentConversationId
+} from "../utils/persistence";
 
 export interface ConversationsState {
     folders: ConversationFolder[];
@@ -34,7 +39,7 @@ export function conversationsReducer(state: ConversationsState, action: Conversa
                     subfolders: sortFoldersRecursively(folder.subfolders.sort((a, b) => a.name.localeCompare(b.name)))
                 }));
             };
-            
+
             const sortedFolders = sortFoldersRecursively(action.folders);
             persistConversations(sortedFolders);
             return {
