@@ -66,7 +66,7 @@ copy config_sample.yml config.yml
 On macOS/Linux:
 
 ```bash
-copy config_sample.yml config.yml
+cp config_sample.yml config.yml
 ```
 
 For example if you have an Nvida 3090 with 24 GB of VRAM and and you wanted your coding model loaded by default, you may want to set Qwen2.5-Coder-32B-Instruct in the configuration.

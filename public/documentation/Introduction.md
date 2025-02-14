@@ -2,13 +2,13 @@
 
 ## Introduction to TabbyUI
 
-TabbyUI is a web-based interface designed to work seamlessly with TabbyAPI, an inference engine that powers local large language models (LLMs). When using local large language models (LLMs), the ability to select the most appropriate model for a given task is directly related to achieving the best results. The aim of this software is to make dynamic model switching trivial, a feature that previously required reconfiguration of the inference server.
+TabbyUI is a web-based interface designed to work seamlessly with TabbyAPI, an inference engine that powers local large language models (LLMs). When using local LLMs, the ability to select the most appropriate model for a given task is directly related to achieving the best results. The aim of this software is to make dynamic model switching trivial, a feature that previously required reconfiguration of the inference server.
 
 ## Why Use an LLM?
 
 LLMs are powerful tools designed to understand and generate human-like text, enabling a wide range of applications such as chat conversations, text generation, problem-solving, and more. 
 
-While traditional search engines like Google offer a wealth of information, they often fall short in providing precise, context-aware answers, especially for complex or ambiguous queries. This is where Language Learning Models (LLMs) shine. LLMs are trained on vast amounts of text data from various sources, enabling them to understand and generate human-like language. Unlike search engines, which provide a list of links, LLMs can synthesize information from multiple sources to deliver coherent and relevant answers. This makes them particularly useful for questions that require nuanced understanding or context-specific responses.
+While traditional search engines like Google offer a wealth of information, they often fall short in providing precise, context-aware answers, especially for complex or ambiguous queries. This is where LLMs shine. LLMs are trained on vast amounts of text data from various sources, enabling them to understand and generate human-like language. Unlike search engines, which provide a list of links, LLMs can synthesize information from multiple sources to deliver coherent and relevant answers. This makes them particularly useful for questions that require nuanced understanding or context-specific responses.
 
 <ins>**Note:** LLMs are also imperfect and their answers need to be thoroughly double-checked for validity. Be critical of the output any model provides!</ins>
 
