@@ -16,10 +16,11 @@ A modern chat interface for tabbyAPI that provides an intuitive way to interact 
 
 ## Getting Started
 
-1. Ensure you have a running [tabbyAPI](https://github.com/theroyallab/tabbyAPI) instance
-2. Configure your server URL and API keys in the settings
-3. Load your preferred model through the model management interface
-4. Start chatting!
+1. Navigate to the AWS deployed instance: [https://main.d1nwbxsgjn09jn.amplifyapp.com/](https://main.d1nwbxsgjn09jn.amplifyapp.com/)
+2. Ensure you have a running [tabbyAPI](https://github.com/theroyallab/tabbyAPI) instance
+3. Configure your server URL and API keys in the settings
+4. Load your preferred model through the model management interface
+5. Start chatting!
 
 ## Development
 
