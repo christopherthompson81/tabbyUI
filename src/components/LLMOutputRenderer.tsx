@@ -173,6 +173,7 @@ const LLMOutputRenderer = ({ content }) => {
                 },
             },
         ],
+        // this exhibits a linting error: Type '(code: any, language: any) => Element' is not assignable to type '(this: _Renderer, args_0: Code) => string | false'.Target signature provides too few arguments. Expected 2 or more, but got 1. Please fix AI!
         renderer: {
             code(code, language) {
                 return <CodeBlock code={code} language={language || "text"} />;
