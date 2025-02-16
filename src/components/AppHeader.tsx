@@ -47,6 +47,13 @@ export default function AppHeader() {
         "checking" | "online" | "offline"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+    const tooltipContent = modelInfo?.parameters 
+        ? Object.entries(modelInfo.parameters)
+            .map(([key, value]) => (
+                `**${key}**: ${typeof value === 'object' ? JSON.stringify(value) : value}`
+            ))
+            .join('\n')
+        : "";
 
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
