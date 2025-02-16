@@ -2,6 +2,7 @@ import {
     useRef,
     useLayoutEffect,
     useReducer,
+    useMemo,
 } from "react";
 import "./styles.css";
 import {
@@ -12,6 +13,9 @@ import {
 // Local Imports
 import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
+import { settingsReducer } from "./reducers/settingsReducer";
+import { modelParamsReducer } from "./reducers/modelParamsReducer";
+import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams } from "./utils/persistence";
 import { MessageProps } from "./services/tabbyAPI";
 import {
     ConversationFolder,
@@ -27,15 +31,27 @@ import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
 
 interface ReducerState {
-    folders: ConversationFolder[];
-    currentConversationId: string;
-    messages: MessageProps[];
+    conversations: {
+        folders: ConversationFolder[];
+        currentConversationId: string;
+        messages: MessageProps[];
+    };
+    settings: {
+        serverUrl: string;
+        apiKey: string;
+        adminApiKey: string;
+        generationParams: GenerationParams;
+    };
+    modelParams: {
+        [modelId: string]: ModelLoadParams;
+    };
 }
 
 function initializeState(): ReducerState {
     const folders = getPersistedConversations();
     const currentConversationId = getPersistedCurrentConversationId();
     
+    let conversationState;
     if (!currentConversationId) {
         const newId = Date.now().toString();
         const newConversation = {
@@ -55,32 +71,50 @@ function initializeState(): ReducerState {
         persistConversations(folders);
         persistCurrentConversationId(parseInt(newId));
         
-        return {
+        conversationState = {
             folders,
             currentConversationId: newId,
             messages: []
         };
+    } else {
+        const conversation = findConversation(folders, currentConversationId);
+        conversationState = {
+            folders,
+            currentConversationId,
+            messages: conversation ? conversation.messages : []
+        };
     }
-    
-    const conversation = findConversation(folders, currentConversationId);
+
     return {
-        folders,
-        currentConversationId,
-        messages: conversation ? conversation.messages : []
+        conversations: conversationState,
+        settings: {
+            serverUrl: getPersistedServerUrl(),
+            apiKey: getPersistedApiKey(),
+            adminApiKey: getPersistedAdminApiKey(),
+            generationParams: getPersistedGenerationParams()
+        },
+        modelParams: {}
     };
 }
 
 function App() {
     const [state, dispatch] = useReducer(
-        conversationsReducer,
+        (state: ReducerState, action: any) => ({
+            conversations: conversationsReducer(state.conversations, action),
+            settings: settingsReducer(state.settings, action),
+            modelParams: modelParamsReducer(state.modelParams, action)
+        }),
         initializeState()
     );
-    const providerState = {
-        folders: state.folders,
-        currentConversationId: state.currentConversationId,
-        messages: state.messages,
+
+    const providerState = useMemo(() => ({
+        folders: state.conversations.folders,
+        currentConversationId: state.conversations.currentConversationId,
+        messages: state.conversations.messages,
+        settings: state.settings,
+        modelParams: state.modelParams,
         dispatch
-    }
+    }), [state]);
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     // Smooth-Scrolling
