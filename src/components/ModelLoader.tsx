@@ -34,9 +34,6 @@ export function useModelLoader({
     const [selectedDraftModel, setSelectedDraftModel] = useState("");
     const [loadingProgress, setLoadingProgress] =
         useState<ModelLoadProgress | null>(null);
-    const [modelParams, setModelParams] = useState(() =>
-        getModelParams(selectedModel)
-    );
 
     const fetchModels = async () => {
         setLoading(true);
@@ -58,17 +55,27 @@ export function useModelLoader({
         }
     };
 
+    const [modelParamsState, dispatch] = useReducer(modelParamsReducer, {});
+    
+    useEffect(() => {
+        if (selectedModel) {
+            const params = getModelParams(selectedModel);
+            dispatch({ type: 'SET_MODEL_PARAMS', modelId: selectedModel, params });
+        }
+    }, [selectedModel]);
+
     const handleParamChange = (field: string, value: any) => {
-        setModelParams((prev) => {
-            const newParams = {
-                ...prev,
-                [field]: value,
-            };
-            if (selectedModel) {
-                persistModelParams(selectedModel, newParams);
-            }
-            return newParams;
-        });
+        if (selectedModel) {
+            dispatch({
+                type: 'SET_MODEL_PARAMS',
+                modelId: selectedModel,
+                params: { [field]: value }
+            });
+            persistModelParams(selectedModel, {
+                ...modelParamsState[selectedModel],
+                [field]: value
+            });
+        }
     };
 
     const loadModel = async (modelId: string, draftModelId?: string, customParams?: Partial<ModelLoadParams>) => {
