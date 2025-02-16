@@ -13,7 +13,6 @@ import {
     FormControlLabel,
     MenuItem,
     Select,
-    //SelectChangeEvent,
     TextField,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -24,7 +23,7 @@ import {
     persistModelParams,
     getAllModelParams,
 } from "../utils/persistence";
-import { ModelInfo, getModelInfo } from "../services/tabbyAPI";
+import { ModelInfo } from "../services/tabbyAPI";
 import { Typography } from "@mui/material";
 
 interface ModelPreferences {
