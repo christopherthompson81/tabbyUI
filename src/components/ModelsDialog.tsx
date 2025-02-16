@@ -134,8 +134,6 @@ function ModelsDialog({
                                 onChange={(e) => {
                                     const modelId = e.target.value as string;
                                     setSelectedModel(modelId);
-                                    // Load saved params when model changes
-                                    setModelParams(getModelParams(modelId));
                                 }}
                                 label="Select Model"
                             >
@@ -180,7 +178,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={modelParams.tensor_parallel}
+                                        checked={Boolean(modelParams.tensor_parallel)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "tensor_parallel",
