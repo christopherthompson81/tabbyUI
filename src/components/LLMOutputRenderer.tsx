@@ -215,7 +215,7 @@ const LLMOutputRenderer = ({ content }) => {
         setRenderedContent(result);
     }, [content]);
 
-    return <div className="prose max-w-none">{renderedContent}</div>;
+    return <div className="prose max-w-none" style={{ width: '100%' }}>{renderedContent}</div>;
 };
 
 export default LLMOutputRenderer;
