@@ -15,7 +15,7 @@ import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
 import { settingsReducer, GenerationParams } from "./reducers/settingsReducer";
 import { modelParamsReducer } from "./reducers/modelParamsReducer";
-import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams, ModelLoadParams } from "./utils/persistence";
+import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams, getAllModelParams, ModelLoadParams } from "./utils/persistence";
 import { MessageProps } from "./services/tabbyAPI";
 import {
     ConversationFolder,
@@ -94,7 +94,7 @@ function initializeState(): ReducerState {
             adminApiKey: getPersistedAdminApiKey(),
             generationParams: getPersistedGenerationParams()
         },
-        modelParams: {}
+        modelParams: getAllModelParams()
     };
 }
 

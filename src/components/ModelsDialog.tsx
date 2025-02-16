@@ -22,8 +22,9 @@ import { useModelLoader } from "./ModelLoader";
 import {
     getModelParams,
     persistModelParams,
+    getAllModelParams,
 } from "../utils/persistence";
-import { ModelInfo } from "../services/tabbyAPI";
+import { ModelInfo, getModelInfo } from "../services/tabbyAPI";
 import { Typography } from "@mui/material";
 
 interface ModelPreferences {
@@ -37,6 +38,12 @@ interface ModelsDialogProps {
     adminApiKey: string;
 }
 
+function getInitialModel() {
+    const data = Object.keys(getAllModelParams());
+    const sortedModels = [...data].sort((a, b) => a.localeCompare(b));
+    return sortedModels[0];
+}
+
 function ModelsDialog({
     open,
     onClose,
@@ -44,6 +51,7 @@ function ModelsDialog({
     adminApiKey,
 }: ModelsDialogProps) {
     const { modelParams, dispatch } = useReducerContext();
+    
     const modelLoader = useModelLoader({
         serverUrl,
         adminApiKey,
@@ -52,7 +60,7 @@ function ModelsDialog({
     const [models, setModels] = useState<ModelInfo[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [selectedModel, setSelectedModel] = useState("");
+    const [selectedModel, setSelectedModel] = useState(getInitialModel());
     const [selectedDraftModel, setSelectedDraftModel] = useState("");
     const [preferences, setPreferences] = useState<ModelPreferences>(() => {
         const saved = localStorage.getItem("modelPreferences");
@@ -77,6 +85,9 @@ function ModelsDialog({
             const data = await response.json();
             const sortedModels = [...data.data].sort((a, b) => a.id.localeCompare(b.id));
             setModels(sortedModels);
+            if (!selectedModel) {
+                setSelectedModel(sortedModels[0]);
+            }
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : "Failed to fetch models"
