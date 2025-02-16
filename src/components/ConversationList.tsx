@@ -256,9 +256,9 @@ function FolderItem({
                             selected={conv.id === currentConversationId}
                             sx={{ 
                                 pl: 4,
-                                backgroundColor: conv.id === currentConversationId ? 'action.selected' : 'inherit',
+                                backgroundColor: conv.id === currentConversationId ? 'rgba(0, 0, 0, 0.08)' : 'inherit',
                                 '&:hover': {
-                                    backgroundColor: conv.id === currentConversationId ? 'action.selected' : 'action.hover'
+                                    backgroundColor: conv.id === currentConversationId ? 'rgba(0, 0, 0, 0.08)' : 'action.hover'
                                 }
                             }}
                         >
