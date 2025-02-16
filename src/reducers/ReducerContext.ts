@@ -4,6 +4,7 @@ import { ConversationsAction } from "./conversationsReducer";
 import { MessageProps } from "../services/tabbyAPI";
 import { SettingsAction } from "./settingsReducer";
 import { GenerationParams } from "../components/SettingsDialog";
+import { ModelParamsState, ModelParamsAction } from "./modelParamsReducer";
 
 interface ReducerContextType {
     folders: ConversationFolder[];
@@ -15,7 +16,8 @@ interface ReducerContextType {
         adminApiKey: string;
         generationParams: GenerationParams;
     };
-    dispatch: React.Dispatch<ConversationsAction | SettingsAction>;
+    modelParams: ModelParamsState;
+    dispatch: React.Dispatch<ConversationsAction | SettingsAction | ModelParamsAction>;
 }
 
 const ReducerContext = React.createContext<ReducerContextType | undefined>(undefined);

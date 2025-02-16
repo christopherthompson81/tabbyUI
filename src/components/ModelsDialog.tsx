@@ -1,5 +1,5 @@
-import { useEffect, useState, useReducer } from "react";
-import { modelParamsReducer } from "../reducers/modelParamsReducer";
+import { useEffect, useState } from "react";
+import { useReducerContext } from "../reducers/ReducerContext";
 import {
     Checkbox,  
     Dialog,
@@ -85,7 +85,7 @@ function ModelsDialog({
         }
     };
 
-    const [modelParamsState, dispatch] = useReducer(modelParamsReducer, {});
+    const { modelParams, dispatch } = useReducerContext();
     
     useEffect(() => {
         if (selectedModel) {
@@ -102,7 +102,7 @@ function ModelsDialog({
                 params: { [field]: value }
             });
             persistModelParams(selectedModel, {
-                ...modelParamsState[selectedModel],
+                ...modelParams[selectedModel],
                 [field]: value
             });
         }
