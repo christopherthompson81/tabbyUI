@@ -51,7 +51,7 @@ function ModelsDialog({
     adminApiKey,
 }: ModelsDialogProps) {
     const { modelParams, dispatch } = useReducerContext();
-    
+    const defaultParams = getModelParams("");
     const modelLoader = useModelLoader({
         serverUrl,
         adminApiKey,
@@ -161,7 +161,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Max Sequence Length"
                                 type="number"
-                                value={modelParams[selectedModel]?.max_seq_len}
+                                value={modelParams[selectedModel]?.max_seq_len || defaultParams.max_seq_len}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "max_seq_len",
@@ -175,7 +175,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Cache Size"
                                 type="number"
-                                value={modelParams[selectedModel]?.cache_size}
+                                value={modelParams[selectedModel]?.cache_size || defaultParams.tensor_parallel}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "cache_size",
@@ -188,7 +188,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams[selectedModel]?.tensor_parallel)}
+                                        checked={Boolean(modelParams[selectedModel]?.tensor_parallel) || defaultParams.tensor_parallel}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "tensor_parallel",
@@ -204,7 +204,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams[selectedModel]?.gpu_split_auto)}
+                                        checked={Boolean(modelParams[selectedModel]?.gpu_split_auto) || defaultParams.gpu_split_auto}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "gpu_split_auto",
@@ -221,7 +221,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Rope Scale"
                                 type="number"
-                                value={modelParams[selectedModel]?.rope_scale}
+                                value={modelParams[selectedModel]?.rope_scale || defaultParams.rope_scale}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "rope_scale",
@@ -235,7 +235,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Rope Alpha"
                                 type="number"
-                                value={modelParams[selectedModel]?.rope_alpha}
+                                value={modelParams[selectedModel]?.rope_alpha || defaultParams.rope_alpha}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "rope_alpha",
@@ -248,7 +248,7 @@ function ModelsDialog({
                             <FormControl fullWidth>
                                 <InputLabel>Cache Mode</InputLabel>
                                 <Select
-                                    value={modelParams[selectedModel]?.cache_mode}
+                                    value={modelParams[selectedModel]?.cache_mode || defaultParams.cache_mode}
                                     label="Cache Mode"
                                     onChange={(e) =>
                                         handleParamChange(
@@ -283,7 +283,7 @@ function ModelsDialog({
                                             : null
                                     )
                                 }
-                                disabled={Boolean(modelParams[selectedModel]?.gpu_split_auto)}
+                                disabled={Boolean(modelParams[selectedModel]?.gpu_split_auto || defaultParams.gpu_split_auto)}
                             />
                         </Grid>
                         <Grid size={6}>
@@ -291,7 +291,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Chunk Size"
                                 type="number"
-                                value={modelParams[selectedModel]?.chunk_size}
+                                value={modelParams[selectedModel]?.chunk_size || defaultParams.chunk_size}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "chunk_size",
@@ -304,7 +304,7 @@ function ModelsDialog({
                             <TextField
                                 fullWidth
                                 label="Prompt Template"
-                                value={modelParams[selectedModel]?.prompt_template}
+                                value={modelParams[selectedModel]?.prompt_template || defaultParams.prompt_template}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "prompt_template",
@@ -317,7 +317,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams[selectedModel]?.vision)}
+                                        checked={Boolean(modelParams[selectedModel]?.vision || defaultParams.vision)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "vision",
@@ -334,7 +334,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Num Experts Per Token"
                                 type="number"
-                                value={modelParams[selectedModel]?.num_experts_per_token}
+                                value={modelParams[selectedModel]?.num_experts_per_token || defaultParams.num_experts_per_token}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "num_experts_per_token",
@@ -347,7 +347,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams[selectedModel]?.skip_queue)}
+                                        checked={Boolean(modelParams[selectedModel]?.skip_queue || defaultParams.skip_queue)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "skip_queue",
