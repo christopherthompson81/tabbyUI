@@ -1,5 +1,6 @@
-import { ChangeEvent } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem } from '@mui/material';
+import { ChangeEvent, useState, useEffect } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Box, MenuItem, IconButton, InputAdornment } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { GenerationParams } from '../reducers/settingsReducer';
 
 interface SettingsDialogProps {
@@ -55,17 +56,27 @@ function SettingsDialog({
     { label: 'Add BOS Token', key: 'addBosToken', options: ['true', 'false'] },
     { label: 'Ban EOS Token', key: 'banEosToken', options: ['true', 'false'] },
   ]
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [showAdminApiKey, setShowAdminApiKey] = useState(false);
+  const [maskedApiKey, setMaskedApiKey] = useState('');
+  const [maskedAdminApiKey, setMaskedAdminApiKey] = useState('');
+
+  useEffect(() => {
+    setMaskedApiKey(apiKey ? '•'.repeat(apiKey.length) : '');
+    setMaskedAdminApiKey(adminApiKey ? '•'.repeat(adminApiKey.length) : '');
+  }, [apiKey, adminApiKey]);
+
   const handleClose = () => {
-    if (!apiKey) {
-      return;
-    }
+    if (!apiKey) return;
+    setShowApiKey(false);
+    setShowAdminApiKey(false);
     onClose();
   };
 
   const handleSave = () => {
-    if (!apiKey) {
-      return;
-    }
+    if (!apiKey) return;
+    setShowApiKey(false);
+    setShowAdminApiKey(false);
     onClose();
   };
 
@@ -80,10 +91,50 @@ function SettingsDialog({
         )}
         <TextField label="Server URL" variant="outlined" fullWidth margin="normal" 
           value={serverUrl} onChange={onServerUrlChange} />
-        <TextField label="API Key" variant="outlined" fullWidth margin="normal" 
-          value={apiKey} onChange={onApiKeyChange} />
-        <TextField label="Admin API Key" variant="outlined" fullWidth margin="normal"
-          value={adminApiKey} onChange={onAdminApiKeyChange} />
+        <TextField 
+          label="API Key" 
+          variant="outlined" 
+          fullWidth 
+          margin="normal"
+          type={showApiKey ? 'text' : 'password'}
+          value={showApiKey ? apiKey : maskedApiKey}
+          onChange={onApiKeyChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle api key visibility"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  edge="end"
+                >
+                  {showApiKey ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField 
+          label="Admin API Key" 
+          variant="outlined" 
+          fullWidth 
+          margin="normal"
+          type={showAdminApiKey ? 'text' : 'password'}
+          value={showAdminApiKey ? adminApiKey : maskedAdminApiKey}
+          onChange={onAdminApiKeyChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle admin api key visibility"
+                  onClick={() => setShowAdminApiKey(!showAdminApiKey)}
+                  edge="end"
+                >
+                  {showAdminApiKey ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
         
         <Typography variant="h6" sx={{ mt: 2 }}>Generation Parameters</Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
