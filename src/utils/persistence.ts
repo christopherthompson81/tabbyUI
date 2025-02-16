@@ -126,14 +126,14 @@ export function persistAdminApiKey(key: string) {
 
 export function getPersistedGenerationParams() {
     return {
-        maxTokens: localStorage.getItem("maxTokens") || 150,
-        temperature: localStorage.getItem("temperature") || 1,
+        maxTokens: localStorage.getItem("maxTokens") || 32768,
+        temperature: localStorage.getItem("temperature") || 0.6,
         topP: localStorage.getItem("topP") || 1,
-        topK: localStorage.getItem("topK") || -1,
-        frequencyPenalty: localStorage.getItem("frequencyPenalty") || 0,
+        topK: localStorage.getItem("topK") || 40,
+        frequencyPenalty: localStorage.getItem("frequencyPenalty") || 0.01,
         presencePenalty: localStorage.getItem("presencePenalty") || 0,
         repetitionPenalty: localStorage.getItem("repetitionPenalty") || 1,
-        typicalP: localStorage.getItem("typicalP") || 1,
+        typicalP: localStorage.getItem("typicalP") || 1.0,
         minTokens: localStorage.getItem("minTokens") || 0,
         generateWindow: localStorage.getItem("generateWindow") || 512,
         tokenHealing: localStorage.getItem("tokenHealing") || "true",
