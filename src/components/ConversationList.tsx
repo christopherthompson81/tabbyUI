@@ -263,15 +263,17 @@ function FolderItem({
                             }}
                         >
                             <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                                <Box
-                                    sx={{
-                                        width: 8,
-                                        height: 8,
-                                        borderRadius: '50%',
-                                        backgroundColor: '#4caf50',
-                                        mr: 1
-                                    }}
-                                />
+                                {conv.id === currentConversationId && (
+                                    <Box
+                                        sx={{
+                                            width: 8,
+                                            height: 8,
+                                            borderRadius: '50%',
+                                            backgroundColor: '#4caf50',
+                                            mr: 1
+                                        }}
+                                    />
+                                )}
                                 <ListItemText
                                     primary={conv.name}
                                     secondary={new Date(conv.timestamp).toLocaleString('en-US', {
