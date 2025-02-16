@@ -1,7 +1,6 @@
 ### Now
 * Add conversation organization tool (moving, MC style)
 * Help expansion
-    * Add "Recommended Settings and Models" tab.
     * Add detailed settings parameter explanations.
 * Add arbitrary expansion to "Model Preferences" with an Emoji identifier.
     * Model Settings might need to be separate from Model Preferences in some way.
