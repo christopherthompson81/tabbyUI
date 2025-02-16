@@ -34,6 +34,7 @@ This project is built with:
 To run locally:
 ```bash
 npm install
+npm run build
 npm run preview
 ```
 
