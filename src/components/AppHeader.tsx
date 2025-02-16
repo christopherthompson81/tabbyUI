@@ -12,6 +12,7 @@ import {
     MenuItem,
     Toolbar,
     Typography,
+    Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import {
@@ -151,13 +152,15 @@ export default function AppHeader() {
                                             : "orange",
                             }}
                         />
-                        <Typography variant="caption">
-                            {serverStatus === "online"
-                                ? `Online (${modelInfo?.id || "Unknown"})`
-                                : serverStatus === "offline"
-                                    ? "Offline"
-                                    : "Checking..."}
-                        </Typography>
+                        <Tooltip title={modelInfo?.parameters ? JSON.stringify(modelInfo.parameters, null, 2) : ""}>
+                            <Typography variant="caption">
+                                {serverStatus === "online"
+                                    ? `Online (${modelInfo?.id || "Unknown"})`
+                                    : serverStatus === "offline"
+                                        ? "Offline"
+                                        : "Checking..."}
+                            </Typography>
+                        </Tooltip>
                     </Box>
                 </Toolbar>
             </AppBar>
