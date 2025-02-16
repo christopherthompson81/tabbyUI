@@ -19,7 +19,6 @@ interface TabbyAPIResponse {
     }[];
 }
 
-// The following is a sample response that shows an example ModelInfo object. update the ModelInfo interface to match it, AI! 
 /*
 {
     "id": "FuseO1-DeepSeekR1-QwQ-SkyT1-32B-Preview-exl2-4_25bpw",
@@ -53,6 +52,25 @@ export interface ModelInfo {
     object: string;
     created: number;
     owned_by: string;
+    logging: {
+        log_prompt: boolean;
+        log_generation_params: boolean;
+        log_requests: boolean;
+    };
+    parameters: {
+        max_seq_len: number;
+        rope_scale: number;
+        rope_alpha: number;
+        max_batch_size: number;
+        cache_size: number;
+        cache_mode: string;
+        chunk_size: number;
+        prompt_template: string;
+        prompt_template_content: string;
+        num_experts_per_token: number | null;
+        use_vision: boolean;
+        draft: any;
+    };
 }
 
 export async function getModelInfo(serverUrl: string, apiKey: string): Promise<ModelInfo | null> {
