@@ -42,12 +42,7 @@ export default function AppHeader() {
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
     const [showHelp, setShowHelp] = React.useState(false);
-    const [serverUrl, setServerUrl] = useState(getPersistedServerUrl());
-    const [apiKey, setApiKey] = useState(getPersistedApiKey());
-    const [adminApiKey, setAdminApiKey] = useState(getPersistedAdminApiKey());
-    const [generationParams, setGenerationParams] = useState(() =>
-        getPersistedGenerationParams()
-    );
+    const { settings, dispatch } = useReducerContext();
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline"
     >("checking");
@@ -170,27 +165,24 @@ export default function AppHeader() {
             <SettingsDialog
                 open={showSettings}
                 onClose={() => {
-                    persistServerUrl(serverUrl);
-                    persistApiKey(apiKey);
-                    persistAdminApiKey(adminApiKey);
-                    Object.entries(generationParams).forEach(([key, value]) => {
+                    persistServerUrl(settings.serverUrl);
+                    persistApiKey(settings.apiKey);
+                    persistAdminApiKey(settings.adminApiKey);
+                    Object.entries(settings.generationParams).forEach(([key, value]) => {
                         persistGenerationParam(key, value.toString());
                     });
                     setShowSettings(false);
                 }}
-                serverUrl={serverUrl}
-                onServerUrlChange={(e) => setServerUrl(e.target.value)}
-                apiKey={apiKey}
-                onApiKeyChange={(e) => setApiKey(e.target.value)}
-                adminApiKey={adminApiKey}
-                onAdminApiKeyChange={(e) => setAdminApiKey(e.target.value)}
-                generationParams={generationParams}
+                serverUrl={settings.serverUrl}
+                onServerUrlChange={(e) => dispatch({ type: 'SET_SERVER_URL', url: e.target.value })}
+                apiKey={settings.apiKey}
+                onApiKeyChange={(e) => dispatch({ type: 'SET_API_KEY', key: e.target.value })}
+                adminApiKey={settings.adminApiKey}
+                onAdminApiKeyChange={(e) => dispatch({ type: 'SET_ADMIN_API_KEY', key: e.target.value })}
+                generationParams={settings.generationParams}
                 onGenerationParamsChange={useCallback((key, value) => {
-                    setGenerationParams((prev) => ({
-                        ...prev,
-                        [key]: value,
-                    }));
-                }, [])}
+                    dispatch({ type: 'SET_GENERATION_PARAM', key, value });
+                }, [dispatch])}
             />
             <ModelsDialog
                 open={showModels}
