@@ -12,6 +12,7 @@ import {
     FormControlLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
     TextField,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -230,17 +231,24 @@ function ModelsDialog({
                             />
                         </Grid>
                         <Grid size={6}>
-                            <TextField
-                                fullWidth
-                                label="Cache Mode"
-                                value={modelParams.cache_mode}
-                                onChange={(e) =>
-                                    handleParamChange(
-                                        "cache_mode",
-                                        e.target.value
-                                    )
-                                }
-                            />
+                            <FormControl fullWidth>
+                                <InputLabel>Cache Mode</InputLabel>
+                                <Select
+                                    value={modelParams.cache_mode}
+                                    label="Cache Mode"
+                                    onChange={(e) =>
+                                        handleParamChange(
+                                            "cache_mode",
+                                            e.target.value
+                                        )
+                                    }
+                                >
+                                    <MenuItem value="FP16">FP16</MenuItem>
+                                    <MenuItem value="Q8">Q8</MenuItem>
+                                    <MenuItem value="Q6">Q6</MenuItem>
+                                    <MenuItem value="Q4">Q4</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid size={6}>
                             <TextField
@@ -451,21 +459,28 @@ function ModelsDialog({
                                     />
                                 </Grid>
                                 <Grid size={4}>
-                                    <TextField
-                                        fullWidth
-                                        label="Draft Cache Mode"
-                                        value={
-                                            modelParams.draft_model
-                                                ?.draft_cache_mode || "FP16"
-                                        }
-                                        onChange={(e) =>
-                                            handleParamChange("draft_model", {
-                                                ...modelParams.draft_model,
-                                                draft_cache_mode:
-                                                    e.target.value,
-                                            })
-                                        }
-                                    />
+                                    <FormControl fullWidth>
+                                        <InputLabel>Draft Cache Mode</InputLabel>
+                                        <Select
+                                            value={
+                                                modelParams.draft_model
+                                                    ?.draft_cache_mode || "FP16"
+                                            }
+                                            label="Draft Cache Mode"
+                                            onChange={(e) =>
+                                                handleParamChange("draft_model", {
+                                                    ...modelParams.draft_model,
+                                                    draft_cache_mode:
+                                                        e.target.value,
+                                                })
+                                            }
+                                        >
+                                            <MenuItem value="FP16">FP16</MenuItem>
+                                            <MenuItem value="Q8">Q8</MenuItem>
+                                            <MenuItem value="Q6">Q6</MenuItem>
+                                            <MenuItem value="Q4">Q4</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </Grid>
                             </>
                         )}

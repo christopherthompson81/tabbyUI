@@ -14,6 +14,8 @@ export interface DraftModelParams {
     draft_cache_mode: string;
 }
 
+export type CacheMode = 'FP16' | 'Q8' | 'Q6' | 'Q4';
+
 export interface ModelLoadParams {
     model_name: string;
     max_seq_len: number;
@@ -24,7 +26,7 @@ export interface ModelLoadParams {
     gpu_split: number[] | null;
     rope_scale: number;
     rope_alpha: number;
-    cache_mode: string;
+    cache_mode: CacheMode;
     chunk_size: number;
     prompt_template: string;
     vision: boolean;
