@@ -1,10 +1,5 @@
 ### Now
-* Move Settings and models data to reducers 
-    * Separate and expand settings to cover all possibilities in Chat Completion
-    * Add enumerated type for Cache Quantization.
 * Add conversation organization tool (moving, MC style)
-* Mask display of API keys once they're saved.
-* Make the current selected conversation have a slightly different background color to show it's selected.
 * Help expansion
     * Add "Recommended Settings and Models" tab.
     * Add detailed settings parameter explanations.
