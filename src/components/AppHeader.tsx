@@ -159,7 +159,7 @@ export default function AppHeader() {
                                             : "orange",
                             }}
                         />
-                        <Tooltip title={modelInfo?.parameters ? JSON.stringify(modelInfo.parameters, null, 2) : ""}>
+                        <Tooltip title={tooltipContent}>
                             <Typography variant="caption">
                                 {serverStatus === "online"
                                     ? `Online (${modelInfo?.id || "Unknown"})`
