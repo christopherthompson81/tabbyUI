@@ -254,7 +254,13 @@ function FolderItem({
                             key={conv.id}
                             onClick={() => onSwitchConversation(conv.id)}
                             selected={conv.id === currentConversationId}
-                            sx={{ pl: 4 }}
+                            sx={{ 
+                                pl: 4,
+                                backgroundColor: conv.id === currentConversationId ? 'action.selected' : 'inherit',
+                                '&:hover': {
+                                    backgroundColor: conv.id === currentConversationId ? 'action.selected' : 'action.hover'
+                                }
+                            }}
                         >
                             <ListItemText
                                 primary={conv.name}
