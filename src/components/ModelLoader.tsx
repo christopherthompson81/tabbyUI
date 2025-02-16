@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useReducer, useEffect } from "react";
+import { modelParamsReducer } from "../reducers/modelParamsReducer";
 import { ModelLoadProgress, loadModelWithProgress } from "../services/tabbyAPI";
 import {
     ModelLoadParams,

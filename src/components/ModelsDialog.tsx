@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useReducer } from "react";
+import { modelParamsReducer } from "../reducers/modelParamsReducer";
 import {
     Checkbox,  
     Dialog,
@@ -84,22 +85,27 @@ function ModelsDialog({
         }
     };
 
-    const [modelParams, setModelParams] = useState(() =>
-        getModelParams(selectedModel)
-    );
+    const [modelParamsState, dispatch] = useReducer(modelParamsReducer, {});
+    
+    useEffect(() => {
+        if (selectedModel) {
+            const params = getModelParams(selectedModel);
+            dispatch({ type: 'SET_MODEL_PARAMS', modelId: selectedModel, params });
+        }
+    }, [selectedModel]);
 
     const handleParamChange = (field: string, value: any) => {
-        setModelParams((prev) => {
-            const newParams = {
-                ...prev,
-                [field]: value,
-            };
-            // Save params whenever they change
-            if (selectedModel) {
-                persistModelParams(selectedModel, newParams);
-            }
-            return newParams;
-        });
+        if (selectedModel) {
+            dispatch({
+                type: 'SET_MODEL_PARAMS',
+                modelId: selectedModel,
+                params: { [field]: value }
+            });
+            persistModelParams(selectedModel, {
+                ...modelParamsState[selectedModel],
+                [field]: value
+            });
+        }
     };
 
     const savePreferences = (newPreferences: ModelPreferences) => {
