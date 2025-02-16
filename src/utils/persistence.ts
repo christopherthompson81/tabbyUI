@@ -74,6 +74,21 @@ export function persistModelParams(modelId: string, params: ModelLoadParams) {
     localStorage.setItem(`modelParams_${modelId}`, JSON.stringify(params));
 }
 
+export function getAllModelParams(): { [modelId: string]: ModelLoadParams } {
+    const params: { [modelId: string]: ModelLoadParams } = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key?.startsWith('modelParams_')) {
+            const modelId = key.replace('modelParams_', '');
+            const value = localStorage.getItem(key);
+            if (value) {
+                params[modelId] = JSON.parse(value);
+            }
+        }
+    }
+    return params;
+}
+
 export function getPersistedConversations(): ConversationFolder[] {
     const data = localStorage.getItem("conversations");
     if (!data) {
