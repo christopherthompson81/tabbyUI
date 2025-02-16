@@ -194,7 +194,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={modelParams.gpu_split_auto}
+                                        checked={Boolean(modelParams.gpu_split_auto)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "gpu_split_auto",
@@ -307,7 +307,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={modelParams.vision}
+                                        checked={Boolean(modelParams.vision)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "vision",
@@ -337,7 +337,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={modelParams.skip_queue}
+                                        checked={Boolean(modelParams.skip_queue)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "skip_queue",
