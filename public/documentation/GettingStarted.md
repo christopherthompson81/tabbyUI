@@ -170,4 +170,4 @@ Additionally, model preferences can be defined in the "models" item from the mai
 
 ---
 
-With these steps completed, you should be ready to start using TabbyAPI for inference tasks. If you encounter any issues during the setup process, refer to the troubleshooting guide or reach out to the community for support.
+With these steps completed, you should be ready to start using TabbyAPI for inference tasks.
