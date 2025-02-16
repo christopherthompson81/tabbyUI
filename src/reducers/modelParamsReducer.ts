@@ -6,9 +6,9 @@ export interface ModelParamsState {
 
 export type ModelParamsAction =
     | { type: 'SET_MODEL_PARAMS'; modelId: string; params: Partial<ModelLoadParams> }
-    | { type: 'UPDATE_DRAFT_MODEL'; modelId: string; draftParams: DraftModelParams | null }
+    | { type: 'UPDATE_DRAFT_MODEL'; modelId: string; draftParams: DraftModelParams }
     | { type: 'TOGGLE_GPU_SPLIT_AUTO'; modelId: string }
-    | { type: 'SET_GPU_SPLIT'; modelId: string; split: number[] | null };
+    | { type: 'SET_GPU_SPLIT'; modelId: string; split: number[] };
 
 export function modelParamsReducer(state: ModelParamsState, action: ModelParamsAction): ModelParamsState {
     switch (action.type) {

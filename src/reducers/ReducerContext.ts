@@ -2,8 +2,7 @@ import * as React from "react";
 import { ConversationFolder } from "../utils/persistence";
 import { ConversationsAction } from "./conversationsReducer";
 import { MessageProps } from "../services/tabbyAPI";
-import { SettingsAction } from "./settingsReducer";
-import { GenerationParams } from "../components/SettingsDialog";
+import { SettingsAction, GenerationParams } from "./settingsReducer";
 import { ModelParamsState, ModelParamsAction } from "./modelParamsReducer";
 
 interface ReducerContextType {

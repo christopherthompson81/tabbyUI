@@ -1,3 +1,5 @@
+import { GenerationParams } from '../reducers/settingsReducer';
+
 export interface Conversation {
     id: string;
     name: string;
@@ -23,7 +25,7 @@ export interface ModelLoadParams {
     tensor_parallel: boolean;
     gpu_split_auto: boolean;
     autosplit_reserve: number[];
-    gpu_split: number[] | null;
+    gpu_split: number[];
     rope_scale: number;
     rope_alpha: number;
     cache_mode: CacheMode;
@@ -126,24 +128,24 @@ export function persistAdminApiKey(key: string) {
     localStorage.setItem("adminApiKey", key);
 }
 
-export function getPersistedGenerationParams() {
+export function getPersistedGenerationParams(): GenerationParams {
     return {
-        maxTokens: localStorage.getItem("maxTokens") || 32768,
-        temperature: localStorage.getItem("temperature") || 0.6,
-        topP: localStorage.getItem("topP") || 1,
-        topK: localStorage.getItem("topK") || 40,
-        frequencyPenalty: localStorage.getItem("frequencyPenalty") || 0.01,
-        presencePenalty: localStorage.getItem("presencePenalty") || 0,
-        repetitionPenalty: localStorage.getItem("repetitionPenalty") || 1,
-        typicalP: localStorage.getItem("typicalP") || 1.0,
-        minTokens: localStorage.getItem("minTokens") || 0,
-        generateWindow: localStorage.getItem("generateWindow") || 512,
-        tokenHealing: localStorage.getItem("tokenHealing") || "true",
-        mirostatMode: localStorage.getItem("mirostatMode") || 0,
-        mirostatTau: localStorage.getItem("mirostatTau") || 1.5,
-        mirostatEta: localStorage.getItem("mirostatEta") || 0.3,
-        addBosToken: localStorage.getItem("addBosToken") || "true",
-        banEosToken: localStorage.getItem("banEosToken") || "false",
+        maxTokens: Number(localStorage.getItem("maxTokens")) || 32768,
+        temperature: Number(localStorage.getItem("temperature")) || 0.6,
+        topP: Number(localStorage.getItem("topP")) || 1,
+        topK: Number(localStorage.getItem("topK")) || 40,
+        frequencyPenalty: Number(localStorage.getItem("frequencyPenalty")) || 0.01,
+        presencePenalty: Number(localStorage.getItem("presencePenalty")) || 0,
+        repetitionPenalty: Number(localStorage.getItem("repetitionPenalty")) || 1,
+        typicalP: Number(localStorage.getItem("typicalP")) || 1.0,
+        minTokens: Number(localStorage.getItem("minTokens")) || 0,
+        generateWindow: Number(localStorage.getItem("generateWindow")) || 512,
+        tokenHealing: Boolean(localStorage.getItem("tokenHealing")) || true,
+        mirostatMode: Number(localStorage.getItem("mirostatMode")) || 0,
+        mirostatTau: Number(localStorage.getItem("mirostatTau")) || 1.5,
+        mirostatEta: Number(localStorage.getItem("mirostatEta")) || 0.3,
+        addBosToken: Boolean(localStorage.getItem("addBosToken")) || true,
+        banEosToken: Boolean(localStorage.getItem("banEosToken")) || false,
     };
 }
 

@@ -23,16 +23,15 @@ import {
     persistServerUrl,
     getPersistedApiKey,
     persistApiKey,
-    getPersistedGenerationParams,
     persistGenerationParam,
     persistAdminApiKey,
-    getPersistedAdminApiKey,
 } from "../utils/persistence";
 //components
 import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
+import { useReducerContext } from "../reducers/ReducerContext";
 
 export default function AppHeader() {
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -187,8 +186,8 @@ export default function AppHeader() {
             <ModelsDialog
                 open={showModels}
                 onClose={() => setShowModels(false)}
-                serverUrl={serverUrl}
-                adminApiKey={adminApiKey}
+                serverUrl={settings.serverUrl}
+                adminApiKey={settings.adminApiKey}
             />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
             <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />

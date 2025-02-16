@@ -1,5 +1,4 @@
-import { useState, useReducer, useEffect } from "react";
-import { modelParamsReducer } from "../reducers/modelParamsReducer";
+import { useState, useEffect } from "react";
 import { ModelLoadProgress, loadModelWithProgress } from "../services/tabbyAPI";
 import {
     ModelLoadParams,
@@ -8,6 +7,7 @@ import {
 } from "../utils/persistence";
 import ProgressDialog from "./ProgressDialog";
 import { Typography } from "@mui/material";
+import { useReducerContext } from "../reducers/ReducerContext";
 
 interface ModelInfo {
     id: string;
@@ -55,7 +55,7 @@ export function useModelLoader({
         }
     };
 
-    const [modelParamsState, dispatch] = useReducer(modelParamsReducer, {});
+    const { modelParams, dispatch } = useReducerContext();
     
     useEffect(() => {
         if (selectedModel) {
@@ -72,7 +72,7 @@ export function useModelLoader({
                 params: { [field]: value }
             });
             persistModelParams(selectedModel, {
-                ...modelParamsState[selectedModel],
+                ...modelParams[selectedModel],
                 [field]: value
             });
         }
@@ -81,12 +81,12 @@ export function useModelLoader({
     const loadModel = async (modelId: string, draftModelId?: string, customParams?: Partial<ModelLoadParams>) => {
         try {
             const payload: ModelLoadParams = {
-                ...modelParams,
+                ...modelParams[modelId],
                 ...customParams,
                 model_name: modelId,
-                gpu_split: modelParams.gpu_split_auto
-                    ? null
-                    : modelParams.gpu_split,
+                gpu_split: modelParams[modelId].gpu_split_auto
+                    ? []
+                    : modelParams[modelId].gpu_split,
             };
 
             if (draftModelId) {

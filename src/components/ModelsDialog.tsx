@@ -43,6 +43,7 @@ function ModelsDialog({
     serverUrl,
     adminApiKey,
 }: ModelsDialogProps) {
+    const { modelParams, dispatch } = useReducerContext();
     const modelLoader = useModelLoader({
         serverUrl,
         adminApiKey,
@@ -84,8 +85,6 @@ function ModelsDialog({
             setLoading(false);
         }
     };
-
-    const { modelParams, dispatch } = useReducerContext();
     
     useEffect(() => {
         if (selectedModel) {
@@ -151,7 +150,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Max Sequence Length"
                                 type="number"
-                                value={modelParams.max_seq_len}
+                                value={modelParams[selectedModel]?.max_seq_len}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "max_seq_len",
@@ -165,7 +164,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Cache Size"
                                 type="number"
-                                value={modelParams.cache_size}
+                                value={modelParams[selectedModel]?.cache_size}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "cache_size",
@@ -178,7 +177,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams.tensor_parallel)}
+                                        checked={Boolean(modelParams[selectedModel]?.tensor_parallel)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "tensor_parallel",
@@ -194,7 +193,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams.gpu_split_auto)}
+                                        checked={Boolean(modelParams[selectedModel]?.gpu_split_auto)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "gpu_split_auto",
@@ -211,7 +210,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Rope Scale"
                                 type="number"
-                                value={modelParams.rope_scale}
+                                value={modelParams[selectedModel]?.rope_scale}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "rope_scale",
@@ -225,7 +224,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Rope Alpha"
                                 type="number"
-                                value={modelParams.rope_alpha}
+                                value={modelParams[selectedModel]?.rope_alpha}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "rope_alpha",
@@ -238,7 +237,7 @@ function ModelsDialog({
                             <FormControl fullWidth>
                                 <InputLabel>Cache Mode</InputLabel>
                                 <Select
-                                    value={modelParams.cache_mode}
+                                    value={modelParams[selectedModel]?.cache_mode}
                                     label="Cache Mode"
                                     onChange={(e) =>
                                         handleParamChange(
@@ -259,8 +258,8 @@ function ModelsDialog({
                                 fullWidth
                                 label="GPU Split"
                                 value={
-                                    modelParams.gpu_split
-                                        ? modelParams.gpu_split.join(",")
+                                    modelParams[selectedModel]?.gpu_split
+                                        ? modelParams[selectedModel]?.gpu_split.join(",")
                                         : ""
                                 }
                                 onChange={(e) =>
@@ -273,7 +272,7 @@ function ModelsDialog({
                                             : null
                                     )
                                 }
-                                disabled={modelParams.gpu_split_auto}
+                                disabled={Boolean(modelParams[selectedModel]?.gpu_split_auto)}
                             />
                         </Grid>
                         <Grid size={6}>
@@ -281,7 +280,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Chunk Size"
                                 type="number"
-                                value={modelParams.chunk_size}
+                                value={modelParams[selectedModel]?.chunk_size}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "chunk_size",
@@ -294,7 +293,7 @@ function ModelsDialog({
                             <TextField
                                 fullWidth
                                 label="Prompt Template"
-                                value={modelParams.prompt_template}
+                                value={modelParams[selectedModel]?.prompt_template}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "prompt_template",
@@ -307,7 +306,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams.vision)}
+                                        checked={Boolean(modelParams[selectedModel]?.vision)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "vision",
@@ -324,7 +323,7 @@ function ModelsDialog({
                                 fullWidth
                                 label="Num Experts Per Token"
                                 type="number"
-                                value={modelParams.num_experts_per_token}
+                                value={modelParams[selectedModel]?.num_experts_per_token}
                                 onChange={(e) =>
                                     handleParamChange(
                                         "num_experts_per_token",
@@ -337,7 +336,7 @@ function ModelsDialog({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={Boolean(modelParams.skip_queue)}
+                                        checked={Boolean(modelParams[selectedModel]?.skip_queue)}
                                         onChange={(e) =>
                                             handleParamChange(
                                                 "skip_queue",
@@ -354,8 +353,8 @@ function ModelsDialog({
                                 fullWidth
                                 label="Autosplit Reserve"
                                 value={
-                                    modelParams.autosplit_reserve
-                                        ? modelParams.autosplit_reserve.join(
+                                    modelParams[selectedModel]?.autosplit_reserve
+                                        ? modelParams[selectedModel]?.autosplit_reserve.join(
                                               ","
                                           )
                                         : ""
@@ -390,18 +389,18 @@ function ModelsDialog({
                                                       draft_model_name:
                                                           e.target.value,
                                                       draft_rope_scale:
-                                                          modelParams
-                                                              .draft_model
+                                                          modelParams[selectedModel]
+                                                              ?.draft_model
                                                               ?.draft_rope_scale ||
                                                           0,
                                                       draft_rope_alpha:
-                                                          modelParams
-                                                              .draft_model
+                                                          modelParams[selectedModel]
+                                                              ?.draft_model
                                                               ?.draft_rope_alpha ||
                                                           1,
                                                       draft_cache_mode:
-                                                          modelParams
-                                                              .draft_model
+                                                          modelParams[selectedModel]
+                                                              ?.draft_model
                                                               ?.draft_cache_mode ||
                                                           "FP16",
                                                   }
@@ -430,12 +429,12 @@ function ModelsDialog({
                                         label="Draft Rope Scale"
                                         type="number"
                                         value={
-                                            modelParams.draft_model
+                                            modelParams[selectedModel]?.draft_model
                                                 ?.draft_rope_scale || 0
                                         }
                                         onChange={(e) =>
                                             handleParamChange("draft_model", {
-                                                ...modelParams.draft_model,
+                                                ...modelParams[selectedModel]?.draft_model,
                                                 draft_rope_scale: parseFloat(
                                                     e.target.value
                                                 ),
@@ -449,12 +448,12 @@ function ModelsDialog({
                                         label="Draft Rope Alpha"
                                         type="number"
                                         value={
-                                            modelParams.draft_model
+                                            modelParams[selectedModel]?.draft_model
                                                 ?.draft_rope_alpha || 1
                                         }
                                         onChange={(e) =>
                                             handleParamChange("draft_model", {
-                                                ...modelParams.draft_model,
+                                                ...modelParams[selectedModel]?.draft_model,
                                                 draft_rope_alpha: parseFloat(
                                                     e.target.value
                                                 ),
@@ -467,13 +466,13 @@ function ModelsDialog({
                                         <InputLabel>Draft Cache Mode</InputLabel>
                                         <Select
                                             value={
-                                                modelParams.draft_model
+                                                modelParams[selectedModel]?.draft_model
                                                     ?.draft_cache_mode || "FP16"
                                             }
                                             label="Draft Cache Mode"
                                             onChange={(e) =>
                                                 handleParamChange("draft_model", {
-                                                    ...modelParams.draft_model,
+                                                    ...modelParams[selectedModel]?.draft_model,
                                                     draft_cache_mode:
                                                         e.target.value,
                                                 })
@@ -494,7 +493,7 @@ function ModelsDialog({
                                 fullWidth
                                 onClick={() =>
                                     selectedModel &&
-                                    modelLoader.loadModel(selectedModel, selectedDraftModel, modelParams)
+                                    modelLoader.loadModel(selectedModel, selectedDraftModel, modelParams[selectedModel])
                                 }
                                 disabled={!selectedModel}
                             >

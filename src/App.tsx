@@ -13,9 +13,9 @@ import {
 // Local Imports
 import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
-import { settingsReducer } from "./reducers/settingsReducer";
+import { settingsReducer, GenerationParams } from "./reducers/settingsReducer";
 import { modelParamsReducer } from "./reducers/modelParamsReducer";
-import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams } from "./utils/persistence";
+import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams, ModelLoadParams } from "./utils/persistence";
 import { MessageProps } from "./services/tabbyAPI";
 import {
     ConversationFolder,
@@ -29,6 +29,7 @@ import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
+
 
 interface ReducerState {
     conversations: {
@@ -122,7 +123,7 @@ function App() {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
-    }, [state.messages]);
+    }, [state.conversations.messages]);
 
     return (
         <ReducerContext.Provider value={providerState} >
