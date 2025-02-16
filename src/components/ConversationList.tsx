@@ -283,7 +283,8 @@ function FolderItem({
                                     second: '2-digit',
                                     hour12: false
                                 }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2')}
-                            />
+                                />
+                            </Box>
                             <IconButton
                                 onClick={(e) => {
                                     e.stopPropagation();
