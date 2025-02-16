@@ -49,11 +49,16 @@ export default function AppHeader() {
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
     const tooltipContent = modelInfo?.parameters 
         ? Object.entries(modelInfo.parameters)
-            .map(([key, value]) => (
-                `**${key}**: ${typeof value === 'object' ? JSON.stringify(value) : value}`
-            ))
-            .join('\n')
-        : "";
+            .map(([key, value]) => {
+                if (key != 'prompt_template_content' && value) {
+                    return (
+                        <Typography>
+                            <strong>{key}: </strong>{value}
+                        </Typography>
+                    )
+                }
+            })
+        : (<></>);
 
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
