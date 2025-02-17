@@ -52,9 +52,9 @@ export default function AppHeader() {
             .map(([key, value]) => {
                 if (key != 'prompt_template_content' && value) {
                     return (
-                        <Typography>
-                            <strong>{key}: </strong>{value}
-                        </Typography>
+                        <tr>
+                            <td><strong>{key}: </strong></td><td>{value}</td>
+                        </tr>
                     )
                 }
             })
@@ -164,7 +164,7 @@ export default function AppHeader() {
                                             : "orange",
                             }}
                         />
-                        <Tooltip title={tooltipContent}>
+                        <Tooltip title={(<table>{tooltipContent}</table>)}>
                             <Typography variant="caption">
                                 {serverStatus === "online"
                                     ? `Online (${modelInfo?.id || "Unknown"})`
