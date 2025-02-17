@@ -4,7 +4,6 @@
     * Add detailed settings parameter explanations.
 * Add arbitrary expansion to "Model Preferences" with an Emoji identifier.
     * Model Settings might need to be separate from Model Preferences in some way.
-* Add tooltip to model status to show additional model information
 
 ### Soon
 * Add a PDF to a mixed modality ingestor
@@ -26,8 +25,6 @@
 * Self-extending application
 
 ### Help Docs
-* How to get started with tabbyUI & local LLM
-    * Configure model selections
 * Common use cases
     * Explain aider process
     * Explain interpreting technical documents
