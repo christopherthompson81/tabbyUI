@@ -15,16 +15,21 @@ import ReducerContext from './reducers/ReducerContext';
 import { conversationsReducer } from "./reducers/conversationsReducer";
 import { settingsReducer, GenerationParams } from "./reducers/settingsReducer";
 import { modelParamsReducer } from "./reducers/modelParamsReducer";
-import { getPersistedServerUrl, getPersistedApiKey, getPersistedAdminApiKey, getPersistedGenerationParams, getAllModelParams, ModelLoadParams } from "./utils/persistence";
-import { MessageProps } from "./services/tabbyAPI";
 import {
     ConversationFolder,
     findConversation,
+    getAllModelParams,
+    getPersistedAdminApiKey,
+    getPersistedApiKey,
     getPersistedConversations,
     getPersistedCurrentConversationId,
+    getPersistedServerUrl,
+    getPersistedGenerationParams,
+    ModelLoadParams,
     persistConversations,
     persistCurrentConversationId,
 } from "./utils/persistence";
+import { MessageProps } from "./services/tabbyAPI";
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
@@ -51,7 +56,7 @@ interface ReducerState {
 function initializeState(): ReducerState {
     const folders = getPersistedConversations();
     const currentConversationId = getPersistedCurrentConversationId();
-    
+
     let conversationState;
     if (!currentConversationId) {
         const newId = Date.now().toString();
@@ -62,16 +67,16 @@ function initializeState(): ReducerState {
             timestamp: Date.now(),
             author: "User"
         };
-        
+
         // Add to root folder
         if (folders.length > 0) {
             folders[0].conversations.push(newConversation);
         }
-        
+
         // Persist the values using persistence functions
         persistConversations(folders);
         persistCurrentConversationId(parseInt(newId));
-        
+
         conversationState = {
             folders,
             currentConversationId: newId,

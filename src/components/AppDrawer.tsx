@@ -159,6 +159,58 @@ export function AppDrawer() {
         }
     };
 
+    const saveConversationFile = (format: string) => {
+        const currentConversation = folders
+            .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
+            .find(c => c.id == currentConversationId);
+        
+        if (currentConversation) {
+            if (format === 'pdf') {
+                exportToPdf(messages, {
+                    title: currentConversation.name,
+                    date: new Date().toLocaleDateString()
+                });
+            } else {
+                const content = {
+                    name: currentConversation.name,
+                    messages: messages
+                };
+                
+                const getFormattedContent = () => {
+                    switch (format) {
+                        case 'json':
+                            return JSON.stringify(content, null, 2);
+                        case 'txt':
+                            return content.messages
+                                .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
+                                .join('\n\n');
+                        case 'md':
+                            return `# ${content.name}\n\n` +
+                                content.messages
+                                    .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
+                                    .join('\n\n');
+                        default:
+                            return '';
+                    }
+                };
+                
+                const blob = new Blob(
+                    [getFormattedContent()],
+                    { type: 'text/plain' }
+                );
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentConversation.name}.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+        setShowSave(false);
+    };
+
     const addNewFolder = (parentFolderId = "root") => {
         const newId = Date.now().toString();
         const newFolder: ConversationFolder = {
@@ -224,57 +276,7 @@ export function AppDrawer() {
             <SaveConversationDialog
                 open={showSave}
                 onClose={() => setShowSave(false)}
-                onSave={(format) => {
-                    const currentConversation = folders
-                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id == currentConversationId);
-                    
-                    if (currentConversation) {
-                        if (format === 'pdf') {
-                            exportToPdf(messages, {
-                                title: currentConversation.name,
-                                date: new Date().toLocaleDateString()
-                            });
-                        } else {
-                            const content = {
-                                name: currentConversation.name,
-                                messages: messages
-                            };
-                            
-                            const getFormattedContent = () => {
-                                switch (format) {
-                                    case 'json':
-                                        return JSON.stringify(content, null, 2);
-                                    case 'txt':
-                                        return content.messages
-                                            .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
-                                            .join('\n\n');
-                                    case 'md':
-                                        return `# ${content.name}\n\n` +
-                                            content.messages
-                                                .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
-                                                .join('\n\n');
-                                    default:
-                                        return '';
-                                }
-                            };
-                            
-                            const blob = new Blob(
-                                [getFormattedContent()],
-                                { type: 'text/plain' }
-                            );
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `${currentConversation.name}.${format}`;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            URL.revokeObjectURL(url);
-                        }
-                    }
-                    setShowSave(false);
-                }}
+                onSave={saveConversationFile}
                 conversation={{
                     name: folders
                         .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
