@@ -1,0 +1,364 @@
+import { useState } from "react";
+import {
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from "@mui/material";
+import Grid from "@mui/material/Grid2";
+
+// Local Imports
+import { useReducerContext } from "../reducers/ReducerContext";
+import { getModelParams, getAllModelParams } from "../utils/persistence";
+// components
+
+interface ModelsDialogProps {
+    open: boolean;
+    onClose: () => void;
+    serverUrl: string;
+    adminApiKey: string;
+}
+
+function getInitialModel() {
+    const data = Object.keys(getAllModelParams());
+    const sortedModels = [...data].sort((a, b) => a.localeCompare(b));
+    return sortedModels[0];
+}
+
+export default function ModelsDialog({}: ModelsDialogProps) {
+    const { modelParams, dispatch } = useReducerContext();
+    const defaultParams = getModelParams("");
+    const [selectedModel, setSelectedModel] = useState(getInitialModel());
+
+    const handleParamChange = (field: string, value: any) => {
+        if (selectedModel) {
+            dispatch({
+                type: "SET_MODEL_PARAMS",
+                modelId: selectedModel,
+                params: { [field]: value },
+            });
+        }
+    };
+
+    const settings = [
+        {
+            label: "Max Sequence Length",
+            type: "number",
+            paramName: "max_seq_len",
+        },
+        { label: "Cache Size", type: "number", paramName: "cache_size" },
+        {
+            label: "Tensor Parallel",
+            type: "checkbox",
+            paramName: "tensor_parallel",
+        },
+        {
+            label: "GPU Split Auto",
+            type: "checkbox",
+            paramName: "gpu_split_auto",
+        },
+        { label: "Rope Scale", type: "number", paramName: "rope_scale" },
+        { label: "Rope Alpha", type: "number", paramName: "rope_alpha" },
+        {
+            label: "Cache Mode",
+            type: "enumerated",
+            paramName: "cache_mode",
+            choices: [
+                { label: "FP16", value: "FP16" },
+                { label: "Q8", value: "Q8" },
+                { label: "Q6", value: "Q6" },
+                { label: "Q4", value: "Q4" },
+            ],
+        },
+        {
+            label: "GPU Split",
+            type: "string_dependant",
+            paramName: "GPU Split",
+            disableIf: ["gpu_split_auto"],
+        },
+        { label: "Chunk Size", type: "number", paramName: "chunk_size" },
+        {
+            label: "Prompt Template",
+            type: "text",
+            paramName: "prompt_template",
+        },
+        { label: "Vision", type: "checkbox", paramName: "vision" },
+        { label: "Skip Queue", type: "checkbox", paramName: "skip_queue" },
+        {
+            label: "Autosplit Reserve",
+            type: "string",
+            paramName: "autosplit_reserve",
+        },
+    ];
+
+    return (
+        <>
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Max Sequence Length"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.max_seq_len ||
+                            defaultParams.max_seq_len
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "max_seq_len",
+                                parseInt(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Cache Size"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.cache_size ||
+                            defaultParams.tensor_parallel
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "cache_size",
+                                parseInt(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={
+                                    Boolean(
+                                        modelParams[selectedModel]
+                                            ?.tensor_parallel
+                                    ) || defaultParams.tensor_parallel
+                                }
+                                onChange={(e) =>
+                                    handleParamChange(
+                                        "tensor_parallel",
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                        }
+                        label="Tensor Parallel"
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={
+                                    Boolean(
+                                        modelParams[selectedModel]
+                                            ?.gpu_split_auto
+                                    ) || defaultParams.gpu_split_auto
+                                }
+                                onChange={(e) =>
+                                    handleParamChange(
+                                        "gpu_split_auto",
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                        }
+                        label="GPU Split Auto"
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Rope Scale"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.rope_scale ||
+                            defaultParams.rope_scale
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "rope_scale",
+                                parseFloat(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Rope Alpha"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.rope_alpha ||
+                            defaultParams.rope_alpha
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "rope_alpha",
+                                parseFloat(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <FormControl fullWidth>
+                        <InputLabel>Cache Mode</InputLabel>
+                        <Select
+                            value={
+                                modelParams[selectedModel]?.cache_mode ||
+                                defaultParams.cache_mode
+                            }
+                            label="Cache Mode"
+                            onChange={(e) =>
+                                handleParamChange("cache_mode", e.target.value)
+                            }
+                        >
+                            <MenuItem value="FP16">FP16</MenuItem>
+                            <MenuItem value="Q8">Q8</MenuItem>
+                            <MenuItem value="Q6">Q6</MenuItem>
+                            <MenuItem value="Q4">Q4</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="GPU Split"
+                        value={
+                            modelParams[selectedModel]?.gpu_split
+                                ? modelParams[selectedModel]?.gpu_split.join(
+                                      ","
+                                  )
+                                : ""
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "gpu_split",
+                                e.target.value
+                                    ? e.target.value.split(",").map(Number)
+                                    : null
+                            )
+                        }
+                        disabled={Boolean(
+                            modelParams[selectedModel]?.gpu_split_auto ||
+                                defaultParams.gpu_split_auto
+                        )}
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Chunk Size"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.chunk_size ||
+                            defaultParams.chunk_size
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "chunk_size",
+                                parseInt(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Prompt Template"
+                        value={
+                            modelParams[selectedModel]?.prompt_template ||
+                            defaultParams.prompt_template
+                        }
+                        onChange={(e) =>
+                            handleParamChange("prompt_template", e.target.value)
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={Boolean(
+                                    modelParams[selectedModel]?.vision ||
+                                        defaultParams.vision
+                                )}
+                                onChange={(e) =>
+                                    handleParamChange(
+                                        "vision",
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                        }
+                        label="Vision"
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Num Experts Per Token"
+                        type="number"
+                        value={
+                            modelParams[selectedModel]?.num_experts_per_token ||
+                            defaultParams.num_experts_per_token
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "num_experts_per_token",
+                                parseInt(e.target.value)
+                            )
+                        }
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={Boolean(
+                                    modelParams[selectedModel]?.skip_queue ||
+                                        defaultParams.skip_queue
+                                )}
+                                onChange={(e) =>
+                                    handleParamChange(
+                                        "skip_queue",
+                                        e.target.checked
+                                    )
+                                }
+                            />
+                        }
+                        label="Skip Queue"
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <TextField
+                        fullWidth
+                        label="Autosplit Reserve"
+                        value={
+                            modelParams[selectedModel]?.autosplit_reserve
+                                ? modelParams[
+                                      selectedModel
+                                  ]?.autosplit_reserve.join(",")
+                                : ""
+                        }
+                        onChange={(e) =>
+                            handleParamChange(
+                                "autosplit_reserve",
+                                e.target.value
+                                    ? e.target.value.split(",").map(Number)
+                                    : []
+                            )
+                        }
+                    />
+                </Grid>
+            </Grid>
+        </>
+    );
+}

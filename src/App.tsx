@@ -1,17 +1,9 @@
-import {
-    useRef,
-    useLayoutEffect,
-    useReducer,
-    useMemo,
-} from "react";
-import "./styles.css";
-import {
-    Box,
-    CssBaseline,
-} from "@mui/material";
+import { useRef, useLayoutEffect, useReducer, useMemo } from "react";
+import { Box, CssBaseline } from "@mui/material";
 
 // Local Imports
-import ReducerContext from './reducers/ReducerContext';
+import "./styles.css";
+import ReducerContext from "./reducers/ReducerContext";
 import { conversationsReducer } from "./reducers/conversationsReducer";
 import { settingsReducer, GenerationParams } from "./reducers/settingsReducer";
 import { modelParamsReducer } from "./reducers/modelParamsReducer";
@@ -30,11 +22,11 @@ import {
     persistCurrentConversationId,
 } from "./utils/persistence";
 import { MessageProps } from "./services/tabbyAPI";
+// Components
 import AppHeader from "./components/AppHeader";
 import ChatInput from "./components/ChatInput";
 import { AppDrawer } from "./components/AppDrawer";
 import Messages from "./components/Messages";
-
 
 interface ReducerState {
     conversations: {
@@ -65,7 +57,7 @@ function initializeState(): ReducerState {
             name: new Date().toLocaleString(),
             messages: [],
             timestamp: Date.now(),
-            author: "User"
+            author: "User",
         };
 
         // Add to root folder
@@ -80,14 +72,14 @@ function initializeState(): ReducerState {
         conversationState = {
             folders,
             currentConversationId: newId,
-            messages: []
+            messages: [],
         };
     } else {
         const conversation = findConversation(folders, currentConversationId);
         conversationState = {
             folders,
             currentConversationId,
-            messages: conversation ? conversation.messages : []
+            messages: conversation ? conversation.messages : [],
         };
     }
 
@@ -97,9 +89,9 @@ function initializeState(): ReducerState {
             serverUrl: getPersistedServerUrl(),
             apiKey: getPersistedApiKey(),
             adminApiKey: getPersistedAdminApiKey(),
-            generationParams: getPersistedGenerationParams()
+            generationParams: getPersistedGenerationParams(),
         },
-        modelParams: getAllModelParams()
+        modelParams: getAllModelParams(),
     };
 }
 
@@ -108,19 +100,22 @@ function App() {
         (state: ReducerState, action: any) => ({
             conversations: conversationsReducer(state.conversations, action),
             settings: settingsReducer(state.settings, action),
-            modelParams: modelParamsReducer(state.modelParams, action)
+            modelParams: modelParamsReducer(state.modelParams, action),
         }),
         initializeState()
     );
 
-    const providerState = useMemo(() => ({
-        folders: state.conversations.folders,
-        currentConversationId: state.conversations.currentConversationId,
-        messages: state.conversations.messages,
-        settings: state.settings,
-        modelParams: state.modelParams,
-        dispatch
-    }), [state]);
+    const providerState = useMemo(
+        () => ({
+            folders: state.conversations.folders,
+            currentConversationId: state.conversations.currentConversationId,
+            messages: state.conversations.messages,
+            settings: state.settings,
+            modelParams: state.modelParams,
+            dispatch,
+        }),
+        [state]
+    );
     const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     // Smooth-Scrolling
@@ -131,7 +126,7 @@ function App() {
     }, [state.conversations.messages]);
 
     return (
-        <ReducerContext.Provider value={providerState} >
+        <ReducerContext.Provider value={providerState}>
             <Box sx={{ display: "flex" }}>
                 <CssBaseline />
                 <AppHeader />

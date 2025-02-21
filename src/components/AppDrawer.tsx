@@ -26,7 +26,8 @@ function findFolder(
 }
 
 export function AppDrawer() {
-    const { folders, currentConversationId, messages, dispatch } = useReducerContext();
+    const { folders, currentConversationId, messages, dispatch } =
+        useReducerContext();
     const [showSave, setShowSave] = useState(false);
     const [editingConversationId, setEditingConversationId] = useState<
         string | null
@@ -48,15 +49,15 @@ export function AppDrawer() {
             },
             folderId,
         });
-        dispatch({ type: 'SET_CURRENT_CONVERSATION', id: newId });
+        dispatch({ type: "SET_CURRENT_CONVERSATION", id: newId });
         return newId;
     };
 
     const onSwitchConversation = (id: string) => {
         const conversation = findConversation(folders, id);
         if (conversation) {
-            dispatch({ type: 'SET_CURRENT_CONVERSATION', id });
-            dispatch({ type: 'SET_MESSAGES', messages: conversation.messages });
+            dispatch({ type: "SET_CURRENT_CONVERSATION", id });
+            dispatch({ type: "SET_MESSAGES", messages: conversation.messages });
         }
     };
 
@@ -78,21 +79,23 @@ export function AppDrawer() {
 
     const onSaveFolder = () => {
         if (editingFolderId !== null) {
-            const updateFolderName = (folders: ConversationFolder[]): ConversationFolder[] => {
-                return folders.map(folder => {
+            const updateFolderName = (
+                folders: ConversationFolder[]
+            ): ConversationFolder[] => {
+                return folders.map((folder) => {
                     if (folder.id === editingFolderId) {
                         return { ...folder, name: newFolderName };
                     }
                     return {
                         ...folder,
-                        subfolders: updateFolderName(folder.subfolders)
+                        subfolders: updateFolderName(folder.subfolders),
                     };
                 });
             };
 
             dispatch({
                 type: "UPDATE_FOLDERS",
-                folders: updateFolderName(folders)
+                folders: updateFolderName(folders),
             });
             setEditingFolderId(null);
         }
@@ -100,18 +103,23 @@ export function AppDrawer() {
 
     const onDeleteFolder = () => {
         if (editingFolderId !== null) {
-            const deleteFolderRecursive = (folders: ConversationFolder[]): ConversationFolder[] => {
-                return folders.map(folder => ({
-                    ...folder,
-                    subfolders: folder.id === editingFolderId 
-                        ? [] 
-                        : deleteFolderRecursive(folder.subfolders)
-                })).filter(folder => folder.id !== editingFolderId);
+            const deleteFolderRecursive = (
+                folders: ConversationFolder[]
+            ): ConversationFolder[] => {
+                return folders
+                    .map((folder) => ({
+                        ...folder,
+                        subfolders:
+                            folder.id === editingFolderId
+                                ? []
+                                : deleteFolderRecursive(folder.subfolders),
+                    }))
+                    .filter((folder) => folder.id !== editingFolderId);
             };
 
             dispatch({
                 type: "UPDATE_FOLDERS",
-                folders: deleteFolderRecursive(folders)
+                folders: deleteFolderRecursive(folders),
             });
             setEditingFolderId(null);
         }
@@ -124,14 +132,19 @@ export function AppDrawer() {
                 id: selectedConversationId,
             });
             if (currentConversationId === selectedConversationId) {
-                const firstConversation =
-                    findFirstConversation(folders);
+                const firstConversation = findFirstConversation(folders);
                 if (firstConversation) {
-                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: firstConversation.id });
-                    dispatch({ type: 'SET_MESSAGES', messages: firstConversation.messages });
+                    dispatch({
+                        type: "SET_CURRENT_CONVERSATION",
+                        id: firstConversation.id,
+                    });
+                    dispatch({
+                        type: "SET_MESSAGES",
+                        messages: firstConversation.messages,
+                    });
                 } else {
-                    dispatch({ type: 'SET_CURRENT_CONVERSATION', id: "" });
-                    dispatch({ type: 'SET_MESSAGES', messages: [] });
+                    dispatch({ type: "SET_CURRENT_CONVERSATION", id: "" });
+                    dispatch({ type: "SET_MESSAGES", messages: [] });
                 }
             }
         }
@@ -139,21 +152,23 @@ export function AppDrawer() {
 
     const onSaveConversation = () => {
         if (editingConversationId !== null) {
-            const updateConversationName = (folders: ConversationFolder[]): ConversationFolder[] => {
-                return folders.map(folder => ({
+            const updateConversationName = (
+                folders: ConversationFolder[]
+            ): ConversationFolder[] => {
+                return folders.map((folder) => ({
                     ...folder,
-                    conversations: folder.conversations.map(conv =>
+                    conversations: folder.conversations.map((conv) =>
                         conv.id === editingConversationId
                             ? { ...conv, name: newConversationName }
                             : conv
                     ),
-                    subfolders: updateConversationName(folder.subfolders)
+                    subfolders: updateConversationName(folder.subfolders),
                 }));
             };
 
             dispatch({
                 type: "UPDATE_FOLDERS",
-                folders: updateConversationName(folders)
+                folders: updateConversationName(folders),
             });
             setEditingConversationId(null);
         }
@@ -161,45 +176,59 @@ export function AppDrawer() {
 
     const saveConversationFile = (format: string) => {
         const currentConversation = folders
-            .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-            .find(c => c.id == currentConversationId);
-        
+            .flatMap((f) => [
+                ...f.conversations,
+                ...f.subfolders.flatMap((sf) => sf.conversations),
+            ])
+            .find((c) => c.id == currentConversationId);
+
         if (currentConversation) {
-            if (format === 'pdf') {
+            if (format === "pdf") {
                 exportToPdf(messages, {
                     title: currentConversation.name,
-                    date: new Date().toLocaleDateString()
+                    date: new Date().toLocaleDateString(),
                 });
             } else {
                 const content = {
                     name: currentConversation.name,
-                    messages: messages
+                    messages: messages,
                 };
-                
+
                 const getFormattedContent = () => {
                     switch (format) {
-                        case 'json':
+                        case "json":
                             return JSON.stringify(content, null, 2);
-                        case 'txt':
+                        case "txt":
                             return content.messages
-                                .map(msg => `${msg.role}: ${msg.content.map((c: any) => c.text).join('\n')}`)
-                                .join('\n\n');
-                        case 'md':
-                            return `# ${content.name}\n\n` +
+                                .map(
+                                    (msg) =>
+                                        `${msg.role}: ${msg.content
+                                            .map((c: any) => c.text)
+                                            .join("\n")}`
+                                )
+                                .join("\n\n");
+                        case "md":
+                            return (
+                                `# ${content.name}\n\n` +
                                 content.messages
-                                    .map(msg => `**${msg.role}**:\n${msg.content.map((c: any) => c.text).join('\n')}`)
-                                    .join('\n\n');
+                                    .map(
+                                        (msg) =>
+                                            `**${msg.role}**:\n${msg.content
+                                                .map((c: any) => c.text)
+                                                .join("\n")}`
+                                    )
+                                    .join("\n\n")
+                            );
                         default:
-                            return '';
+                            return "";
                     }
                 };
-                
-                const blob = new Blob(
-                    [getFormattedContent()],
-                    { type: 'text/plain' }
-                );
+
+                const blob = new Blob([getFormattedContent()], {
+                    type: "text/plain",
+                });
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
+                const a = document.createElement("a");
                 a.href = url;
                 a.download = `${currentConversation.name}.${format}`;
                 document.body.appendChild(a);
@@ -278,10 +307,17 @@ export function AppDrawer() {
                 onClose={() => setShowSave(false)}
                 onSave={saveConversationFile}
                 conversation={{
-                    name: folders
-                        .flatMap(f => [...f.conversations, ...f.subfolders.flatMap(sf => sf.conversations)])
-                        .find(c => c.id === currentConversationId)?.name || 'Untitled',
-                    messages: messages
+                    name:
+                        folders
+                            .flatMap((f) => [
+                                ...f.conversations,
+                                ...f.subfolders.flatMap(
+                                    (sf) => sf.conversations
+                                ),
+                            ])
+                            .find((c) => c.id === currentConversationId)
+                            ?.name || "Untitled",
+                    messages: messages,
                 }}
             />
         </Drawer>

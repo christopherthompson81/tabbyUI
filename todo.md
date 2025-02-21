@@ -4,6 +4,7 @@
     * Add detailed settings parameter explanations.
 * Add arbitrary expansion to "Model Preferences" with an Emoji identifier.
     * Model Settings might need to be separate from Model Preferences in some way.
+* Maybe move services to a reducer?
 
 ### Soon
 * Add a PDF to a mixed modality ingestor

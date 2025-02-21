@@ -1,4 +1,4 @@
-import { GenerationParams } from '../reducers/settingsReducer';
+import { GenerationParams } from "../reducers/settingsReducer";
 
 export interface Conversation {
     id: string;
@@ -16,7 +16,7 @@ export interface DraftModelParams {
     draft_cache_mode: string;
 }
 
-export type CacheMode = 'FP16' | 'Q8' | 'Q6' | 'Q4';
+export type CacheMode = "FP16" | "Q8" | "Q6" | "Q4";
 
 export interface ModelLoadParams {
     model_name: string;
@@ -78,8 +78,8 @@ export function getAllModelParams(): { [modelId: string]: ModelLoadParams } {
     const params: { [modelId: string]: ModelLoadParams } = {};
     for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
-        if (key?.startsWith('modelParams_')) {
-            const modelId = key.replace('modelParams_', '');
+        if (key?.startsWith("modelParams_")) {
+            const modelId = key.replace("modelParams_", "");
             const value = localStorage.getItem(key);
             if (value) {
                 params[modelId] = JSON.parse(value);
@@ -149,9 +149,11 @@ export function getPersistedGenerationParams(): GenerationParams {
         temperature: Number(localStorage.getItem("temperature")) || 0.6,
         topP: Number(localStorage.getItem("topP")) || 1,
         topK: Number(localStorage.getItem("topK")) || 40,
-        frequencyPenalty: Number(localStorage.getItem("frequencyPenalty")) || 0.01,
+        frequencyPenalty:
+            Number(localStorage.getItem("frequencyPenalty")) || 0.01,
         presencePenalty: Number(localStorage.getItem("presencePenalty")) || 0,
-        repetitionPenalty: Number(localStorage.getItem("repetitionPenalty")) || 1,
+        repetitionPenalty:
+            Number(localStorage.getItem("repetitionPenalty")) || 1,
         typicalP: Number(localStorage.getItem("typicalP")) || 1.0,
         minTokens: Number(localStorage.getItem("minTokens")) || 0,
         generateWindow: Number(localStorage.getItem("generateWindow")) || 512,

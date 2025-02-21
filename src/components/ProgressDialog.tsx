@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -6,8 +7,9 @@ import {
     Typography,
     Box,
 } from "@mui/material";
+
+// Local Imports
 import { ModelLoadProgress } from "../services/tabbyAPI";
-import { useState, useEffect } from "react";
 
 interface ProgressDialogProps {
     open: boolean;

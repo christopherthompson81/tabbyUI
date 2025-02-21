@@ -1,53 +1,59 @@
-import { useCallback, useState } from 'react';
-import { TextField, Button, IconButton, Box, Chip, Stack, Tooltip } from '@mui/material';
-import ImageIcon from '@mui/icons-material/Image';
-import CancelIcon from '@mui/icons-material/Cancel';
-import AddIcon from '@mui/icons-material/Add';
-import AdjustIcon from '@mui/icons-material/Adjust';
-import SupportAgentIcon from '@mui/icons-material/SupportAgent';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import CodeIcon from '@mui/icons-material/Code';
-import Psychology from '@mui/icons-material/Psychology';
+import { useCallback, useState } from "react";
+import {
+    TextField,
+    Button,
+    IconButton,
+    Box,
+    Chip,
+    Stack,
+    Tooltip,
+} from "@mui/material";
+import ImageIcon from "@mui/icons-material/Image";
+import CancelIcon from "@mui/icons-material/Cancel";
+import AddIcon from "@mui/icons-material/Add";
+import AdjustIcon from "@mui/icons-material/Adjust";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import CodeIcon from "@mui/icons-material/Code";
+import Psychology from "@mui/icons-material/Psychology";
 
 // Local Imports
+import { useReducerContext } from "../reducers/ReducerContext";
 import {
     MessageContent,
     getModelInfo,
-    sendConversation as sendConversationToAPI
-} from '../services/tabbyAPI';
+    sendConversation as sendConversationToAPI,
+} from "../services/tabbyAPI";
 import {
     getModelParams,
     getPersistedApiKey,
     getPersistedAdminApiKey,
-    getPersistedServerUrl
-} from '../utils/persistence';
-import { useModelLoader } from './ModelLoader';
-import ProgressDialog from './ProgressDialog';
-//import BrainIcon from "./BrainIcon";
-import IconRadioGroup from './IconRadioGroup';
-import { useReducerContext } from "../reducers/ReducerContext";
+    getPersistedServerUrl,
+} from "../utils/persistence";
+//components
+import { useModelLoader } from "./ModelLoader";
+import ProgressDialog from "./ProgressDialog";
+import IconRadioGroup from "./IconRadioGroup";
 
 interface ChatInputProps {
     messagesEndRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-export default function ChatInput({
-    messagesEndRef
-}: ChatInputProps) {
-    const [abortController, setAbortController] = useState<AbortController | null>(null);
-    const [isGenerating, setIsGenerating] = useState(false);
+export default function ChatInput({ messagesEndRef }: ChatInputProps) {
     const { currentConversationId, messages, dispatch } = useReducerContext();
+    const [abortController, setAbortController] =
+        useState<AbortController | null>(null);
+    const [isGenerating, setIsGenerating] = useState(false);
     const serverUrl = getPersistedServerUrl();
     const adminApiKey = getPersistedAdminApiKey();
     const modelLoader = useModelLoader({
         serverUrl,
         adminApiKey,
-        onLoadComplete: () => { }
+        onLoadComplete: () => {},
     });
-    const [inputText, setInputText] = useState('');
+    const [inputText, setInputText] = useState("");
     const [messagePreview, setMessagePreview] = useState<MessageContent[]>([]);
-
-    const [selectedValue, setSelectedValue] = useState('current');
+    const [selectedValue, setSelectedValue] = useState("current");
 
     const scrollToBottom = useCallback(() => {
         if (messagesEndRef.current) {
@@ -73,13 +79,23 @@ export default function ChatInput({
                     userMessage,
                     regenerate,
                     (updatedMessages) => {
-                        dispatch({ type: 'SET_MESSAGES', messages: updatedMessages });
+                        dispatch({
+                            type: "SET_MESSAGES",
+                            messages: updatedMessages,
+                        });
                         scrollToBottom();
                     },
                     (finalMessages) => {
-                        dispatch({ type: 'SET_MESSAGES', messages: finalMessages });
+                        dispatch({
+                            type: "SET_MESSAGES",
+                            messages: finalMessages,
+                        });
                         if (currentConversationId !== null) {
-                            dispatch({ type: "UPDATE_CONVERSATION", id: currentConversationId, messages: finalMessages });
+                            dispatch({
+                                type: "UPDATE_CONVERSATION",
+                                id: currentConversationId,
+                                messages: finalMessages,
+                            });
                         }
                         setIsGenerating(false);
                         setAbortController(null);
@@ -118,12 +134,13 @@ export default function ChatInput({
             const reader = new FileReader();
             reader.onload = (event) => {
                 if (event.target) {
-                    const imageUrl: string = event.target.result?.toString() ?? '';
-                    const tempMessage: MessageContent = { type: 'image_url', image_url: { url: imageUrl } };
-                    setMessagePreview(prev => [
-                        ...prev,
-                        tempMessage
-                    ]);
+                    const imageUrl: string =
+                        event.target.result?.toString() ?? "";
+                    const tempMessage: MessageContent = {
+                        type: "image_url",
+                        image_url: { url: imageUrl },
+                    };
+                    setMessagePreview((prev) => [...prev, tempMessage]);
                 }
             };
             reader.readAsDataURL(file);
@@ -132,28 +149,29 @@ export default function ChatInput({
 
     const handleAddText = () => {
         if (inputText.trim()) {
-            setMessagePreview(prev => [
+            setMessagePreview((prev) => [
                 ...prev,
-                { type: 'text', text: inputText }
+                { type: "text", text: inputText },
             ]);
-            setInputText('');
+            setInputText("");
         }
     };
 
     const handleRemoveItem = (index: number) => {
-        setMessagePreview(prev => prev.filter((_, i) => i !== index));
+        setMessagePreview((prev) => prev.filter((_, i) => i !== index));
     };
 
     const handleRegenerate = async () => {
         // Get model preferences from localStorage
         const modelPreferences = JSON.parse(
-            localStorage.getItem('modelPreferences') || '{}'
+            localStorage.getItem("modelPreferences") || "{}"
         );
 
         // Get selected model ID if not 'current'
-        const selectedModel = selectedValue !== 'current'
-            ? modelPreferences[selectedValue]
-            : undefined;
+        const selectedModel =
+            selectedValue !== "current"
+                ? modelPreferences[selectedValue]
+                : undefined;
 
         if (selectedModel) {
             // Fetch current model to compare
@@ -162,7 +180,11 @@ export default function ChatInput({
             // If selected model is different from current, load it
             if (currentModel?.id !== selectedModel) {
                 const customParams = getModelParams(selectedModel);
-                await modelLoader.loadModel(selectedModel, undefined, customParams);
+                await modelLoader.loadModel(
+                    selectedModel,
+                    undefined,
+                    customParams
+                );
             }
         }
 
@@ -172,13 +194,14 @@ export default function ChatInput({
     const handleSend = async () => {
         // Get model preferences from localStorage
         const modelPreferences = JSON.parse(
-            localStorage.getItem('modelPreferences') || '{}'
+            localStorage.getItem("modelPreferences") || "{}"
         );
 
         // Get selected model ID if not 'current'
-        const selectedModel = selectedValue !== 'current'
-            ? modelPreferences[selectedValue]
-            : undefined;
+        const selectedModel =
+            selectedValue !== "current"
+                ? modelPreferences[selectedValue]
+                : undefined;
 
         if (selectedModel) {
             // Fetch current model to compare
@@ -192,67 +215,75 @@ export default function ChatInput({
 
         // Create temporary preview that includes current input text if any
         const finalPreview: MessageContent[] = inputText.trim()
-            ? [...messagePreview, { type: 'text', text: inputText.trim() }]
+            ? [...messagePreview, { type: "text", text: inputText.trim() }]
             : messagePreview;
 
         onSend(finalPreview);
-        setInputText('');
+        setInputText("");
         setMessagePreview([]);
     };
 
     return (
         <div>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* Message Preview */}
                 {messagePreview.length > 0 && (
-                    <Box sx={{
-                        p: 2,
-                        border: '1px solid',
-                        borderColor: 'divider',
-                        borderRadius: 1,
-                        backgroundColor: 'background.paper'
-                    }}>
+                    <Box
+                        sx={{
+                            p: 2,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            borderRadius: 1,
+                            backgroundColor: "background.paper",
+                        }}
+                    >
                         <Stack direction="column" spacing={1}>
                             {messagePreview.map((item, index) => (
-                                <Box key={index} sx={{ position: 'relative' }}>
-                                    {item.type === 'text' && (
+                                <Box key={index} sx={{ position: "relative" }}>
+                                    {item.type === "text" && (
                                         <Chip
                                             label={item.text}
-                                            onDelete={() => handleRemoveItem(index)}
+                                            onDelete={() =>
+                                                handleRemoveItem(index)
+                                            }
                                             deleteIcon={<CancelIcon />}
                                             sx={{
-                                                maxWidth: '100%',
-                                                '& .MuiChip-label': {
-                                                    whiteSpace: 'normal'
-                                                }
+                                                maxWidth: "100%",
+                                                "& .MuiChip-label": {
+                                                    whiteSpace: "normal",
+                                                },
                                             }}
                                         />
                                     )}
-                                    {item.type === 'image_url' && item.image_url && (
-                                        <Box sx={{ position: 'relative' }}>
-                                            <img
-                                                src={item.image_url.url}
-                                                alt="Preview"
-                                                style={{
-                                                    maxWidth: '100%',
-                                                    maxHeight: '200px',
-                                                    borderRadius: '4px'
-                                                }}
-                                            />
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => handleRemoveItem(index)}
-                                                sx={{
-                                                    position: 'absolute',
-                                                    right: 4,
-                                                    top: 4,
-                                                    backgroundColor: 'background.paper'
-                                                }}
-                                            >
-                                                <CancelIcon fontSize="small" />
-                                            </IconButton>
-                                        </Box>
-                                    )}
+                                    {item.type === "image_url" &&
+                                        item.image_url && (
+                                            <Box sx={{ position: "relative" }}>
+                                                <img
+                                                    src={item.image_url.url}
+                                                    alt="Preview"
+                                                    style={{
+                                                        maxWidth: "100%",
+                                                        maxHeight: "200px",
+                                                        borderRadius: "4px",
+                                                    }}
+                                                />
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() =>
+                                                        handleRemoveItem(index)
+                                                    }
+                                                    sx={{
+                                                        position: "absolute",
+                                                        right: 4,
+                                                        top: 4,
+                                                        backgroundColor:
+                                                            "background.paper",
+                                                    }}
+                                                >
+                                                    <CancelIcon fontSize="small" />
+                                                </IconButton>
+                                            </Box>
+                                        )}
                                 </Box>
                             ))}
                         </Stack>
@@ -260,7 +291,7 @@ export default function ChatInput({
                 )}
 
                 {/* Input Area */}
-                <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <Box sx={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <TextField
                         label="Enter your message"
                         variant="outlined"
@@ -268,7 +299,11 @@ export default function ChatInput({
                         value={inputText}
                         onChange={handleTextChange}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey && inputText.trim()) {
+                            if (
+                                e.key === "Enter" &&
+                                !e.shiftKey &&
+                                inputText.trim()
+                            ) {
                                 e.preventDefault();
                                 handleAddText();
                             }
@@ -288,7 +323,7 @@ export default function ChatInput({
                     </Tooltip>
                     <input
                         accept="image/*"
-                        style={{ display: 'none' }}
+                        style={{ display: "none" }}
                         id="icon-button-file"
                         type="file"
                         onChange={handleImageUpload}
@@ -303,16 +338,43 @@ export default function ChatInput({
                 </Box>
 
                 {/* Action Buttons */}
-                <Box sx={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', alignItems: "center" }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: "8px",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                    }}
+                >
                     <IconRadioGroup
                         value={selectedValue}
                         onChange={(value) => setSelectedValue(value)}
                         options={[
-                            { value: 'current', tooltip: "Current Model", icon: <AdjustIcon /> },
-                            { value: 'Assistant', tooltip: "Assistant", icon: <SupportAgentIcon /> },
-                            { value: 'Vision', tooltip: "Vision Model", icon: <VisibilityIcon /> },
-                            { value: 'Coding', tooltip: "Coding Model", icon: <CodeIcon /> },
-                            { value: 'Chain-of-Thought', tooltip: "Reasoning Model", icon: <Psychology /> },
+                            {
+                                value: "current",
+                                tooltip: "Current Model",
+                                icon: <AdjustIcon />,
+                            },
+                            {
+                                value: "Assistant",
+                                tooltip: "Assistant",
+                                icon: <SupportAgentIcon />,
+                            },
+                            {
+                                value: "Vision",
+                                tooltip: "Vision Model",
+                                icon: <VisibilityIcon />,
+                            },
+                            {
+                                value: "Coding",
+                                tooltip: "Coding Model",
+                                icon: <CodeIcon />,
+                            },
+                            {
+                                value: "Chain-of-Thought",
+                                tooltip: "Reasoning Model",
+                                icon: <Psychology />,
+                            },
                         ]}
                     />
                     <Box sx={{ alignItems: "center", display: "flex", gap: 1 }}>
@@ -329,7 +391,10 @@ export default function ChatInput({
                                 <Button
                                     variant="contained"
                                     onClick={handleSend}
-                                    disabled={messagePreview.length === 0 && !inputText.trim()}
+                                    disabled={
+                                        messagePreview.length === 0 &&
+                                        !inputText.trim()
+                                    }
                                 >
                                     Send
                                 </Button>

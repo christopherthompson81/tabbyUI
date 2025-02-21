@@ -1,144 +1,144 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
-  min-width: 320px;
-  padding: 1rem;
+    min-width: 320px;
+    padding: 1rem;
 }
 
 .message {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
-  width: calc(100% - 20px); /* Adjust for margin */
-  position: relative;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 10px;
+    width: calc(100% - 20px); /* Adjust for margin */
+    position: relative;
 }
 
 .message:hover .menu-icon {
-  display: block;
+    display: block;
 }
 
 .menu-icon {
-  display: none;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  cursor: pointer;
-  padding: 5px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 4px;
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    padding: 5px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 4px;
 }
 
 .menu {
-  position: absolute;
-  right: 0;
-  top: 30px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  z-index: 1;
+    position: absolute;
+    right: 0;
+    top: 30px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
 }
 
 .menu-item {
-  padding: 8px 16px;
-  cursor: pointer;
-  white-space: nowrap;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
 .menu-item:hover {
-  background: #f5f5f5;
+    background: #f5f5f5;
 }
 
 .inline-math {
-  display: inline-block;
-  margin: 0 2px;
-  vertical-align: middle;
+    display: inline-block;
+    margin: 0 2px;
+    vertical-align: middle;
 }
 
 .inline-math .katex {
-  font-size: 1.1em; /* Slightly larger than normal text */
-  line-height: 1.2;
+    font-size: 1.1em; /* Slightly larger than normal text */
+    line-height: 1.2;
 }
 
 .display-math {
-  display: block;
-  margin: 1em 0;
-  overflow-x: auto;
-  text-align: center;
+    display: block;
+    margin: 1em 0;
+    overflow-x: auto;
+    text-align: center;
 }
 
 .display-math .katex-display {
-  margin: 0.5em 0;
-  padding: 0.5em 0;
+    margin: 0.5em 0;
+    padding: 0.5em 0;
 }
 
 .display-math .katex {
-  font-size: 1.21em; /* Larger than inline math */
-  line-height: 1.4;
+    font-size: 1.21em; /* Larger than inline math */
+    line-height: 1.4;
 }
 
 /* Markdown table styles */
 .prose table {
-  border-collapse: collapse;
-  margin: 1em 0;
-  width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
 }
 
 .prose th,
 .prose td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
 .prose th {
-  background-color: #f5f5f5;
-  font-weight: 600;
+    background-color: #f5f5f5;
+    font-weight: 600;
 }
 
 .prose tr:nth-child(even) {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 .message.user {
-  background-color: #e0f7fa; /* Light blue-green */
-  align-self: flex-end;
+    background-color: #e0f7fa; /* Light blue-green */
+    align-self: flex-end;
 }
 
 .message.assistant {
-  background-color: #f1f0f0; /* Light gray */
-  align-self: flex-start;
+    background-color: #f1f0f0; /* Light gray */
+    align-self: flex-start;
 }
 
 .message-content {
-  padding: 5px;
+    padding: 5px;
 }
 
 .message-edit-buttons {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
 }
 
 .main-content {
-  padding: 10px;
-  flex-grow: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* Align messages to the bottom */
+    padding: 10px;
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align messages to the bottom */
 }
 
 .MuiDrawer-paper {
-  width: 240px;
-  box-sizing: border-box;
+    width: 240px;
+    box-sizing: border-box;
 }

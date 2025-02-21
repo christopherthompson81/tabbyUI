@@ -16,15 +16,21 @@ interface ReducerContextType {
         generationParams: GenerationParams;
     };
     modelParams: ModelParamsState;
-    dispatch: React.Dispatch<ConversationsAction | SettingsAction | ModelParamsAction>;
+    dispatch: React.Dispatch<
+        ConversationsAction | SettingsAction | ModelParamsAction
+    >;
 }
 
-const ReducerContext = React.createContext<ReducerContextType | undefined>(undefined);
+const ReducerContext = React.createContext<ReducerContextType | undefined>(
+    undefined
+);
 
 export function useReducerContext() {
     const context = React.useContext(ReducerContext);
     if (context === undefined) {
-        throw new Error('useReducerContext must be used within a ReducerProvider');
+        throw new Error(
+            "useReducerContext must be used within a ReducerProvider"
+        );
     }
     return context;
 }

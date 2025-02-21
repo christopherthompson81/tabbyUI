@@ -1,26 +1,35 @@
 import { useCallback, useState, useRef, useEffect } from "react";
-import { TextField, Button, Typography, Collapse } from '@mui/material';
-import 'katex/dist/katex.min.css';
-import "../styles.css";
-import LLMOutputRenderer from './LLMOutputRenderer';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box } from '@mui/material';
-import { blueGrey } from '@mui/material/colors';
+import { Box, Button, Collapse, TextField, Typography } from "@mui/material";
+import { blueGrey } from "@mui/material/colors";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import "katex/dist/katex.min.css";
 
-import { MessageProps } from '../services/tabbyAPI';
+// Local Imports
+import "../styles.css";
+import LLMOutputRenderer from "./LLMOutputRenderer";
+import { MessageProps } from "../services/tabbyAPI";
 
 interface MessagePropsExtended extends MessageProps {
-    onEdit: (index: number, newContent: { type: 'text', text: string }[]) => void;
+    onEdit: (
+        index: number,
+        newContent: { type: "text"; text: string }[]
+    ) => void;
     onDelete: (index: number) => void;
     index: number;
 }
 
-function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePropsExtended) {
+function MessageComponent({
+    role,
+    content,
+    onEdit,
+    onDelete,
+    index,
+}: MessagePropsExtended) {
     const [showMenu, setShowMenu] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [expandedThinkTags, setExpandedThinkTags] = useState<number[]>([]);
     const [editedContent, setEditedContent] = useState(
-        content.find(c => c.type === 'text')?.text || ''
+        content.find((c) => c.type === "text")?.text || ""
     );
     const editTextareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -28,34 +37,45 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
                 setShowMenu(false);
             }
         }
 
-        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
 
     const handleMenuToggle = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
-        setShowMenu(prev => !prev);
+        setShowMenu((prev) => !prev);
     }, []);
 
-    const handleEditClick = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-        setShowMenu(false);
-        setIsEditing(true);
-        setEditedContent(content.find(c => c.type === 'text')?.text || '');
-    }, [content]);
+    const handleEditClick = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setShowMenu(false);
+            setIsEditing(true);
+            setEditedContent(
+                content.find((c) => c.type === "text")?.text || ""
+            );
+        },
+        [content]
+    );
 
-    const handleDeleteClick = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-        setShowMenu(false);
-        onDelete(index);
-    }, [onDelete, index]);
+    const handleDeleteClick = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setShowMenu(false);
+            onDelete(index);
+        },
+        [onDelete, index]
+    );
 
     return (
         <div className={`message ${role}`}>
@@ -63,12 +83,12 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                 <MoreVertIcon fontSize="small" />
                 {showMenu && (
                     <div className="menu">
-                    <div className="menu-item" onClick={handleEditClick}>
-                        Edit
-                    </div>
-                    <div className="menu-item" onClick={handleDeleteClick}>
-                        Delete
-                    </div>
+                        <div className="menu-item" onClick={handleEditClick}>
+                            Edit
+                        </div>
+                        <div className="menu-item" onClick={handleDeleteClick}>
+                            Delete
+                        </div>
                     </div>
                 )}
             </div>
@@ -91,7 +111,9 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 size="small"
                                 variant="contained"
                                 onClick={() => {
-                                    onEdit(index, [{ type: 'text', text: editedContent }]);
+                                    onEdit(index, [
+                                        { type: "text", text: editedContent },
+                                    ]);
                                     setIsEditing(false);
                                 }}
                                 sx={{ mr: 1 }}
@@ -103,7 +125,10 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                 variant="outlined"
                                 onClick={() => {
                                     setIsEditing(false);
-                                    setEditedContent(content.find(c => c.type === 'text')?.text || '');
+                                    setEditedContent(
+                                        content.find((c) => c.type === "text")
+                                            ?.text || ""
+                                    );
                                 }}
                             >
                                 Cancel
@@ -112,62 +137,84 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                     </div>
                 ) : (
                     content.map((item, idx) => {
-                        if (item.type === 'text') {
-                            const text = item.text || '';
-                            const thinkMatches = Array.from(text.matchAll(/<think>(.*?)<\/think>/gs));
-                            
+                        if (item.type === "text") {
+                            const text = item.text || "";
+                            const thinkMatches = Array.from(
+                                text.matchAll(/<think>(.*?)<\/think>/gs)
+                            );
+
                             if (thinkMatches.length > 0) {
                                 let lastIndex = 0;
                                 const elements = [];
-                                
+
                                 thinkMatches.forEach((match, matchIdx) => {
                                     // Add text before the think tag
-                                    if (match.index && match.index > lastIndex) {
+                                    if (
+                                        match.index &&
+                                        match.index > lastIndex
+                                    ) {
                                         elements.push(
                                             <LLMOutputRenderer
                                                 key={`${idx}-${matchIdx}-pre`}
-                                                content={text.slice(lastIndex, match.index)}
+                                                content={text.slice(
+                                                    lastIndex,
+                                                    match.index
+                                                )}
                                             />
                                         );
                                     }
-                                    
+
                                     // Add the think tag content
                                     const thinkContent = match[1];
-                                    const wordCount = thinkContent.trim().split(/\s+/).length;
-                                    const isExpanded = expandedThinkTags.includes(matchIdx);
-                                    
+                                    const wordCount = thinkContent
+                                        .trim()
+                                        .split(/\s+/).length;
+                                    const isExpanded =
+                                        expandedThinkTags.includes(matchIdx);
+
                                     elements.push(
-                                        <Box 
+                                        <Box
                                             key={`${idx}-${matchIdx}-think`}
                                             sx={{
                                                 backgroundColor: blueGrey[100],
                                                 borderRadius: 1,
                                                 p: 1,
                                                 my: 1,
-                                                cursor: 'pointer'
+                                                cursor: "pointer",
                                             }}
                                             onClick={() => {
-                                                setExpandedThinkTags(prev => 
-                                                    isExpanded 
-                                                        ? prev.filter(i => i !== matchIdx)
+                                                setExpandedThinkTags((prev) =>
+                                                    isExpanded
+                                                        ? prev.filter(
+                                                              (i) =>
+                                                                  i !== matchIdx
+                                                          )
                                                         : [...prev, matchIdx]
                                                 );
                                             }}
                                         >
-                                            <Typography variant="body1" color="text.secondary">
-                                                {isExpanded ? '🧠 Thinking... (click to collapse)' : `🧠 Thinking... (${wordCount} words, click to expand)`}
+                                            <Typography
+                                                variant="body1"
+                                                color="text.secondary"
+                                            >
+                                                {isExpanded
+                                                    ? "🧠 Thinking... (click to collapse)"
+                                                    : `🧠 Thinking... (${wordCount} words, click to expand)`}
                                             </Typography>
                                             <Collapse in={isExpanded}>
                                                 <Box sx={{ mt: 1 }}>
-                                                    <LLMOutputRenderer content={thinkContent} />
+                                                    <LLMOutputRenderer
+                                                        content={thinkContent}
+                                                    />
                                                 </Box>
                                             </Collapse>
                                         </Box>
                                     );
-                                    
-                                    lastIndex = (match.index || 0) + match[0].length;
+
+                                    lastIndex =
+                                        (match.index || 0) + match[0].length;
                                 });
-                                
+
                                 // Add any remaining text after the last think tag
                                 if (lastIndex < text.length) {
                                     const remainingText = text.slice(lastIndex);
@@ -177,30 +224,30 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
                                         />
                                     );
                                 }
-                                
+
                                 return <>{elements}</>;
                             }
-                            
+
                             // If no think tags, render normally
                             return (
-                                <LLMOutputRenderer
-                                    key={idx}
-                                    content={text}
-                                />
+                                <LLMOutputRenderer key={idx} content={text} />
                             );
-                        } else if (item.type === 'image_url' && item.image_url) {
+                        } else if (
+                            item.type === "image_url" &&
+                            item.image_url
+                        ) {
                             return (
                                 <img
                                     key={idx}
                                     src={item.image_url.url}
                                     alt="User uploaded"
-                                    style={{ 
-                                        maxWidth: '100%',
-                                        maxHeight: '600px',
-                                        width: 'auto',
-                                        height: 'auto',
-                                        margin: '10px 0',
-                                        objectFit: 'contain'
+                                    style={{
+                                        maxWidth: "100%",
+                                        maxHeight: "600px",
+                                        width: "auto",
+                                        height: "auto",
+                                        margin: "10px 0",
+                                        objectFit: "contain",
                                     }}
                                     loading="lazy"
                                 />
@@ -212,6 +259,6 @@ function MessageComponent({ role, content, onEdit, onDelete, index }: MessagePro
             </div>
         </div>
     );
-};
+}
 
 export default MessageComponent;

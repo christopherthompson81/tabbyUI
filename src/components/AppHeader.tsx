@@ -1,9 +1,5 @@
 import * as React from "react";
-import {
-    useEffect,
-    useState,
-    useCallback,
-} from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
     AppBar,
     Box,
@@ -15,10 +11,10 @@ import {
     Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import {
-    ModelInfo,
-    getModelInfo
-} from "../services/tabbyAPI";
+
+// Local Imports
+import { useReducerContext } from "../reducers/ReducerContext";
+import { ModelInfo, getModelInfo } from "../services/tabbyAPI";
 import {
     getPersistedServerUrl,
     persistServerUrl,
@@ -32,9 +28,10 @@ import SettingsDialog from "./SettingsDialog";
 import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
-import { useReducerContext } from "../reducers/ReducerContext";
+
 
 export default function AppHeader() {
+    const { settings, dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -42,23 +39,24 @@ export default function AppHeader() {
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
     const [showHelp, setShowHelp] = React.useState(false);
-    const { settings, dispatch } = useReducerContext();
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-    const tooltipContent = modelInfo?.parameters 
-        ? Object.entries(modelInfo.parameters)
-            .map(([key, value]) => {
-                if (key != 'prompt_template_content' && value) {
-                    return (
-                        <tr>
-                            <td><strong>{key}: </strong></td><td>{value}</td>
-                        </tr>
-                    )
-                }
-            })
-        : (<></>);
+    const tooltipContent = modelInfo?.parameters ? (
+        Object.entries(modelInfo.parameters).map(([key, value]) =>
+            key != "prompt_template_content" && value ? (
+                <tr>
+                    <td>
+                        <strong>{key}: </strong>
+                    </td>
+                    <td>{value}</td>
+                </tr>
+            ) : null
+        )
+    ) : (
+        <></>
+    );
 
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
@@ -68,7 +66,10 @@ export default function AppHeader() {
     useEffect(() => {
         const checkStatus = async () => {
             setServerStatus("checking");
-            const model = await getModelInfo(getPersistedServerUrl(), getPersistedApiKey());
+            const model = await getModelInfo(
+                getPersistedServerUrl(),
+                getPersistedApiKey()
+            );
             if (model) {
                 setServerStatus("online");
                 setModelInfo(model);
@@ -160,17 +161,17 @@ export default function AppHeader() {
                                     serverStatus === "online"
                                         ? "lime"
                                         : serverStatus === "offline"
-                                            ? "red"
-                                            : "orange",
+                                        ? "red"
+                                        : "orange",
                             }}
                         />
-                        <Tooltip title={(<table>{tooltipContent}</table>)}>
+                        <Tooltip title={<table>{tooltipContent}</table>}>
                             <Typography variant="caption">
                                 {serverStatus === "online"
                                     ? `Online (${modelInfo?.id || "Unknown"})`
                                     : serverStatus === "offline"
-                                        ? "Offline"
-                                        : "Checking..."}
+                                    ? "Offline"
+                                    : "Checking..."}
                             </Typography>
                         </Tooltip>
                     </Box>
@@ -182,21 +183,32 @@ export default function AppHeader() {
                     persistServerUrl(settings.serverUrl);
                     persistApiKey(settings.apiKey);
                     persistAdminApiKey(settings.adminApiKey);
-                    Object.entries(settings.generationParams).forEach(([key, value]) => {
-                        persistGenerationParam(key, value.toString());
-                    });
+                    Object.entries(settings.generationParams).forEach(
+                        ([key, value]) => {
+                            persistGenerationParam(key, value.toString());
+                        }
+                    );
                     setShowSettings(false);
                 }}
                 serverUrl={settings.serverUrl}
-                onServerUrlChange={(e) => dispatch({ type: 'SET_SERVER_URL', url: e.target.value })}
+                onServerUrlChange={(e) =>
+                    dispatch({ type: "SET_SERVER_URL", url: e.target.value })
+                }
                 apiKey={settings.apiKey}
-                onApiKeyChange={(e) => dispatch({ type: 'SET_API_KEY', key: e.target.value })}
+                onApiKeyChange={(e) =>
+                    dispatch({ type: "SET_API_KEY", key: e.target.value })
+                }
                 adminApiKey={settings.adminApiKey}
-                onAdminApiKeyChange={(e) => dispatch({ type: 'SET_ADMIN_API_KEY', key: e.target.value })}
+                onAdminApiKeyChange={(e) =>
+                    dispatch({ type: "SET_ADMIN_API_KEY", key: e.target.value })
+                }
                 generationParams={settings.generationParams}
-                onGenerationParamsChange={useCallback((key, value) => {
-                    dispatch({ type: 'SET_GENERATION_PARAM', key, value });
-                }, [dispatch])}
+                onGenerationParamsChange={useCallback(
+                    (key, value) => {
+                        dispatch({ type: "SET_GENERATION_PARAM", key, value });
+                    },
+                    [dispatch]
+                )}
             />
             <ModelsDialog
                 open={showModels}

@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
+import { Typography } from "@mui/material";
+
+// Local Imports
+import { useReducerContext } from "../reducers/ReducerContext";
 import { ModelLoadProgress, loadModelWithProgress } from "../services/tabbyAPI";
 import {
     ModelLoadParams,
     getModelParams,
     persistModelParams,
 } from "../utils/persistence";
+//components
 import ProgressDialog from "./ProgressDialog";
-import { Typography } from "@mui/material";
-import { useReducerContext } from "../reducers/ReducerContext";
 
 interface ModelInfo {
     id: string;
@@ -56,29 +59,37 @@ export function useModelLoader({
     };
 
     const { modelParams, dispatch } = useReducerContext();
-    
+
     useEffect(() => {
         if (selectedModel) {
             const params = getModelParams(selectedModel);
-            dispatch({ type: 'SET_MODEL_PARAMS', modelId: selectedModel, params });
+            dispatch({
+                type: "SET_MODEL_PARAMS",
+                modelId: selectedModel,
+                params,
+            });
         }
     }, [selectedModel]);
 
     const handleParamChange = (field: string, value: any) => {
         if (selectedModel) {
             dispatch({
-                type: 'SET_MODEL_PARAMS',
+                type: "SET_MODEL_PARAMS",
                 modelId: selectedModel,
-                params: { [field]: value }
+                params: { [field]: value },
             });
             persistModelParams(selectedModel, {
                 ...modelParams[selectedModel],
-                [field]: value
+                [field]: value,
             });
         }
     };
 
-    const loadModel = async (modelId: string, draftModelId?: string, customParams?: Partial<ModelLoadParams>) => {
+    const loadModel = async (
+        modelId: string,
+        draftModelId?: string,
+        customParams?: Partial<ModelLoadParams>
+    ) => {
         try {
             const payload: ModelLoadParams = {
                 ...modelParams[modelId],

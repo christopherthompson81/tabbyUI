@@ -17,13 +17,16 @@ import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+
+// Local imports
+import { useReducerContext } from "../reducers/ReducerContext";
 import {
     Conversation,
     ConversationFolder,
     getPersistedCurrentConversationId,
 } from "../utils/persistence";
+// components
 import DeleteConfirmationDialog from "./DeleteConfirmationDialog";
-import { useReducerContext } from "../reducers/ReducerContext";
 
 interface ConversationListProps {
     folders: ConversationFolder[];
@@ -87,31 +90,33 @@ function FolderItem({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const menuOpen = Boolean(menuAnchorEl);
 
-    const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImportFile = async (
+        event: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
         try {
             const text = await file.text();
             const importedConv = JSON.parse(text);
-            
+
             // Find unique ID and name
             let newId = importedConv.id;
             let newName = importedConv.name;
             let counter = 1;
 
             const allConvs = folder.conversations.concat(
-                folder.subfolders.flatMap(sf => sf.conversations)
+                folder.subfolders.flatMap((sf) => sf.conversations)
             );
 
-            while (allConvs.some(c => c.id === newId)) {
+            while (allConvs.some((c) => c.id === newId)) {
                 newId = `${importedConv.id}_${counter}`;
                 counter++;
             }
 
             counter = 1;
             let baseName = importedConv.name;
-            while (allConvs.some(c => c.name === newName)) {
+            while (allConvs.some((c) => c.name === newName)) {
                 newName = `${baseName} (${counter})`;
                 counter++;
             }
@@ -121,23 +126,24 @@ function FolderItem({
                 id: newId,
                 name: newName,
                 timestamp: Date.now(),
-                author: "User"
+                author: "User",
             };
 
             dispatch({
-                type: 'IMPORT_CONVERSATION',
+                type: "IMPORT_CONVERSATION",
                 conversation: newConv,
-                folderId: folder.id
+                folderId: folder.id,
             });
-            
         } catch (error) {
-            console.error('Error importing conversation:', error);
-            alert('Failed to import conversation. Please check the file format.');
+            console.error("Error importing conversation:", error);
+            alert(
+                "Failed to import conversation. Please check the file format."
+            );
         }
 
         // Reset file input
         if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+            fileInputRef.current.value = "";
         }
     };
 
@@ -150,7 +156,9 @@ function FolderItem({
         setSelectedConversation(conversation);
     };
 
-    const handleConversationMenuClose = (event: React.MouseEvent<HTMLElement>) => {
+    const handleConversationMenuClose = (
+        event: React.MouseEvent<HTMLElement>
+    ) => {
         event.stopPropagation();
         setConversationMenuAnchorEl(null);
     };
@@ -229,7 +237,7 @@ function FolderItem({
                 <input
                     type="file"
                     ref={fileInputRef}
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                     accept="application/json"
                     onChange={handleImportFile}
                 />
@@ -255,26 +263,43 @@ function FolderItem({
                             key={conv.id}
                             onClick={() => onSwitchConversation(conv.id)}
                             selected={conv.id === currentConversationId}
-                            sx={{ 
+                            sx={{
                                 pl: 4,
-                                backgroundColor: conv.id == currentConversationId ? 'action.selected' : 'inherit',
-                                '&:hover': {
-                                    backgroundColor: conv.id == currentConversationId ? 'action.selected' : 'action.hover'
-                                }
+                                backgroundColor:
+                                    conv.id == currentConversationId
+                                        ? "action.selected"
+                                        : "inherit",
+                                "&:hover": {
+                                    backgroundColor:
+                                        conv.id == currentConversationId
+                                            ? "action.selected"
+                                            : "action.hover",
+                                },
                             }}
                         >
-                            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    width: "100%",
+                                }}
+                            >
                                 <ListItemText
                                     primary={conv.name}
-                                    secondary={new Date(conv.timestamp).toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: '2-digit',
-                                    day: '2-digit',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    second: '2-digit',
-                                    hour12: false
-                                }).replace(/(\d+)\/(\d+)\/(\d+),/, '$3-$1-$2')}
+                                    secondary={new Date(conv.timestamp)
+                                        .toLocaleString("en-US", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            second: "2-digit",
+                                            hour12: false,
+                                        })
+                                        .replace(
+                                            /(\d+)\/(\d+)\/(\d+),/,
+                                            "$3-$1-$2"
+                                        )}
                                 />
                             </Box>
                             <IconButton
@@ -282,7 +307,13 @@ function FolderItem({
                                     e.stopPropagation();
                                     handleConversationMenuClick(e, conv);
                                 }}
-                                style={{ marginLeft: "auto", backgroundColor: (conv.id == currentConversationId ? "lightGray" : '')}}
+                                style={{
+                                    marginLeft: "auto",
+                                    backgroundColor:
+                                        conv.id == currentConversationId
+                                            ? "lightGray"
+                                            : "",
+                                }}
                             >
                                 <MoreVertIcon fontSize="small" />
                             </IconButton>

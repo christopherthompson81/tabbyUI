@@ -1,30 +1,35 @@
-import { MessageContent } from "../services/tabbyAPI";
-import Message from "./Message";
 import { useReducerContext } from "../reducers/ReducerContext";
+import { MessageContent } from "../services/tabbyAPI";
+//components
+import Message from "./Message";
 
 interface MessagesProps {
     messagesEndRef: React.RefObject<HTMLDivElement>;
 }
 
-export default function Messages({ 
-    messagesEndRef
-}: MessagesProps) {
+export default function Messages({ messagesEndRef }: MessagesProps) {
     const { currentConversationId, messages, dispatch } = useReducerContext();
-    
+
     const onEditMessage = (index: number, newContent: MessageContent[]) => {
         const updatedMessages = [...messages];
         updatedMessages[index].content = newContent;
         if (currentConversationId !== null) {
-            dispatch({ type: "UPDATE_CONVERSATION", id: currentConversationId, messages: updatedMessages });
+            dispatch({
+                type: "UPDATE_CONVERSATION",
+                id: currentConversationId,
+                messages: updatedMessages,
+            });
         }
     };
 
     const onDeleteMessage = (index: number) => {
-        const updatedMessages = messages.filter(
-            (_, idx) => idx !== index
-        );
+        const updatedMessages = messages.filter((_, idx) => idx !== index);
         if (currentConversationId !== null) {
-            dispatch({ type: "UPDATE_CONVERSATION", id: currentConversationId, messages: updatedMessages });
+            dispatch({
+                type: "UPDATE_CONVERSATION",
+                id: currentConversationId,
+                messages: updatedMessages,
+            });
         }
     };
 

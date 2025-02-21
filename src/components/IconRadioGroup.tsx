@@ -9,7 +9,7 @@ import {
     Tooltip,
 } from "@mui/material";
 
-const StyledRadio = styled(Radio)(({ }) => ({
+const StyledRadio = styled(Radio)(({}) => ({
     padding: 0,
     "& .MuiSvgIcon-root": {
         fontSize: 24,
@@ -21,7 +21,7 @@ interface IconButtonWrapperProps {
 }
 
 const IconButtonWrapper = styled(IconButton, {
-    shouldForwardProp: (prop) => prop !== 'selected'
+    shouldForwardProp: (prop) => prop !== "selected",
 })<IconButtonWrapperProps>(({ theme, selected }) => ({
     borderRadius: "24px",
     padding: theme.spacing(1.5),

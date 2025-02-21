@@ -5,44 +5,55 @@ export interface ModelParamsState {
 }
 
 export type ModelParamsAction =
-    | { type: 'SET_MODEL_PARAMS'; modelId: string; params: Partial<ModelLoadParams> }
-    | { type: 'UPDATE_DRAFT_MODEL'; modelId: string; draftParams: DraftModelParams }
-    | { type: 'TOGGLE_GPU_SPLIT_AUTO'; modelId: string }
-    | { type: 'SET_GPU_SPLIT'; modelId: string; split: number[] };
+    | {
+          type: "SET_MODEL_PARAMS";
+          modelId: string;
+          params: Partial<ModelLoadParams>;
+      }
+    | {
+          type: "UPDATE_DRAFT_MODEL";
+          modelId: string;
+          draftParams: DraftModelParams;
+      }
+    | { type: "TOGGLE_GPU_SPLIT_AUTO"; modelId: string }
+    | { type: "SET_GPU_SPLIT"; modelId: string; split: number[] };
 
-export function modelParamsReducer(state: ModelParamsState, action: ModelParamsAction): ModelParamsState {
+export function modelParamsReducer(
+    state: ModelParamsState,
+    action: ModelParamsAction
+): ModelParamsState {
     switch (action.type) {
-        case 'SET_MODEL_PARAMS':
+        case "SET_MODEL_PARAMS":
             return {
                 ...state,
                 [action.modelId]: {
                     ...state[action.modelId],
-                    ...action.params
-                }
+                    ...action.params,
+                },
             };
-        case 'UPDATE_DRAFT_MODEL':
+        case "UPDATE_DRAFT_MODEL":
             return {
                 ...state,
                 [action.modelId]: {
                     ...state[action.modelId],
-                    draft_model: action.draftParams
-                }
+                    draft_model: action.draftParams,
+                },
             };
-        case 'TOGGLE_GPU_SPLIT_AUTO':
+        case "TOGGLE_GPU_SPLIT_AUTO":
             return {
                 ...state,
                 [action.modelId]: {
                     ...state[action.modelId],
-                    gpu_split_auto: !state[action.modelId]?.gpu_split_auto
-                }
+                    gpu_split_auto: !state[action.modelId]?.gpu_split_auto,
+                },
             };
-        case 'SET_GPU_SPLIT':
+        case "SET_GPU_SPLIT":
             return {
                 ...state,
                 [action.modelId]: {
                     ...state[action.modelId],
-                    gpu_split: action.split
-                }
+                    gpu_split: action.split,
+                },
             };
         default:
             return state;

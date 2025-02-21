@@ -1,6 +1,6 @@
-import { MessageProps } from '../services/tabbyAPI';
-import * as ReactDOM from 'react-dom/client';
-import { PrintPreview } from '../components/PrintPreview';
+import { MessageProps } from "../services/tabbyAPI";
+import * as ReactDOM from "react-dom/client";
+import { PrintPreview } from "../components/PrintPreview";
 
 export interface PdfExportOptions {
     title?: string;
@@ -8,10 +8,13 @@ export interface PdfExportOptions {
     date?: string;
 }
 
-export function exportToPdf(messages: MessageProps[], options: PdfExportOptions = {}): void {
-    const printWindow = window.open('', '_blank');
+export function exportToPdf(
+    messages: MessageProps[],
+    options: PdfExportOptions = {}
+): void {
+    const printWindow = window.open("", "_blank");
     if (!printWindow) {
-        console.error('Failed to open print window');
+        console.error("Failed to open print window");
         return;
     }
 
@@ -19,7 +22,7 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
     printWindow.document.write(`
         <html>
             <head>
-                <title>${options.title || 'Conversation'}</title>
+                <title>${options.title || "Conversation"}</title>
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
                 <style>
                     @media print {
@@ -36,9 +39,11 @@ export function exportToPdf(messages: MessageProps[], options: PdfExportOptions 
 
     printWindow.document.close();
     printWindow.focus();
-    const root = ReactDOM.createRoot(printWindow.document.getElementById('root')!);
+    const root = ReactDOM.createRoot(
+        printWindow.document.getElementById("root")!
+    );
     root.render(
-        <PrintPreview 
+        <PrintPreview
             messages={messages}
             title={options.title}
             author={options.author}
