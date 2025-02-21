@@ -29,7 +29,6 @@ import AboutDialog from "./AboutDialog";
 import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
 
-
 export default function AppHeader() {
     const { settings, dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
@@ -44,20 +43,21 @@ export default function AppHeader() {
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
     const tooltipContent = modelInfo?.parameters ? (
-        Object.entries(modelInfo.parameters).map(([key, value]) =>
-            key != "prompt_template_content" && value ? (
-                <tr>
-                    <td>
-                        <strong>{key}: </strong>
-                    </td>
-                    <td>{value}</td>
-                </tr>
-            ) : null
-        )
+        Object.entries(modelInfo.parameters).map(([key, value]) => {
+            if (key != "prompt_template_content" && value) {
+                return (
+                    <tr>
+                        <td>
+                            <strong>{key}: </strong>
+                        </td>
+                        <td>{value}</td>
+                    </tr>
+                );
+            }
+        })
     ) : (
         <></>
     );
-
     const mainMenuClose = () => {
         setMenuAnchorEl(null);
     };
@@ -165,7 +165,13 @@ export default function AppHeader() {
                                         : "orange",
                             }}
                         />
-                        <Tooltip title={<table>{tooltipContent}</table>}>
+                        <Tooltip
+                            title={
+                                <table>
+                                    <tbody>{tooltipContent}</tbody>
+                                </table>
+                            }
+                        >
                             <Typography variant="caption">
                                 {serverStatus === "online"
                                     ? `Online (${modelInfo?.id || "Unknown"})`
