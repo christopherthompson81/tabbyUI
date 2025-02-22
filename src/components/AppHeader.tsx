@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
+import OrganizeDialog from "./OrganizeDialog";
 import {
     AppBar,
     Box,
@@ -30,7 +31,7 @@ import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
 
 export default function AppHeader() {
-    const { settings, dispatch } = useReducerContext();
+    const { settings, dispatch, state } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -38,6 +39,7 @@ export default function AppHeader() {
     const [showModels, setShowModels] = React.useState(false);
     const [showAbout, setShowAbout] = React.useState(false);
     const [showHelp, setShowHelp] = React.useState(false);
+    const [showOrganize, setShowOrganize] = React.useState(false);
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline"
     >("checking");
@@ -137,6 +139,14 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
+                                setShowOrganize(true);
+                            }}
+                        >
+                            Organize
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
                                 setShowAbout(true);
                             }}
                         >
@@ -224,6 +234,12 @@ export default function AppHeader() {
             />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
             <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
+            <OrganizeDialog
+                open={showOrganize}
+                onClose={() => setShowOrganize(false)}
+                folders={state.folders}
+                onUpdateFolders={(folders) => dispatch({ type: "UPDATE_FOLDERS", folders })}
+            />
         </>
     );
 }
