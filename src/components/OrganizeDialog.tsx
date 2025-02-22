@@ -125,6 +125,7 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
                 </Typography>
                 <List dense>
                     {currentFolder.subfolders.map((folder) => (
+                        // 
                         <ListItem
                             key={folder.id}
                             selected={selectedItems.has(folder.id)}
