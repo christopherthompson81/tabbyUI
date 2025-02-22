@@ -218,9 +218,9 @@ function MessageComponent({
                                 // Add any remaining text after the last think tag
                                 if (lastIndex < text.length) {
                                     const remainingText = text.slice(lastIndex);
-                                    // Message.tsx:228 Warning: Each child in a list should have a unique "key" prop. please fix AI!
                                     elements.push(
                                         <LLMOutputRenderer
+                                            key={`${idx}-remaining`}
                                             content={remainingText}
                                         />
                                     );
