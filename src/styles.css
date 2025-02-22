@@ -142,3 +142,12 @@
     width: 240px;
     box-sizing: border-box;
 }
+
+/* Organize Dialog Styles */
+.organize-item-selected {
+    background-color: #90caf9 !important; /* Material-UI primary.light default */
+}
+
+.organize-item:hover {
+    background-color: #90caf9 !important;
+}
