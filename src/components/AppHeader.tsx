@@ -44,12 +44,11 @@ export default function AppHeader() {
         "checking" | "online" | "offline"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-    // each child in a list should have a unique "key" prop; please fix AI!
     const tooltipContent = modelInfo?.parameters ? (
         Object.entries(modelInfo.parameters).map(([key, value]) => {
             if (key != "prompt_template_content" && value) {
                 return (
-                    <tr>
+                    <tr key={key}>
                         <td>
                             <strong>{key}: </strong>
                         </td>
@@ -57,6 +56,7 @@ export default function AppHeader() {
                     </tr>
                 );
             }
+            return null;
         })
     ) : (
         <></>
