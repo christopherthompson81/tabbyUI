@@ -95,7 +95,6 @@ function MessageComponent({
             <div className="message-role">
                 <strong>{role === "user" ? "You" : "Assistant"}</strong>
             </div>
-            // Message.tsx:98 Warning: Each child in a list should have a unique "key" prop. AI!
             <div className="message-content">
                 {isEditing ? (
                     <div>
@@ -138,6 +137,7 @@ function MessageComponent({
                     </div>
                 ) : (
                     content.map((item, idx) => {
+                        const itemKey = `${index}-${idx}`;
                         if (item.type === "text") {
                             const text = item.text || "";
                             const thinkMatches = Array.from(
