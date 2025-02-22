@@ -31,7 +31,7 @@ import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
 
 export default function AppHeader() {
-    const { folders, settings, dispatch } = useReducerContext();
+    const { settings, dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -44,6 +44,7 @@ export default function AppHeader() {
         "checking" | "online" | "offline"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+    // each child in a list should have a unique "key" prop; please fix AI!
     const tooltipContent = modelInfo?.parameters ? (
         Object.entries(modelInfo.parameters).map(([key, value]) => {
             if (key != "prompt_template_content" && value) {
@@ -131,18 +132,18 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
-                                setShowHelp(true);
-                            }}
-                        >
-                            Help
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => {
-                                mainMenuClose();
                                 setShowOrganize(true);
                             }}
                         >
                             Organize
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
+                                setShowHelp(true);
+                            }}
+                        >
+                            Help
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -232,12 +233,12 @@ export default function AppHeader() {
                 serverUrl={settings.serverUrl}
                 adminApiKey={settings.adminApiKey}
             />
-            <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
-            <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
             <OrganizeDialog
                 open={showOrganize}
                 onClose={() => setShowOrganize(false)}
             />
+            <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
+            <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
         </>
     );
 }
