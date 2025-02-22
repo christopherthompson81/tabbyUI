@@ -31,7 +31,7 @@ import ModelsDialog from "./ModelsDialog";
 import HelpDialog from "./HelpDialog";
 
 export default function AppHeader() {
-    const { settings, dispatch, state } = useReducerContext();
+    const { folders, settings, dispatch } = useReducerContext();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(
         null
     );
@@ -237,7 +237,7 @@ export default function AppHeader() {
             <OrganizeDialog
                 open={showOrganize}
                 onClose={() => setShowOrganize(false)}
-                folders={state.folders}
+                folders={folders}
                 onUpdateFolders={(folders) => dispatch({ type: "UPDATE_FOLDERS", folders })}
             />
         </>
