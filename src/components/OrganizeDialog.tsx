@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useReducerContext } from "../reducers/ReducerContext";
 import {
     Dialog,
     DialogTitle,
@@ -23,31 +24,28 @@ import { ConversationFolder, Conversation } from "../utils/persistence";
 interface OrganizeDialogProps {
     open: boolean;
     onClose: () => void;
-    folders: ConversationFolder[];
-    onUpdateFolders: (action: ConversationsAction) => void;
 }
 
-interface FolderPath {
-    folderId: string;
-    folder: ConversationFolder;
-}
-
-export default function OrganizeDialog({
-    open,
-    onClose,
-    folders,
-    onUpdateFolders,
-}: OrganizeDialogProps) {
-    const [leftPath, setLeftPath] = useState<FolderPath[]>([
-        { folderId: "root", folder: folders[0] },
-    ]);
-    const [rightPath, setRightPath] = useState<FolderPath[]>([
-        { folderId: "root", folder: folders[0] },
-    ]);
+export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
+    const { state, dispatch } = useReducerContext();
+    const [leftPath, setLeftPath] = useState<string[]>(["root"]);
+    const [rightPath, setRightPath] = useState<string[]>(["root"]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
-    const getCurrentLeftFolder = () => leftPath[leftPath.length - 1].folder;
-    const getCurrentRightFolder = () => rightPath[rightPath.length - 1].folder;
+    const findFolder = (folderId: string): ConversationFolder | undefined => {
+        const findInFolders = (folders: ConversationFolder[]): ConversationFolder | undefined => {
+            for (const folder of folders) {
+                if (folder.id === folderId) return folder;
+                const found = findInFolders(folder.subfolders);
+                if (found) return found;
+            }
+            return undefined;
+        };
+        return findInFolders(state.folders);
+    };
+
+    const getCurrentLeftFolder = () => findFolder(leftPath[leftPath.length - 1]) || state.folders[0];
+    const getCurrentRightFolder = () => findFolder(rightPath[rightPath.length - 1]) || state.folders[0];
 
     const handleItemSelect = (id: string) => {
         const newSelected = new Set(selectedItems);
@@ -59,15 +57,11 @@ export default function OrganizeDialog({
         setSelectedItems(newSelected);
     };
 
-    const navigateFolder = (
-        side: "left" | "right",
-        folderId: string,
-        folder: ConversationFolder
-    ) => {
+    const navigateFolder = (side: "left" | "right", folderId: string) => {
         if (side === "left") {
-            setLeftPath([...leftPath, { folderId, folder }]);
+            setLeftPath([...leftPath, folderId]);
         } else {
-            setRightPath([...rightPath, { folderId, folder }]);
+            setRightPath([...rightPath, folderId]);
         }
     };
 
@@ -89,7 +83,7 @@ export default function OrganizeDialog({
                 ? getCurrentRightFolder()
                 : getCurrentLeftFolder();
 
-        onUpdateFolders({
+        dispatch({
             type: "MOVE_ITEMS",
             sourceFolder,
             targetFolder,
@@ -133,9 +127,7 @@ export default function OrganizeDialog({
                             button
                             selected={selectedItems.has(folder.id)}
                             onClick={() => handleItemSelect(folder.id)}
-                            onDoubleClick={() =>
-                                navigateFolder(side, folder.id, folder)
-                            }
+                            onDoubleClick={() => navigateFolder(side, folder.id)}
                             className={
                                 selectedItems.has(folder.id)
                                     ? "organize-item-selected"

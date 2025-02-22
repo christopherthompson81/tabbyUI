@@ -237,8 +237,6 @@ export default function AppHeader() {
             <OrganizeDialog
                 open={showOrganize}
                 onClose={() => setShowOrganize(false)}
-                folders={folders}
-                onUpdateFolders={(action) => dispatch(action)}
             />
         </>
     );
