@@ -118,6 +118,14 @@ export default function OrganizeDialog({ open, onClose, folders, onUpdateFolders
                             selected={selectedItems.has(folder.id)}
                             onClick={() => handleItemSelect(folder.id)}
                             onDoubleClick={() => navigateFolder(side, folder.id, folder)}
+                            sx={{
+                                '&.Mui-selected': {
+                                    backgroundColor: 'primary.light',
+                                    '&:hover': {
+                                        backgroundColor: 'primary.light',
+                                    }
+                                }
+                            }}
                         >
                             <ListItemIcon>
                                 <FolderIcon />
@@ -131,6 +139,14 @@ export default function OrganizeDialog({ open, onClose, folders, onUpdateFolders
                             button
                             selected={selectedItems.has(conv.id)}
                             onClick={() => handleItemSelect(conv.id)}
+                            sx={{
+                                '&.Mui-selected': {
+                                    backgroundColor: 'primary.light',
+                                    '&:hover': {
+                                        backgroundColor: 'primary.light',
+                                    }
+                                }
+                            }}
                         >
                             <ListItemIcon>
                                 <ChatIcon />
