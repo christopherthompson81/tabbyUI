@@ -27,7 +27,7 @@ interface OrganizeDialogProps {
 }
 
 export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
-    const { state, dispatch } = useReducerContext();
+    const { folders, dispatch } = useReducerContext();
     const [leftPath, setLeftPath] = useState<string[]>(["root"]);
     const [rightPath, setRightPath] = useState<string[]>(["root"]);
     const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
@@ -41,11 +41,11 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
             }
             return undefined;
         };
-        return findInFolders(state.folders);
+        return findInFolders(folders);
     };
 
-    const getCurrentLeftFolder = () => findFolder(leftPath[leftPath.length - 1]) || state.folders[0];
-    const getCurrentRightFolder = () => findFolder(rightPath[rightPath.length - 1]) || state.folders[0];
+    const getCurrentLeftFolder = () => findFolder(leftPath[leftPath.length - 1]) || folders[0];
+    const getCurrentRightFolder = () => findFolder(rightPath[rightPath.length - 1]) || folders[0];
 
     const handleItemSelect = (id: string) => {
         const newSelected = new Set(selectedItems);
@@ -114,11 +114,11 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
         const currentFolder =
             side === "left" ? getCurrentLeftFolder() : getCurrentRightFolder();
         const path = side === "left" ? leftPath : rightPath;
-
+        // Path: has a linting error on the p of folders[p]; Element implicitly has an 'any' type because index expression is not of type 'number'. Please fix AI!
         return (
             <Paper sx={{ height: "400px", overflow: "auto", p: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Path: {path.map((p) => p.folder.name).join(" / ")}
+                    Path: {path.map((p) => folders[p]).join(" / ")}
                 </Typography>
                 <List dense>
                     {currentFolder.subfolders.map((folder) => (
