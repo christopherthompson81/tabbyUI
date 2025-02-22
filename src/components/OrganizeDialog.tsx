@@ -127,7 +127,6 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
                     {currentFolder.subfolders.map((folder) => (
                         <ListItem
                             key={folder.id}
-                            button
                             selected={selectedItems.has(folder.id)}
                             onClick={() => handleItemSelect(folder.id)}
                             onDoubleClick={() => navigateFolder(side, folder.id)}
@@ -136,6 +135,7 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
                                     ? "organize-item-selected"
                                     : "organize-item"
                             }
+                            sx={{ cursor: 'pointer' }}
                         >
                             <ListItemIcon>
                                 <FolderIcon />
@@ -146,7 +146,6 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
                     {currentFolder.conversations.map((conv) => (
                         <ListItem
                             key={conv.id}
-                            button
                             selected={selectedItems.has(conv.id)}
                             onClick={() => handleItemSelect(conv.id)}
                             className={
@@ -154,6 +153,7 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
                                     ? "organize-item-selected"
                                     : "organize-item"
                             }
+                            sx={{ cursor: 'pointer' }}
                         >
                             <ListItemIcon>
                                 <ChatIcon />
