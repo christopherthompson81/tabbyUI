@@ -43,6 +43,7 @@ export default function ModelsDialog({}: ModelsDialogProps) {
         }
     };
 
+    /*
     const settings = [
         {
             label: "Max Sequence Length",
@@ -93,6 +94,7 @@ export default function ModelsDialog({}: ModelsDialogProps) {
             paramName: "autosplit_reserve",
         },
     ];
+    */
 
     return (
         <>

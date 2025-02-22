@@ -227,12 +227,12 @@ function MessageComponent({
                                     );
                                 }
 
-                                return <>{elements}</>;
+                                return <div key={'idx'}>{elements}</div>;
                             }
 
                             // If no think tags, render normally
                             return (
-                                <LLMOutputRenderer key={idx} content={text} />
+                                <LLMOutputRenderer key={itemKey} content={text} />
                             );
                         } else if (
                             item.type === "image_url" &&
