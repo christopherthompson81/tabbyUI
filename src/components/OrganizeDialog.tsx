@@ -117,7 +117,7 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
         
         // Get folder names for the path
         const pathNames = path.map(id => findFolder(id)?.name || id);
-        // linting error on ListItem: No overload matches this call.\n  Overload 1 of 2, '(props: { component: ElementType<any, keyof IntrinsicElements>; } & ListItemOwnProps & CommonProps & Omit<any, \"children\" | ... 15 more ... | \"secondaryAction\">): Element | null', gave the following error.\n    Property 'component' is missing in type '{ children: Element[]; key: string; button: true; selected: boolean; onClick: () => void; onDoubleClick: () => void; className: string; }' but required in type '{ component: ElementType<any, keyof IntrinsicElements>; }'.\n  Overload 2 of 2, '(props: DefaultComponentProps<ListItemTypeMap<{}, \"li\">>): Element | null', gave the following error.\n    Type '{ children: Element[]; key: string; button: true; selected: boolean; onClick: () => void; onDoubleClick: () => void; className: string; }' is not assignable to type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, \"ref\"> & { ...; }, \"children\" | ... 15 more ... | \"secondaryAction\">'.\n      Property 'button' does not exist on type 'IntrinsicAttributes & ListItemOwnProps & CommonProps & Omit<Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, \"ref\"> & { ...; }, \"children\" | ... 15 more ... | \"secondaryAction\">'.",; Please fix AI!
+        
         return (
             <Paper sx={{ height: "400px", overflow: "auto", p: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
