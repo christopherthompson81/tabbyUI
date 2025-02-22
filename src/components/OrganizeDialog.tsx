@@ -114,11 +114,14 @@ export default function OrganizeDialog({ open, onClose }: OrganizeDialogProps) {
         const currentFolder =
             side === "left" ? getCurrentLeftFolder() : getCurrentRightFolder();
         const path = side === "left" ? leftPath : rightPath;
-        // Path: has a linting error on the p of folders[p]; Element implicitly has an 'any' type because index expression is not of type 'number'. Please fix AI!
+        
+        // Get folder names for the path
+        const pathNames = path.map(id => findFolder(id)?.name || id);
+        
         return (
             <Paper sx={{ height: "400px", overflow: "auto", p: 1 }}>
                 <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Path: {path.map((p) => folders[p]).join(" / ")}
+                    Path: {pathNames.join(" / ")}
                 </Typography>
                 <List dense>
                     {currentFolder.subfolders.map((folder) => (
