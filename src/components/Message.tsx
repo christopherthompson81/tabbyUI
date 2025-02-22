@@ -95,6 +95,7 @@ function MessageComponent({
             <div className="message-role">
                 <strong>{role === "user" ? "You" : "Assistant"}</strong>
             </div>
+            // Message.tsx:98 Warning: Each child in a list should have a unique "key" prop. AI!
             <div className="message-content">
                 {isEditing ? (
                     <div>
