@@ -238,7 +238,7 @@ export default function AppHeader() {
                 open={showOrganize}
                 onClose={() => setShowOrganize(false)}
                 folders={folders}
-                onUpdateFolders={(folders) => dispatch({ type: "UPDATE_FOLDERS", folders })}
+                onUpdateFolders={(action) => dispatch(action)}
             />
         </>
     );

@@ -24,7 +24,7 @@ interface OrganizeDialogProps {
     open: boolean;
     onClose: () => void;
     folders: ConversationFolder[];
-    onUpdateFolders: (folders: ConversationFolder[]) => void;
+    onUpdateFolders: (action: ConversationsAction) => void;
 }
 
 interface FolderPath {
@@ -70,34 +70,13 @@ export default function OrganizeDialog({ open, onClose, folders, onUpdateFolders
         const sourceFolder = direction === 'right' ? getCurrentLeftFolder() : getCurrentRightFolder();
         const targetFolder = direction === 'right' ? getCurrentRightFolder() : getCurrentLeftFolder();
         
-        // Deep clone the folders structure
-        const newFolders = JSON.parse(JSON.stringify(folders));
-
-        // Move selected items
-        const movedConversations: Conversation[] = [];
-        const movedFolders: ConversationFolder[] = [];
-
-        sourceFolder.conversations = sourceFolder.conversations.filter(conv => {
-            if (selectedItems.has(conv.id)) {
-                movedConversations.push({...conv});
-                return false;
-            }
-            return true;
+        onUpdateFolders({
+            type: "MOVE_ITEMS",
+            sourceFolder,
+            targetFolder,
+            itemIds: Array.from(selectedItems)
         });
-
-        sourceFolder.subfolders = sourceFolder.subfolders.filter(folder => {
-            if (selectedItems.has(folder.id)) {
-                movedFolders.push({...folder});
-                return false;
-            }
-            return true;
-        });
-
-        targetFolder.conversations.push(...movedConversations);
-        targetFolder.subfolders.push(...movedFolders);
-
-        // Update the state
-        onUpdateFolders(newFolders);
+        
         setSelectedItems(new Set());
     };
 

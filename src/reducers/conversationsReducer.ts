@@ -18,6 +18,7 @@ export type ConversationsAction =
     | { type: "SET_MESSAGES"; messages: MessageProps[] }
     | { type: "UPDATE_FOLDERS"; folders: ConversationFolder[] }
     | { type: "DELETE_CONVERSATION"; id: string }
+    | { type: "MOVE_ITEMS"; sourceFolder: ConversationFolder; targetFolder: ConversationFolder; itemIds: string[] }
     | {
           type: "ADD_CONVERSATION";
           conversation: { id: string; name: string; messages: any[] };
@@ -189,6 +190,43 @@ export function conversationsReducer(
             return {
                 ...state,
                 folders: updatedFolders,
+            };
+        }
+
+        case "MOVE_ITEMS": {
+            const { sourceFolder, targetFolder, itemIds } = action;
+            
+            // Helper function to find and update folders
+            const updateFolders = (folders: ConversationFolder[]): ConversationFolder[] => {
+                return folders.map(folder => {
+                    if (folder.id === sourceFolder.id) {
+                        return {
+                            ...folder,
+                            conversations: folder.conversations.filter(conv => !itemIds.includes(conv.id)),
+                            subfolders: folder.subfolders.filter(subfolder => !itemIds.includes(subfolder.id))
+                        };
+                    }
+                    if (folder.id === targetFolder.id) {
+                        const movedConversations = sourceFolder.conversations.filter(conv => itemIds.includes(conv.id));
+                        const movedFolders = sourceFolder.subfolders.filter(subfolder => itemIds.includes(subfolder.id));
+                        return {
+                            ...folder,
+                            conversations: [...folder.conversations, ...movedConversations],
+                            subfolders: [...folder.subfolders, ...movedFolders]
+                        };
+                    }
+                    return {
+                        ...folder,
+                        subfolders: updateFolders(folder.subfolders)
+                    };
+                });
+            };
+
+            const newFolders = updateFolders(state.folders);
+            persistConversations(newFolders);
+            return {
+                ...state,
+                folders: newFolders
             };
         }
 
