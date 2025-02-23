@@ -24,8 +24,8 @@ export interface GenerationParams {
     //tfs?: number;
     typicalP?: number;
     //skew?: number;
-    //xtc_probability?: number;
-    //xtc_threshold?: number;
+    xtc_probability?: number;
+    xtc_threshold?: number;
     // -------------------
     // Penalties and Decay
     // -------------------

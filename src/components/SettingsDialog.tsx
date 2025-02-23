@@ -65,6 +65,8 @@ function SettingsDialog({
             type: "number",
         },
         { label: "Typical P", key: "typicalP", type: "number" },
+        { label: "XTC Probability", key: "xtc_probability", type: "number" },
+        { label: "XTC Threshold", key: "xtc_threshold", type: "number" },
     ];
     const advancedParamLabels1 = [
         { label: "Min Tokens", key: "minTokens", type: "number" },
