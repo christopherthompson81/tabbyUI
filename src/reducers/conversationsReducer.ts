@@ -171,7 +171,6 @@ export function conversationsReducer(
             };
         }
 
-        // also update the "messages" part of the state AI!
         case "UPDATE_CONVERSATION": {
             const updateConversationsInFolder = (
                 folder: ConversationFolder
@@ -191,6 +190,7 @@ export function conversationsReducer(
             return {
                 ...state,
                 folders: updatedFolders,
+                messages: action.messages,
             };
         }
 
