@@ -143,54 +143,72 @@ Applies temperature only to the last generated token, influencing the unpredicta
 ### **smoothing_factor**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Adjusts the probability distribution of tokens, making it smoother and reducing the dominance of high-probability tokens.
 
 ### **top_k**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0
 
 Limits the selection to the top k most probable tokens. A negative value (-1) disables this feature.
 
 ### **top_p**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Selects tokens based on cumulative probability exceeding a certain threshold (p). This encourages diverse token selection, akin to nucleus sampling.
 
 ### **top_a**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 An alternative sampling technique that includes tokens with probability above a certain threshold (a), aiming to balance diversity and quality.
 
 ### **min_p**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Ensures that all tokens have a minimum probability, preventing extremely rare tokens from being chosen.
 
 ### **tfs**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 1.0
 
 Temporarily increases the temperature for less frequent tokens, promoting diversity in generation.
 
 ### **typical**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 1.0
 
 Filters tokens based on their typicality or how conformant they are to expected patterns.
 
 ### **skew**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Adjusts the probability distribution, skewing towards or away from certain tokens.
 
 ### **xtc_probability**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 - **Suggested Value:** null or ~0.5
 
 Probability threshold for "Exlude Top Choices" (XTC). In essence, if there is a word or token choice that is less obvious, the model will prefer that. If there is no non-obvious choice, the obvious choice will be chosen. This is intended to create less cliched narratives.
@@ -205,6 +223,8 @@ After removing tokens below the XTC threshold, remove all except the least proba
 ### **xtc_threshold**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.1
 - **Suggested Value:** null or ~0.1
 
 Threshold for "Exlude Top Choices" (XTC). This is functionally the lower bounds, and a token must have more than this probability to be acceptable.
@@ -214,30 +234,40 @@ Threshold for "Exlude Top Choices" (XTC). This is functionally the lower bounds,
 ### **frequency_penalty**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Penalizes tokens based on their frequency in the generated text, reducing the likelihood of repetitive content.
 
 ### **presence_penalty**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.0
 
 Penalizes the presence of tokens in the text, discouraging the reuse of the same tokens.
 
 ### **repetition_penalty**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 1.0
 
 Reduces the likelihood of generating the same token consecutively, preventing repetitive sequences.
 
 ### **penalty_range**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** -1
 
 Specifies the range of previous tokens to consider when applying frequency and presence penalties.
 
 ### **repetition_decay**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0
 
 Controls how quickly the penalties for repetitive tokens decay over time.
 
@@ -246,36 +276,48 @@ Controls how quickly the penalties for repetitive tokens decay over time.
 ### **token_healing**
 
 - **Type:** boolean
+- **Optional:** TRUE;
+- **default:** false
 
 Enables a mechanism to "heal" or adjust tokens during generation, potentially fixing grammatical or contextual issues.
 
 ### **mirorstat**
 
 - **Type:** boolean
+- **Optional:** TRUE;
+- **default:** false
 
 Activate MiroStat, an adaptive temperature control technique that adjusts the temperature based on generation confidence.
 
 ### **mirostat_mode**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0
 
 Determines the mode of operation for MiroStat, with different modes affecting how temperature adjustments are made.
 
 ### **mirostat_tau**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 1.5
 
 Sets the timescale for temperature adjustments in MiroStat, influencing how rapidly the temperature changes.
 
 ### **mirostat_eta**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **default:** 0.3
 
 Controls the learning rate or sensitivity of temperature adjustments in MiroStat.
 
 ### **speculative_ngram**
 
 - **Type:** boolean
+- **Optional:** TRUE;
+- **default:** false
 
 Enable speculative n-gram generation, which considers potential future tokens to improve coherence.
 
@@ -293,6 +335,8 @@ Allows adjusting the log-probabilities of specific tokens, influencing their lik
 ### **negative_prompt**
 
 - **Type:** string
+- **Optional:** TRUE;
+- **Default:** empty string
 
 Provides a prompt to exclude certain content, allowing for more controlled generation by specifying what not to include.
 
@@ -301,18 +345,24 @@ Provides a prompt to exclude certain content, allowing for more controlled gener
 ### **json_schema**
 
 - **Type:** object
+- **Optional:** TRUE;
+- **Default:** empty string
 
 Defines a JSON schema that the generated text must conform to, ensuring the output adheres to a specified structure.
 
 ### **regex_pattern**
 
 - **Type:** string
+- **Optional:** TRUE;
+- **Default:** empty string
 
 Specifies a regular expression pattern that the generated text must match, enforcing syntactic rules.
 
 ### **grammar_string**
 
 - **Type:** string
+- **Optional:** TRUE;
+- **Default:** empty string
 
 Defines a grammar that the generated text must follow, ensuring linguistic correctness.
 
@@ -321,30 +371,40 @@ Defines a grammar that the generated text must follow, ensuring linguistic corre
 ### **dry_multiplier**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **Default:** 0.0
 
 Scaling factor for the token selection probabilities during dry runs, allowing simulations of different generation strategies.
 
 ### **dry_base**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **Default:** 0.0
 
 Base value used in calculations during dry runs, influencing the baseline characteristics of token selection.
 
 ### **dry_allowed_length**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **Default:** 0
 
 Maximum allowed length of the generated text during dry runs, controlling the extent of simulation.
 
 ### **dry_range**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **Default:** 0
 
 Range of tokens considered during dry runs, affecting the diversity of simulated outcomes.
 
 ### **dry_sequence_breakers**
 
-- **Type:** string
+- **Type:** string | string[]
+- **Optional:** TRUE;
+- **Default:** []
 
 Tokens or substrings that, when encountered, break the current sequence, useful for partitioning text generation.
 
@@ -353,6 +413,8 @@ Tokens or substrings that, when encountered, break the current sequence, useful 
 ### **model**
 
 - **Type:** string
+- **Optional:** TRUE;
+- **Default:** currently loaded model
 
 Specifies the AI model to be used for text generation, allowing the use of different architectures or fine-tuned versions.
 
@@ -361,6 +423,8 @@ Specifies the AI model to be used for text generation, allowing the use of diffe
 ### **logprobs**
 
 - **Type:** number
+- **Optional:** TRUE;
+- **Default:** 0
 
 Determines the number of log-probabilities to return for generated tokens, providing insights into the model's confidence in each choice.
 
@@ -368,27 +432,33 @@ Determines the number of log-probabilities to return for generated tokens, provi
 
 ### **response_format**
 
-- **Type:** object
+- **Type:** zod description format
+- **Optional:** TRUE;
+- **Default:** { "type": "text" }
 
 Controls the structure and type of the response, with options like text or JSON, influencing how the output is presented.
 
 ### **n**
 
 - **Type:** number
-- **Optional:** TRUE
-- **Suggested Value:** null or 1
+- **Optional:** 
+- **Default:** 1
 
 Specifies the number of responses to generate, enabling multi-sample generation. This means that entire alternative generations are presented.
 
 ### **best_of**
 
 - **Type:** number
+- **Optional:** TRUE
+- **Default:** 0
 
 Determines how many responses should be generated to select the best one, improving quality by choosing from multiple candidates.
 
 ### **echo**
 
 - **Type:** boolean
+- **Optional:** TRUE
+- **Default:** false
 
 Includes the original prompt in the response, useful for debugging or reviewing the input alongside the output.
 
