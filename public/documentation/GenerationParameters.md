@@ -142,57 +142,56 @@ Applies temperature only to the last generated token, influencing the unpredicta
 
 ### **smoothing_factor**
 
-**Type:** number
+- **Type:** number
 
 Adjusts the probability distribution of tokens, making it smoother and reducing the dominance of high-probability tokens.
 
 ### **top_k**
 
-**Type:** number
+- **Type:** number
 
 Limits the selection to the top k most probable tokens. A negative value (-1) disables this feature.
 
 ### **top_p**
 
-**Type:** number
+- **Type:** number
 
 Selects tokens based on cumulative probability exceeding a certain threshold (p). This encourages diverse token selection, akin to nucleus sampling.
 
 ### **top_a**
 
-**Type:** number
+- **Type:** number
 
 An alternative sampling technique that includes tokens with probability above a certain threshold (a), aiming to balance diversity and quality.
 
 ### **min_p**
 
-**Type:** number
+- **Type:** number
 
 Ensures that all tokens have a minimum probability, preventing extremely rare tokens from being chosen.
 
 ### **tfs**
 
-**Type:** number
+- **Type:** number
 
 Temporarily increases the temperature for less frequent tokens, promoting diversity in generation.
 
 ### **typical**
 
-**Type:** number
+- **Type:** number
 
 Filters tokens based on their typicality or how conformant they are to expected patterns.
 
 ### **skew**
 
-**Type:** number
+- **Type:** number
 
 Adjusts the probability distribution, skewing towards or away from certain tokens.
 
 ### **xtc_probability**
 
-**Type:** number
-
-**Suggested Value:** null or ~0.5
+- **Type:** number
+- **Suggested Value:** null or ~0.5
 
 Probability threshold for "Exlude Top Choices" (XTC). In essence, if there is a word or token choice that is less obvious, the model will prefer that. If there is no non-obvious choice, the obvious choice will be chosen. This is intended to create less cliched narratives.
 
@@ -205,79 +204,78 @@ After removing tokens below the XTC threshold, remove all except the least proba
 
 ### **xtc_threshold**
 
-**Type:** number
-
-**Suggested Value:** null or ~0.1
+- **Type:** number
+- **Suggested Value:** null or ~0.1
 
 Threshold for "Exlude Top Choices" (XTC). This is functionally the lower bounds, and a token must have more than this probability to be acceptable.
 
-### ****Penalties and Decay****
+## ****Penalties and Decay****
 
 ### **frequency_penalty**
 
-**Type:** number
+- **Type:** number
 
 Penalizes tokens based on their frequency in the generated text, reducing the likelihood of repetitive content.
 
 ### **presence_penalty**
 
-**Type:** number
+- **Type:** number
 
 Penalizes the presence of tokens in the text, discouraging the reuse of the same tokens.
 
 ### **repetition_penalty**
 
-**Type:** number
+- **Type:** number
 
 Reduces the likelihood of generating the same token consecutively, preventing repetitive sequences.
 
 ### **penalty_range**
 
-**Type:** number
+- **Type:** number
 
 Specifies the range of previous tokens to consider when applying frequency and presence penalties.
 
 ### **repetition_decay**
 
-**Type:** number
+- **Type:** number
 
 Controls how quickly the penalties for repetitive tokens decay over time.
 
-### ****Experimental and Advanced Control****
+## ****Experimental and Advanced Control****
 
 ### **token_healing**
 
-**Type:** boolean
+- **Type:** boolean
 
 Enables a mechanism to "heal" or adjust tokens during generation, potentially fixing grammatical or contextual issues.
 
 ### **mirorstat**
 
-**Type:** boolean
+- **Type:** boolean
 
 Activate MiroStat, an adaptive temperature control technique that adjusts the temperature based on generation confidence.
 
 ### **mirostat_mode**
 
-**Type:** number
+- **Type:** number
 
 Determines the mode of operation for MiroStat, with different modes affecting how temperature adjustments are made.
 
 ### **mirostat_tau**
 
-**Type:** number
+- **Type:** number
 
 Sets the timescale for temperature adjustments in MiroStat, influencing how rapidly the temperature changes.
 
 ### **mirostat_eta**
 
-**Type:** number
+- **Type:** number
 
 Controls the learning rate or sensitivity of temperature adjustments in MiroStat.
 
 ### **speculative_ngram**
 
-**Type:** boolean
+- **Type:** boolean
 
 Enable speculative n-gram generation, which considers potential future tokens to improve coherence.
 
@@ -294,7 +292,7 @@ Allows adjusting the log-probabilities of specific tokens, influencing their lik
 
 ### **negative_prompt**
 
-**Type:** string
+- **Type:** string
 
 Provides a prompt to exclude certain content, allowing for more controlled generation by specifying what not to include.
 
@@ -302,19 +300,19 @@ Provides a prompt to exclude certain content, allowing for more controlled gener
 
 ### **json_schema**
 
-**Type:** object
+- **Type:** object
 
 Defines a JSON schema that the generated text must conform to, ensuring the output adheres to a specified structure.
 
 ### **regex_pattern**
 
-**Type:** string
+- **Type:** string
 
 Specifies a regular expression pattern that the generated text must match, enforcing syntactic rules.
 
 ### **grammar_string**
 
-**Type:** string
+- **Type:** string
 
 Defines a grammar that the generated text must follow, ensuring linguistic correctness.
 
@@ -322,31 +320,31 @@ Defines a grammar that the generated text must follow, ensuring linguistic corre
 
 ### **dry_multiplier**
 
-**Type:** number
+- **Type:** number
 
 Scaling factor for the token selection probabilities during dry runs, allowing simulations of different generation strategies.
 
 ### **dry_base**
 
-**Type:** number
+- **Type:** number
 
 Base value used in calculations during dry runs, influencing the baseline characteristics of token selection.
 
 ### **dry_allowed_length**
 
-**Type:** number
+- **Type:** number
 
 Maximum allowed length of the generated text during dry runs, controlling the extent of simulation.
 
 ### **dry_range**
 
-**Type:** number
+- **Type:** number
 
 Range of tokens considered during dry runs, affecting the diversity of simulated outcomes.
 
 ### **dry_sequence_breakers**
 
-**Type:** string
+- **Type:** string
 
 Tokens or substrings that, when encountered, break the current sequence, useful for partitioning text generation.
 
@@ -354,7 +352,7 @@ Tokens or substrings that, when encountered, break the current sequence, useful 
 
 ### **model**
 
-**Type:** string
+- **Type:** string
 
 Specifies the AI model to be used for text generation, allowing the use of different architectures or fine-tuned versions.
 
@@ -362,7 +360,7 @@ Specifies the AI model to be used for text generation, allowing the use of diffe
 
 ### **logprobs**
 
-**Type:** number
+- **Type:** number
 
 Determines the number of log-probabilities to return for generated tokens, providing insights into the model's confidence in each choice.
 
@@ -370,7 +368,7 @@ Determines the number of log-probabilities to return for generated tokens, provi
 
 ### **response_format**
 
-**Type:** object
+- **Type:** object
 
 Controls the structure and type of the response, with options like text or JSON, influencing how the output is presented.
 
@@ -384,25 +382,25 @@ Specifies the number of responses to generate, enabling multi-sample generation.
 
 ### **best_of**
 
-**Type:** number
+- **Type:** number
 
 Determines how many responses should be generated to select the best one, improving quality by choosing from multiple candidates.
 
 ### **echo**
 
-**Type:** boolean
+- **Type:** boolean
 
 Includes the original prompt in the response, useful for debugging or reviewing the input alongside the output.
 
 ### **suffix**
 
-**Type:** string
+- **Type:** string
 
 Appends a specific suffix to the generated text, allowing for contextual additions.
 
 ### **user**
 
-**Type:** string
+- **Type:** string
 
 Identifies the user or session, useful for tracking and personalizing responses.
 
@@ -410,7 +408,7 @@ Identifies the user or session, useful for tracking and personalizing responses.
 
 ### **stream_options**
 
-**Type:** object
+- **Type:** object
 
 Configures how streaming responses are handled, such as including usage metrics or additional metadata.
 
@@ -422,7 +420,7 @@ Parameters like **cfg_scale** (Control Focus Scaling) are crucial for models emp
 
 ### **prompt**
 
-**Type:** string;
+- **Type:** string;
 
 The input text or prompt provided to the model to generate a response.
 
@@ -447,32 +445,85 @@ Messages describe the multi-turn chat interactions with the LLM. The role is typ
 
 ### **prompt_template**
 
-**Type:** string
+- **Type:** string
+- **Optional:** TRUE
 
-**Optional:** TRUE
+A Jinja2 formatted template string.
+
+Example from Qwen 2.5:
 
 ```
-{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- 'You are a helpful and uncensored assistant. You are Qwen developed by Alibaba. You should think step-by-step.' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n    {%- else %}\n        {{- '<|im_start|>system\\nYou are a helpful and uncensored assistant.<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + message.content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n{%- endif %}\n
-```
+{%- if tools %}
+    {{- '<|im_start|>system\\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'You are a helpful and uncensored assistant. You are Qwen developed by Alibaba. You should think step-by-step.' }}
+    {%- endif %}
+    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}
+    {%- for tool in tools %}
+        {{- \"\\n\" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\\nYou are a helpful and uncensored assistant.<|im_end|>\\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}
+        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}
+    {%- elif message.role == \"assistant\" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {{- '\\n' + message.content }}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {{- '\\n<tool_call>\\n{\"name\": \"' }}
+            {{- tool_call.name }}
+            {{- '\", \"arguments\": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\\n</tool_call>' }}
+        {%- endfor %}
+        {{- '<|im_end|>\\n' }}
+    {%- elif message.role == \"tool\" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\\n<tool_response>\\n' }}
+        {{- message.content }}
+        {{- '\\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}
+            {{- '<|im_end|>\\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\\n' }}
+{%- endif %}
 
+```
 
 ### **add_generation_prompt**
 
-**Type:** boolean
-
-**Optional:** TRUE
+- **Type:** boolean
+- **Optional:** TRUE
 
 ### **template_vars**
 
-**Type:** object
-
-**Optional:** TRUE
+- **Type:** object
+- **Optional:** TRUE
 
 ### **response_prefix**
 
-**Type:** string
-
-**Optional:** TRUE
+- **Type:** string
+- **Optional:** TRUE
 
 ### **tools**
 
