@@ -11,6 +11,8 @@
 * Help expansion
     * Add instructions for writing a non-canonical chapter of Alice in Wonderland using completion.
 * Maybe move services to a reducer?
+* Document Analysis (Docling) (backend change)
+    * Document type: markdown and images
 * Add a PDF to a mixed modality ingestor
 * Retrieval solution
 * Multi-user
@@ -22,8 +24,6 @@
 * ASR & Transcription
     * Voice input
     * Document type: audio & text
-* Document Analysis (Docling)
-    * Document type: markdown and images
 * Translation
     * Pick a document for translation (convert to markdown first if needed)
 * Image generation
@@ -35,3 +35,11 @@
 * Common use cases
     * Explain aider process
     * Explain interpreting technical documents
+
+### Feature Testing
+* Unloading models should be easy.
+* Test LoRa: https://huggingface.co/ETH-LLMSys/Qwen2.5-32B-LoRA/tree/main
+* Test Embeddings: https://huggingface.co/intfloat/multilingual-e5-large-instruct
+* Tokenization should be regular model stuff, not very obvious from an inferface perspective though.
+* Prompt templates need a Jinja2 parser
+* Sampler overrides could be done as a named collection of settings?
