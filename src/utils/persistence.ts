@@ -25,7 +25,7 @@ export interface ModelLoadParams {
     tensor_parallel: boolean;
     gpu_split_auto: boolean;
     autosplit_reserve: number[];
-    gpu_split: number[];
+    gpu_split: number[] | null;
     rope_scale: number;
     rope_alpha: number;
     cache_mode: CacheMode;
@@ -33,7 +33,7 @@ export interface ModelLoadParams {
     prompt_template: string;
     vision: boolean;
     num_experts_per_token: number;
-    draft_model?: DraftModelParams;
+    draft_model?: DraftModelParams | null;
     skip_queue: boolean;
 }
 

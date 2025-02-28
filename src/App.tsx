@@ -61,7 +61,8 @@ function initializeState(): ReducerState {
         };
 
         // Add to root folder
-        if (folders.length > 0) {
+        // Don't create a new conversation just because there is a network disruption.
+        if (folders.length > 0 && navigator.onLine) {
             folders[0].conversations.push(newConversation);
         }
 
