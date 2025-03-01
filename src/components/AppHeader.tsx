@@ -73,7 +73,6 @@ export default function AppHeader() {
                 getPersistedServerUrl(),
                 getPersistedApiKey()
             );
-            
             setServerStatus(modelStatus.status);
             setModelInfo(modelStatus.info);
         };

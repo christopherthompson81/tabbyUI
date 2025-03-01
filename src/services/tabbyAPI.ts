@@ -70,10 +70,13 @@ export async function getModelInfo(
         
         // Check if the error is "no models are currently loaded"
         if (response.status === 400) {
+            /*
             const errorData = await response.json();
             if (errorData.error && errorData.error.includes("no models are currently loaded")) {
-                return { info: null, status: "no_model" };
+                return { info: null, status: "no_model" };    
             }
+            */
+            return { info: null, status: "no_model" };
         }
         
         return { info: null, status: "offline" };
