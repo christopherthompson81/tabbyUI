@@ -41,7 +41,7 @@ export default function AppHeader() {
     const [showHelp, setShowHelp] = React.useState(false);
     const [showOrganize, setShowOrganize] = React.useState(false);
     const [serverStatus, setServerStatus] = useState<
-        "checking" | "online" | "offline"
+        "checking" | "online" | "offline" | "no_model"
     >("checking");
     const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
     const tooltipContent = modelInfo?.parameters ? (
@@ -69,17 +69,13 @@ export default function AppHeader() {
     useEffect(() => {
         const checkStatus = async () => {
             setServerStatus("checking");
-            const model = await getModelInfo(
+            const modelStatus = await getModelInfo(
                 getPersistedServerUrl(),
                 getPersistedApiKey()
             );
-            if (model) {
-                setServerStatus("online");
-                setModelInfo(model);
-            } else {
-                setServerStatus("offline");
-                setModelInfo(null);
-            }
+            
+            setServerStatus(modelStatus.status);
+            setModelInfo(modelStatus.info);
         };
 
         checkStatus();
@@ -173,6 +169,8 @@ export default function AppHeader() {
                                         ? "lime"
                                         : serverStatus === "offline"
                                         ? "red"
+                                        : serverStatus === "no_model"
+                                        ? "orange"
                                         : "orange",
                             }}
                         />
@@ -188,6 +186,8 @@ export default function AppHeader() {
                                     ? `Online (${modelInfo?.id || "Unknown"})`
                                     : serverStatus === "offline"
                                     ? "Offline"
+                                    : serverStatus === "no_model"
+                                    ? "No Model Loaded"
                                     : "Checking..."}
                             </Typography>
                         </Tooltip>

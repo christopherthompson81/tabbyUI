@@ -45,10 +45,15 @@ export interface ModelInfo {
     };
 }
 
+export interface ModelStatus {
+    info: ModelInfo | null;
+    status: "online" | "no_model" | "offline";
+}
+
 export async function getModelInfo(
     serverUrl: string,
     apiKey: string
-): Promise<ModelInfo | null> {
+): Promise<ModelStatus> {
     try {
         const response = await fetch(`${serverUrl}/v1/model`, {
             method: "GET",
@@ -58,14 +63,23 @@ export async function getModelInfo(
             },
         });
 
-        if (!response.ok) {
-            return null;
+        if (response.ok) {
+            const modelInfo = await response.json();
+            return { info: modelInfo, status: "online" };
         }
-
-        return await response.json();
+        
+        // Check if the error is "no models are currently loaded"
+        if (response.status === 400) {
+            const errorData = await response.json();
+            if (errorData.error && errorData.error.includes("no models are currently loaded")) {
+                return { info: null, status: "no_model" };
+            }
+        }
+        
+        return { info: null, status: "offline" };
     } catch (error) {
         console.error("Error checking server status:", error);
-        return null;
+        return { info: null, status: "offline" };
     }
 }
 
