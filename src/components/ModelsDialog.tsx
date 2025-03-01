@@ -19,7 +19,7 @@ import Grid from "@mui/material/Grid2";
 
 // Local Imports
 import { useReducerContext } from "../reducers/ReducerContext";
-import { ModelInfo } from "../services/tabbyAPI";
+import { ModelInfo, unloadModel } from "../services/tabbyAPI";
 import {
     getModelParams,
     persistModelParams,
@@ -590,6 +590,31 @@ function ModelsDialog({
                             >
                                 Load Selected Model{" "}
                                 {selectedDraftModel && `with Draft Model`}
+                            </Button>
+                        </Grid>
+                        <Grid size={12} sx={{ mt: 1 }}>
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                fullWidth
+                                onClick={async () => {
+                                    try {
+                                        setLoading(true);
+                                        const success = await unloadModel(serverUrl, adminApiKey);
+                                        if (success) {
+                                            // Refresh models list after unloading
+                                            await fetchModels();
+                                        } else {
+                                            setError("Failed to unload model");
+                                        }
+                                    } catch (err) {
+                                        setError(err instanceof Error ? err.message : "Failed to unload model");
+                                    } finally {
+                                        setLoading(false);
+                                    }
+                                }}
+                            >
+                                Unload Model
                             </Button>
                         </Grid>
                     </Grid>

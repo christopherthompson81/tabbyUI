@@ -76,6 +76,26 @@ export interface ModelLoadProgress {
     status: string | null;
 }
 
+export async function unloadModel(
+    serverUrl: string,
+    adminApiKey: string
+): Promise<boolean> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/model/unload`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminApiKey,
+            },
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error unloading model:", error);
+        return false;
+    }
+}
+
 export async function loadModelWithProgress(
     serverUrl: string,
     adminApiKey: string,
