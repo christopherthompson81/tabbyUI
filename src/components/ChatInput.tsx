@@ -178,7 +178,7 @@ export default function ChatInput({ messagesEndRef }: ChatInputProps) {
             const currentModel = await getModelInfo(serverUrl, adminApiKey);
 
             // If selected model is different from current, load it
-            if (currentModel?.id !== selectedModel) {
+            if (currentModel?.info?.id !== selectedModel) {
                 const customParams = getModelParams(selectedModel);
                 await modelLoader.loadModel(
                     selectedModel,
@@ -208,7 +208,7 @@ export default function ChatInput({ messagesEndRef }: ChatInputProps) {
             const currentModel = await getModelInfo(serverUrl, adminApiKey);
 
             // If selected model is different from current, load it
-            if (currentModel?.id !== selectedModel) {
+            if (currentModel?.info?.id !== selectedModel) {
                 await modelLoader.loadModel(selectedModel);
             }
         }
