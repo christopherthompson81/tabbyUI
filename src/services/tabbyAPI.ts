@@ -307,3 +307,33 @@ export async function sendConversation(
         throw error;
     }
 }
+
+// the following comment shows the API calls related to prompt templates. please implement functions for these calls, AI!
+/*
+get
+/v1/templates
+
+{
+  "object": "list",
+  "data": [
+    "string"
+  ]
+}
+api key
+
+---
+
+post
+/v1/template/switch
+admin key
+
+{
+    "prompt_template_name": "string"
+}
+
+---
+
+post
+/v1/template/unload
+admin key
+*/
