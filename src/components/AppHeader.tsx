@@ -12,6 +12,7 @@ import {
     Tooltip,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LoRAsDialog from "./LoRAsDialog";
 
 // Local Imports
 import { useReducerContext } from "../reducers/ReducerContext";
@@ -40,6 +41,7 @@ export default function AppHeader() {
     const [showAbout, setShowAbout] = React.useState(false);
     const [showHelp, setShowHelp] = React.useState(false);
     const [showOrganize, setShowOrganize] = React.useState(false);
+    const [showLoRAs, setShowLoRAs] = React.useState(false);
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline" | "no_model"
     >("checking");
@@ -131,6 +133,14 @@ export default function AppHeader() {
                             }}
                         >
                             Organize
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
+                                setShowLoRAs(true);
+                            }}
+                        >
+                            LoRAs
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -238,6 +248,7 @@ export default function AppHeader() {
             />
             <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
+            <LoRAsDialog open={showLoRAs} onClose={() => setShowLoRAs(false)} />
         </>
     );
 }
