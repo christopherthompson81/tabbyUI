@@ -15,13 +15,15 @@ import {
     Alert,
     Divider,
     Box,
+    Paper,
+    TextField,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useReducerContext } from "../reducers/ReducerContext";
-import { getTemplates, switchTemplate, unloadTemplate } from "../services/tabbyAPI";
+import { getTemplates, switchTemplate, unloadTemplate, getModelInfo, ModelInfo } from "../services/tabbyAPI";
 
 interface TemplatesDialogProps {
     open: boolean;
@@ -35,17 +37,33 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [currentTemplate, setCurrentTemplate] = useState<string | null>(null);
+    const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
+    const [templateContent, setTemplateContent] = useState<string>("");
+
+    const fetchModelInfo = async () => {
+        try {
+            const modelStatus = await getModelInfo(settings.serverUrl, settings.apiKey);
+            setModelInfo(modelStatus.info);
+            
+            if (modelStatus.info?.parameters?.prompt_template) {
+                setCurrentTemplate(modelStatus.info.parameters.prompt_template);
+                setTemplateContent(modelStatus.info.parameters.prompt_template_content || "");
+            } else {
+                setCurrentTemplate(null);
+                setTemplateContent("");
+            }
+        } catch (err) {
+            console.error("Error fetching model info:", err);
+        }
+    };
 
     const fetchTemplates = async () => {
         setLoading(true);
         setError(null);
         try {
+            await fetchModelInfo();
             const templateList = await getTemplates(settings.serverUrl, settings.apiKey);
             setTemplates(templateList);
-            
-            // Try to determine current template from model info
-            // This is a placeholder - in a real implementation, you might get this from the model info
-            setCurrentTemplate(templateList.length > 0 ? null : null);
         } catch (err) {
             setError("Failed to fetch templates");
             console.error(err);
@@ -66,7 +84,7 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
             );
             if (result) {
                 setSuccess(`Switched to template: ${templateName}`);
-                setCurrentTemplate(templateName);
+                await fetchModelInfo(); // Refresh model info to get updated template content
             } else {
                 setError("Failed to switch template");
             }
@@ -86,7 +104,7 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
             const result = await unloadTemplate(settings.serverUrl, settings.adminApiKey);
             if (result) {
                 setSuccess("Template unloaded successfully");
-                setCurrentTemplate(null);
+                await fetchModelInfo(); // Refresh model info after unloading
             } else {
                 setError("Failed to unload template");
             }
@@ -121,6 +139,27 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
                 {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
                 
                 <Typography variant="subtitle1" gutterBottom>
+                    Current Template: {currentTemplate || "None"}
+                </Typography>
+                
+                {templateContent && (
+                    <Box mb={3}>
+                        <TextField
+                            label="Template Content"
+                            multiline
+                            fullWidth
+                            rows={6}
+                            value={templateContent}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                            variant="outlined"
+                            sx={{ mb: 2 }}
+                        />
+                    </Box>
+                )}
+                
+                <Typography variant="subtitle1" gutterBottom>
                     Available Templates
                 </Typography>
                 
@@ -139,6 +178,9 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
                                 <ListItemText 
                                     primary={template}
                                     secondary={currentTemplate === template ? "Currently active" : ""}
+                                    primaryTypographyProps={{
+                                        fontWeight: currentTemplate === template ? 'bold' : 'normal'
+                                    }}
                                 />
                                 <ListItemSecondaryAction>
                                     <IconButton 
