@@ -16,7 +16,7 @@
 * Add a PDF to a mixed modality ingestor
 * Retrieval solution
 * Multi-user
-* Keep trying to add functions that TabbyAPI offers, like unloading models, embeddings, tokenization, LoRas, prompt templates, and sampler overrides
+* Keep trying to add functions that TabbyAPI offers, like embeddings, tokenization, LoRAs, prompt templates, and sampler overrides
 
 ### Stretch
 * TTS
@@ -37,10 +37,14 @@
     * Explain interpreting technical documents
 
 ### Feature Testing
-* Unloading models should be easy.
-* Test LoRa: https://huggingface.co/ETH-LLMSys/Qwen2.5-32B-LoRA/tree/main
+* Test LoRA: https://huggingface.co/ETH-LLMSys/Qwen2.5-32B-LoRA/tree/main
+    * This should just be loading, unloading, showing info, validating that the LoRA is valid for the model loaded.
 * Test Embeddings: https://huggingface.co/intfloat/multilingual-e5-large-instruct
+    * The application of embeddings is vector database retrieval, so in escence, it means creating a vector database document processing, and retrieval system to be able to showcase it.
 * Tokenization should be regular model stuff, not very obvious from an inferface perspective though.
+    * I guess this could be something to tokenize some input and show some stats in a dialog.
 * Prompt templates need a Jinja2 parser
+    * Such a thing does not really exist for typescript. I guess just let the users edit without that crutch. 
 * Sampler overrides could be done as a named collection of settings?
+    * These are server defined.
 * Monitoring GPU: https://pypi.org/project/nvidia-ml-py/; 
