@@ -383,66 +383,115 @@ export async function unloadTemplate(
     }
 }
 
-// The following are the API calls for handling LoRAs, please implement the functions to handle them and then work on src/components/LoRAsDialog.tsx to create the interface, AI!
-/*
-List All Loras
-get
-/v1/loras
-
-{
-  "object": "list",
-  "data": [
-    {
-      "id": "test",
-      "object": "lora",
-      "created": 0,
-      "owned_by": "tabbyAPI",
-      "scaling": 0
-    }
-  ]
+export interface LoRA {
+    id: string;
+    object: string;
+    created: number;
+    owned_by: string;
+    scaling: number;
 }
 
----
-
-Active Loras
-get
-/v1/lora
-
-{
-  "object": "list",
-  "data": [
-    {
-      "id": "test",
-      "object": "lora",
-      "created": 0,
-      "owned_by": "tabbyAPI",
-      "scaling": 0
-    }
-  ]
+export interface LoRAListResponse {
+    object: string;
+    data: LoRA[];
 }
 
----
+export async function getAllLoRAs(
+    serverUrl: string,
+    apiKey: string
+): Promise<LoRA[]> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/loras`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey || "",
+            },
+        });
 
-Load Lora
-post
-/v1/lora/load
+        if (!response.ok) {
+            throw new Error("Failed to fetch LoRAs");
+        }
 
-{
-  "loras": [
-    {
-      "name": "string",
-      "scaling": 1
+        const data: LoRAListResponse = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error("Error fetching LoRAs:", error);
+        return [];
     }
-  ],
-  "skip_queue": false
 }
 
----
+export async function getActiveLoRAs(
+    serverUrl: string,
+    apiKey: string
+): Promise<LoRA[]> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/lora`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey || "",
+            },
+        });
 
-Unload Loras
-post
-/v1/lora/unload
+        if (!response.ok) {
+            throw new Error("Failed to fetch active LoRAs");
+        }
 
-No input, just unload all LoRAs
+        const data: LoRAListResponse = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error("Error fetching active LoRAs:", error);
+        return [];
+    }
+}
 
-*/
+export interface LoRALoadRequest {
+    loras: {
+        name: string;
+        scaling: number;
+    }[];
+    skip_queue?: boolean;
+}
+
+export async function loadLoRAs(
+    serverUrl: string,
+    adminApiKey: string,
+    request: LoRALoadRequest
+): Promise<boolean> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/lora/load`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminApiKey,
+            },
+            body: JSON.stringify(request),
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error loading LoRAs:", error);
+        return false;
+    }
+}
+
+export async function unloadAllLoRAs(
+    serverUrl: string,
+    adminApiKey: string
+): Promise<boolean> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/lora/unload`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminApiKey,
+            },
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error unloading LoRAs:", error);
+        return false;
+    }
+}
