@@ -43,4 +43,4 @@
 * Tokenization should be regular model stuff, not very obvious from an inferface perspective though.
 * Prompt templates need a Jinja2 parser
 * Sampler overrides could be done as a named collection of settings?
-* Monitoring GPU: pynvml; https://github.com/gpuopenanalytics/pynvml
+* Monitoring GPU: https://pypi.org/project/nvidia-ml-py/; 
