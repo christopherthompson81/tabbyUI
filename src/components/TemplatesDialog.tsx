@@ -15,7 +15,7 @@ import {
     Alert,
     Divider,
     Box,
-    Paper,
+    //Paper,
     TextField,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -23,7 +23,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useReducerContext } from "../reducers/ReducerContext";
-import { getTemplates, switchTemplate, unloadTemplate, getModelInfo, ModelInfo } from "../services/tabbyAPI";
+import { getTemplates, switchTemplate, unloadTemplate, getModelInfo } from "../services/tabbyAPI";
 
 interface TemplatesDialogProps {
     open: boolean;
@@ -37,14 +37,12 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const [currentTemplate, setCurrentTemplate] = useState<string | null>(null);
-    const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
     const [templateContent, setTemplateContent] = useState<string>("");
 
     const fetchModelInfo = async () => {
         try {
             const modelStatus = await getModelInfo(settings.serverUrl, settings.apiKey);
-            setModelInfo(modelStatus.info);
-            
+            console.log(modelStatus.info);
             if (modelStatus.info?.parameters?.prompt_template) {
                 setCurrentTemplate(modelStatus.info.parameters.prompt_template);
                 setTemplateContent(modelStatus.info.parameters.prompt_template_content || "");
