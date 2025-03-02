@@ -279,7 +279,10 @@ export default function AppHeader() {
             <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
             <LoRAsDialog open={showLoRAs} onClose={() => setShowLoRAs(false)} />
-            <TemplatesDialog open={showTemplates} onClose={() => setShowTemplates(false)} />
+            <TemplatesDialog 
+                open={showTemplates} 
+                onClose={() => setShowTemplates(false)} 
+            />
             <TokenizationDialog open={showTokenization} onClose={() => setShowTokenization(false)} />
             <SamplerOverridesDialog open={showSamplerOverrides} onClose={() => setShowSamplerOverrides(false)} />
         </>

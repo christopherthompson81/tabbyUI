@@ -308,32 +308,76 @@ export async function sendConversation(
     }
 }
 
-// the following comment shows the API calls related to prompt templates. please implement functions for these calls, AI!
-/*
-get
-/v1/templates
-
-{
-  "object": "list",
-  "data": [
-    "string"
-  ]
-}
-api key
-
----
-
-post
-/v1/template/switch
-admin key
-
-{
-    "prompt_template_name": "string"
+export interface TemplateListResponse {
+    object: string;
+    data: string[];
 }
 
----
+export async function getTemplates(
+    serverUrl: string,
+    apiKey: string
+): Promise<string[]> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/templates`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "x-api-key": apiKey || "",
+            },
+        });
 
-post
-/v1/template/unload
-admin key
-*/
+        if (!response.ok) {
+            throw new Error("Failed to fetch templates");
+        }
+
+        const data: TemplateListResponse = await response.json();
+        return data.data;
+    } catch (error) {
+        console.error("Error fetching templates:", error);
+        return [];
+    }
+}
+
+export async function switchTemplate(
+    serverUrl: string,
+    adminApiKey: string,
+    templateName: string
+): Promise<boolean> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/template/switch`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminApiKey,
+            },
+            body: JSON.stringify({
+                prompt_template_name: templateName,
+            }),
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error switching template:", error);
+        return false;
+    }
+}
+
+export async function unloadTemplate(
+    serverUrl: string,
+    adminApiKey: string
+): Promise<boolean> {
+    try {
+        const response = await fetch(`${serverUrl}/v1/template/unload`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "x-admin-key": adminApiKey,
+            },
+        });
+
+        return response.ok;
+    } catch (error) {
+        console.error("Error unloading template:", error);
+        return false;
+    }
+}
