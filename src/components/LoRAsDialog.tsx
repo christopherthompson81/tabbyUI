@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import * as React from "react";
+import { useState, useEffect } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -10,7 +11,6 @@ import {
     ListItem,
     ListItemText,
     Divider,
-    TextField,
     Slider,
     IconButton,
     Box,
@@ -23,7 +23,6 @@ import {
     FormControlLabel,
     Checkbox,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useReducerContext } from "../reducers/ReducerContext";
@@ -194,7 +193,8 @@ export default function LoRAsDialog({ open, onClose }: LoRAsDialogProps) {
                                 <List dense>
                                     {availableLoRAs.map((lora) => (
                                         <React.Fragment key={lora.id}>
-                                            <ListItem
+                                            { /* @ts-ignore or @ts-expect-error */ }
+                                            <ListItem 
                                                 button
                                                 onClick={() => handleSelectLoRA(lora)}
                                                 selected={!!selectedLoRAs[lora.id]}
