@@ -382,3 +382,67 @@ export async function unloadTemplate(
         return false;
     }
 }
+
+// The following are the API calls for handling LoRAs, please implement the functions to handle them and then work on src/components/LoRAsDialog.tsx to create the interface, AI!
+/*
+List All Loras
+get
+/v1/loras
+
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "test",
+      "object": "lora",
+      "created": 0,
+      "owned_by": "tabbyAPI",
+      "scaling": 0
+    }
+  ]
+}
+
+---
+
+Active Loras
+get
+/v1/lora
+
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "test",
+      "object": "lora",
+      "created": 0,
+      "owned_by": "tabbyAPI",
+      "scaling": 0
+    }
+  ]
+}
+
+---
+
+Load Lora
+post
+/v1/lora/load
+
+{
+  "loras": [
+    {
+      "name": "string",
+      "scaling": 1
+    }
+  ],
+  "skip_queue": false
+}
+
+---
+
+Unload Loras
+post
+/v1/lora/unload
+
+No input, just unload all LoRAs
+
+*/
