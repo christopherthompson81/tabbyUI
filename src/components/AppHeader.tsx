@@ -13,6 +13,9 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoRAsDialog from "./LoRAsDialog";
+import TemplatesDialog from "./TemplatesDialog";
+import TokenizationDialog from "./TokenizationDialog";
+import SamplerOverridesDialog from "./SamplerOverridesDialog";
 
 // Local Imports
 import { useReducerContext } from "../reducers/ReducerContext";
@@ -42,6 +45,9 @@ export default function AppHeader() {
     const [showHelp, setShowHelp] = React.useState(false);
     const [showOrganize, setShowOrganize] = React.useState(false);
     const [showLoRAs, setShowLoRAs] = React.useState(false);
+    const [showTemplates, setShowTemplates] = React.useState(false);
+    const [showTokenization, setShowTokenization] = React.useState(false);
+    const [showSamplerOverrides, setShowSamplerOverrides] = React.useState(false);
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline" | "no_model"
     >("checking");
@@ -141,6 +147,30 @@ export default function AppHeader() {
                             }}
                         >
                             LoRAs
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
+                                setShowTemplates(true);
+                            }}
+                        >
+                            Templates
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
+                                setShowTokenization(true);
+                            }}
+                        >
+                            Tokenization
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
+                                setShowSamplerOverrides(true);
+                            }}
+                        >
+                            Sampler Overrides
                         </MenuItem>
                         <MenuItem
                             onClick={() => {
@@ -249,6 +279,9 @@ export default function AppHeader() {
             <HelpDialog open={showHelp} onClose={() => setShowHelp(false)} />
             <AboutDialog open={showAbout} onClose={() => setShowAbout(false)} />
             <LoRAsDialog open={showLoRAs} onClose={() => setShowLoRAs(false)} />
+            <TemplatesDialog open={showTemplates} onClose={() => setShowTemplates(false)} />
+            <TokenizationDialog open={showTokenization} onClose={() => setShowTokenization(false)} />
+            <SamplerOverridesDialog open={showSamplerOverrides} onClose={() => setShowSamplerOverrides(false)} />
         </>
     );
 }
