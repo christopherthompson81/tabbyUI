@@ -571,40 +571,88 @@ export async function decodeTokens(
   }
 }
 
-// The following comment describes the API calls related to sampler overrides. Please implement these functions, and then create the interface for them in src/components/SamplerOverridesDialog.tsx, AI!
-/*
-List Sampler Overrides
-get
-/v1/sampling/overrides
-RESPONSE
-{
-  "selected_preset": "string",
-  "overrides": {},
-  "presets": [
-    "string"
-  ]
+export interface SamplerOverride {
+  force: boolean;
+  override: number;
 }
 
----
+export interface SamplerOverrides {
+  [key: string]: SamplerOverride;
+}
 
-Switch Sampler Override
-post
-/v1/sampling/override/switch
-REQUEST
-{
-  "preset": "string",
-  "overrides": {
-    "top_p": {
-      "force": false,
-      "override": 1.5
+export interface SamplerOverridesResponse {
+  selected_preset: string;
+  overrides: SamplerOverrides;
+  presets: string[];
+}
+
+export interface SamplerOverrideSwitchRequest {
+  preset?: string;
+  overrides?: SamplerOverrides;
+}
+
+export async function getSamplerOverrides(
+  serverUrl: string,
+  apiKey: string
+): Promise<SamplerOverridesResponse> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/sampling/overrides`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey || "",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch sampler overrides");
     }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching sampler overrides:", error);
+    return { selected_preset: "", overrides: {}, presets: [] };
   }
 }
 
----
+export async function switchSamplerOverride(
+  serverUrl: string,
+  adminApiKey: string,
+  request: SamplerOverrideSwitchRequest
+): Promise<boolean> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/sampling/override/switch`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": adminApiKey,
+      },
+      body: JSON.stringify(request),
+    });
 
-Unload Sampler Override
-post
-/v1/sampling/override/unload
+    return response.ok;
+  } catch (error) {
+    console.error("Error switching sampler override:", error);
+    return false;
+  }
+}
 
-*/
+export async function unloadSamplerOverride(
+  serverUrl: string,
+  adminApiKey: string
+): Promise<boolean> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/sampling/override/unload`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-key": adminApiKey,
+      },
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.error("Error unloading sampler override:", error);
+    return false;
+  }
+}
