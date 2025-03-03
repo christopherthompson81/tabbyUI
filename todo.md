@@ -16,7 +16,7 @@
 * Add a PDF to a mixed modality ingestor
 * Retrieval solution
 * Multi-user
-* Keep trying to add functions that TabbyAPI offers, like embeddings, tokenization, LoRAs, prompt templates, and sampler overrides
+* Keep trying to add functions that TabbyAPI offers, like embeddings
 
 ### Stretch
 * TTS
