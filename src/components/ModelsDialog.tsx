@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
     Box,
     Button,
@@ -19,7 +19,7 @@ import Grid from "@mui/material/Grid2";
 
 // Local Imports
 import { useReducerContext } from "../reducers/ReducerContext";
-import { ModelInfo, unloadModel } from "../services/tabbyAPI";
+import { ModelInfo, unloadModel, getDraftModels } from "../services/tabbyAPI";
 import {
     getModelParams,
     persistModelParams,
@@ -60,6 +60,7 @@ function ModelsDialog({
         onLoadComplete: () => {},
     });
     const [models, setModels] = useState<ModelInfo[]>([]);
+    const [draftModels, setDraftModels] = useState<ModelInfo[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [selectedModel, setSelectedModel] = useState(getInitialModel());
@@ -72,6 +73,7 @@ function ModelsDialog({
     useEffect(() => {
         if (open) {
             fetchModels();
+            fetchDraftModels();
         }
     }, [open]);
 
@@ -100,6 +102,19 @@ function ModelsDialog({
             setLoading(false);
         }
     };
+
+    const fetchDraftModels = useCallback(async () => {
+        try {
+            const draftModelsList = await getDraftModels(serverUrl, adminApiKey);
+            const sortedDraftModels = [...draftModelsList].sort((a, b) =>
+                a.id.localeCompare(b.id)
+            );
+            setDraftModels(sortedDraftModels);
+        } catch (err) {
+            console.error("Failed to fetch draft models:", err);
+            // Don't set error state here to avoid disrupting the main UI
+        }
+    }, [serverUrl, adminApiKey]);
 
     useEffect(() => {
         if (selectedModel) {
@@ -483,14 +498,26 @@ function ModelsDialog({
                                     label="Select Draft Model"
                                 >
                                     <MenuItem value="">None</MenuItem>
-                                    {models.map((model) => (
-                                        <MenuItem
-                                            key={model.id}
-                                            value={model.id}
-                                        >
-                                            {model.id}
-                                        </MenuItem>
-                                    ))}
+                                    {draftModels.length > 0 ? (
+                                        draftModels.map((model) => (
+                                            <MenuItem
+                                                key={model.id}
+                                                value={model.id}
+                                            >
+                                                {model.id}
+                                            </MenuItem>
+                                        ))
+                                    ) : (
+                                        // Fallback to regular models if no draft models are available
+                                        models.map((model) => (
+                                            <MenuItem
+                                                key={model.id}
+                                                value={model.id}
+                                            >
+                                                {model.id}
+                                            </MenuItem>
+                                        ))
+                                    )}
                                 </Select>
                             </FormControl>
                         </Grid>
