@@ -496,42 +496,77 @@ export async function unloadAllLoRAs(
     }
 }
 
-// The following comment describes the API calls for encoding and deconding tokens. Implement these functions here and then create the interface for them in src/components/TokenizationDialog.tsx, AI!
-/*
-Encode Tokens
-post
-/v1/token/encode
-REQUEST
-{
-  "add_bos_token": true,
-  "encode_special_tokens": true,
-  "decode_special_tokens": true,
-  "text": "string"
-}
-RESPONSE
-{
-  "tokens": [
-    0
-  ],
-  "length": 0
+export interface TokenEncodeRequest {
+  add_bos_token?: boolean;
+  encode_special_tokens?: boolean;
+  decode_special_tokens?: boolean;
+  text: string;
 }
 
----
+export interface TokenEncodeResponse {
+  tokens: number[];
+  length: number;
+}
 
-Decode Tokens
-post
-/v1/token/decode
-REQUEST
-{
-  "add_bos_token": true,
-  "encode_special_tokens": true,
-  "decode_special_tokens": true,
-  "tokens": [
-    0
-  ]
+export async function encodeTokens(
+  serverUrl: string,
+  apiKey: string,
+  request: TokenEncodeRequest
+): Promise<TokenEncodeResponse> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/token/encode`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey || "",
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to encode tokens");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error encoding tokens:", error);
+    return { tokens: [], length: 0 };
+  }
 }
-RESPONSE
-{
-  "text": "string"
+
+export interface TokenDecodeRequest {
+  add_bos_token?: boolean;
+  encode_special_tokens?: boolean;
+  decode_special_tokens?: boolean;
+  tokens: number[];
 }
-*/
+
+export interface TokenDecodeResponse {
+  text: string;
+}
+
+export async function decodeTokens(
+  serverUrl: string,
+  apiKey: string,
+  request: TokenDecodeRequest
+): Promise<TokenDecodeResponse> {
+  try {
+    const response = await fetch(`${serverUrl}/v1/token/decode`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey || "",
+      },
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to decode tokens");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error decoding tokens:", error);
+    return { text: "" };
+  }
+}
