@@ -495,3 +495,43 @@ export async function unloadAllLoRAs(
         return false;
     }
 }
+
+// The following comment describes the API calls for encoding and deconding tokens. Implement these functions here and then create the interface for them in src/components/TokenizationDialog.tsx, AI!
+/*
+Encode Tokens
+post
+/v1/token/encode
+REQUEST
+{
+  "add_bos_token": true,
+  "encode_special_tokens": true,
+  "decode_special_tokens": true,
+  "text": "string"
+}
+RESPONSE
+{
+  "tokens": [
+    0
+  ],
+  "length": 0
+}
+
+---
+
+Decode Tokens
+post
+/v1/token/decode
+REQUEST
+{
+  "add_bos_token": true,
+  "encode_special_tokens": true,
+  "decode_special_tokens": true,
+  "tokens": [
+    0
+  ]
+}
+RESPONSE
+{
+  "text": "string"
+}
+*/
