@@ -570,3 +570,41 @@ export async function decodeTokens(
     return { text: "" };
   }
 }
+
+// The following comment describes the API calls related to sampler overrides. Please implement these functions, and then create the interface for them in src/components/SamplerOverridesDialog.tsx, AI!
+/*
+List Sampler Overrides
+get
+/v1/sampling/overrides
+RESPONSE
+{
+  "selected_preset": "string",
+  "overrides": {},
+  "presets": [
+    "string"
+  ]
+}
+
+---
+
+Switch Sampler Override
+post
+/v1/sampling/override/switch
+REQUEST
+{
+  "preset": "string",
+  "overrides": {
+    "top_p": {
+      "force": false,
+      "override": 1.5
+    }
+  }
+}
+
+---
+
+Unload Sampler Override
+post
+/v1/sampling/override/unload
+
+*/
