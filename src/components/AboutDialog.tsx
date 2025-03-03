@@ -8,7 +8,7 @@ import {
     Box,
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import tabbyImage from "../assets/tabby.png";
+import tabbyImage from "../assets/tabby_web.png";
 
 interface AboutDialogProps {
     open: boolean;
