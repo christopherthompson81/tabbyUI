@@ -656,3 +656,41 @@ export async function unloadSamplerOverride(
     return false;
   }
 }
+
+// The following comment describes the api call for listing draft models. Implement this function, and then replace how draft models are populated in the draft dropdown in src/components/ModelsDialog.tsx, AI!
+/*
+List Draft Models
+get
+/v1/model/draft/list
+RESPONSE
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "test",
+      "object": "model",
+      "created": 0,
+      "owned_by": "tabbyAPI",
+      "logging": {
+        "log_prompt": false,
+        "log_generation_params": false,
+        "log_requests": false
+      },
+      "parameters": {
+        "max_seq_len": 0,
+        "rope_scale": 1,
+        "rope_alpha": 1,
+        "max_batch_size": 1,
+        "cache_size": 0,
+        "cache_mode": "FP16",
+        "chunk_size": 2048,
+        "prompt_template": "string",
+        "prompt_template_content": "string",
+        "num_experts_per_token": 0,
+        "use_vision": false,
+        "draft": {}
+      }
+    }
+  ]
+}
+*/
