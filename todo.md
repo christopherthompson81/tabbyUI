@@ -43,8 +43,6 @@
     * The application of embeddings is vector database retrieval, so in escence, it means creating a vector database document processing, and retrieval system to be able to showcase it.
 * Tokenization should be regular model stuff, not very obvious from an inferface perspective though.
     * I guess this could be something to tokenize some input and show some stats in a dialog.
-* Prompt templates need a Jinja2 parser
-    * Such a thing does not really exist for typescript. I guess just let the users edit without that crutch. 
 * Sampler overrides could be done as a named collection of settings?
     * These are server defined.
 * Monitoring GPU: https://pypi.org/project/nvidia-ml-py/; 
