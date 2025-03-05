@@ -1,3 +1,7 @@
+<div align="center">
+    <img src="https://raw.githubusercontent.com/christopherthompson81/tabbyUI/refs/heads/main/src/assets/tabby_web.png" />
+</div>
+
 # tabbyUI
 
 A modern chat interface for tabbyAPI that provides an intuitive way to interact with large language models.
@@ -14,6 +18,7 @@ A modern chat interface for tabbyAPI that provides an intuitive way to interact 
   - Chain-of-thought reasoning
 - Conversation organization with folders
 - Conversations and settings persistence using localStorage
+- Interfaces for LoRAs, Templates, Tokenization, and Sampler Overrides (Embeddings/Retrival to come)
 
 ## Getting Started
 
