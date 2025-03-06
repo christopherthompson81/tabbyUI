@@ -35,6 +35,7 @@
 * Common use cases
     * Explain aider process
     * Explain interpreting technical documents
+* Conversion is best using docling, but sometimes you need interpretation, and for that a vision model is usually best.
 
 ### Feature Testing
 * Test LoRA: https://huggingface.co/ETH-LLMSys/Qwen2.5-32B-LoRA/tree/main
