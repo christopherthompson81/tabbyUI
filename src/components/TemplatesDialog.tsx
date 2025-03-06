@@ -60,7 +60,7 @@ export default function TemplatesDialog({ open, onClose }: TemplatesDialogProps)
         setError(null);
         try {
             await fetchModelInfo();
-            const templateList = await getTemplates(settings.serverUrl, settings.apiKey);
+            const templateList = await getTemplates(settings.serverUrl, settings.adminApiKey);
             setTemplates(templateList);
         } catch (err) {
             setError("Failed to fetch templates");

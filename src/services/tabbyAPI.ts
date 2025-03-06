@@ -315,14 +315,14 @@ export interface TemplateListResponse {
 
 export async function getTemplates(
     serverUrl: string,
-    apiKey: string
+    adminApiKey: string
 ): Promise<string[]> {
     try {
         const response = await fetch(`${serverUrl}/v1/templates`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "x-api-key": apiKey || "",
+                "x-api-key": adminApiKey || "",
             },
         });
 
@@ -331,7 +331,7 @@ export async function getTemplates(
         }
 
         const data: TemplateListResponse = await response.json();
-        //console.log(data);
+        console.log(data);
         return data.data;
     } catch (error) {
         console.error("Error fetching templates:", error);
