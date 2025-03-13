@@ -6,6 +6,22 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { IconButton, Tooltip } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Mermaid } from 'mermaid-react';
+
+// @ts-ignore or @ts-expect-error
+const MermaidRenderer = ({ chart }) => {
+  return (
+    <div style={{ margin: '1em 0' }}>
+      <Mermaid
+        config={{
+          theme: 'dark',
+          securityLevel: 'loose',
+        }}
+        chart={chart}
+      />
+    </div>
+  );
+};
 
 // @ts-ignore or @ts-expect-error
 const CodeBlock = ({ code, language }) => {
@@ -17,6 +33,11 @@ const CodeBlock = ({ code, language }) => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
+
+    // If it's a mermaid block, render it with the MermaidRenderer
+    if (language === 'mermaid') {
+        return <MermaidRenderer chart={code} />;
+    }
 
     return (
         <div 
