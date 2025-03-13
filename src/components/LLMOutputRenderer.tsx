@@ -6,20 +6,51 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { IconButton, Tooltip } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { Mermaid } from 'mermaid-react';
+import mermaid from 'mermaid';
+
+// Initialize mermaid
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  securityLevel: 'loose',
+});
 
 // @ts-ignore or @ts-expect-error
 const MermaidRenderer = ({ chart }) => {
+  const [svg, setSvg] = React.useState<string>('');
+  const [error, setError] = React.useState<string | null>(null);
+  const id = React.useMemo(() => `mermaid-${Math.random().toString(36).substring(2, 11)}`, []);
+
+  React.useEffect(() => {
+    const renderDiagram = async () => {
+      try {
+        const { svg } = await mermaid.render(id, chart);
+        setSvg(svg);
+        setError(null);
+      } catch (err) {
+        console.error('Mermaid rendering error:', err);
+        setError(err instanceof Error ? err.message : 'Failed to render diagram');
+      }
+    };
+
+    renderDiagram();
+  }, [chart, id]);
+
+  if (error) {
+    return (
+      <div style={{ margin: '1em 0', padding: '1em', backgroundColor: '#ffdddd', color: '#ff0000', borderRadius: '4px' }}>
+        <p>Error rendering Mermaid diagram:</p>
+        <pre>{error}</pre>
+        <pre>{chart}</pre>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ margin: '1em 0' }}>
-      <Mermaid
-        config={{
-          theme: 'dark',
-          securityLevel: 'loose',
-        }}
-        chart={chart}
-      />
-    </div>
+    <div 
+      style={{ margin: '1em 0' }}
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
   );
 };
 
