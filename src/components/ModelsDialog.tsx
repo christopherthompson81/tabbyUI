@@ -649,7 +649,7 @@ function ModelsDialog({
 
                 <Box sx={{ mt: 4 }}>
                     <Typography variant="h6">Model Preferences</Typography>
-                    {["Vision", "Chain-of-Thought", "Coding", "Assistant"].map(
+                    {["Assistant", "Vision", "Coding", "Chain-of-Thought"].map(
                         (taskType) => (
                             <Box key={taskType} sx={{ mt: 2 }}>
                                 <FormControl fullWidth>
