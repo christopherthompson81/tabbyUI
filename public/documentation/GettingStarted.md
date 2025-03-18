@@ -85,7 +85,7 @@ logging:
     log_requests: false
 
 model:
-model_dir: models
+    model_dir: models
     inline_model_loading: false
     use_dummy_models: false
     dummy_model_names: ["gpt-3.5-turbo"]
