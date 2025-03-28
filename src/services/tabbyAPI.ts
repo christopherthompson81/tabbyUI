@@ -225,7 +225,7 @@ export async function sendConversation(
         
         // Prepend the system prompt if it's not already included
         const hasSystemMessage = updatedMessages.some(msg => msg.role === "system");
-        const messagesWithSystem = hasSystemMessage 
+        const messagesWithSystem = hasSystemMessage
             ? updatedMessages 
             : [
                 {
