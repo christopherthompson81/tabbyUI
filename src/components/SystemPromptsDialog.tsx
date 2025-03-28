@@ -33,6 +33,14 @@ interface SystemPromptsDialogProps {
 
 const STORAGE_KEY = "systemPrompts";
 
+// Helper function to get the active system prompt
+export function getActiveSystemPrompt(): string {
+    const activePromptId = localStorage.getItem("activeSystemPromptId") || "default";
+    const systemPrompts = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    const activePrompt = systemPrompts.find((p: any) => p.id === activePromptId);
+    return activePrompt?.content || "You are a helpful, harmless, and honest AI assistant.";
+}
+
 export default function SystemPromptsDialog({ open, onClose }: SystemPromptsDialogProps) {
     const [systemPrompts, setSystemPrompts] = useState<SystemPrompt[]>([]);
     const [selectedPromptId, setSelectedPromptId] = useState<string | null>(null);

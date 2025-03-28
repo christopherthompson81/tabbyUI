@@ -204,6 +204,12 @@ export async function sendConversation(
     abortSignal?: AbortSignal
 ) {
     try {
+        // Get the active system prompt
+        const activePromptId = localStorage.getItem("activeSystemPromptId") || "default";
+        const systemPrompts = JSON.parse(localStorage.getItem("systemPrompts") || "[]");
+        const activePrompt = systemPrompts.find((p: any) => p.id === activePromptId);
+        const systemPromptContent = activePrompt?.content || "You are a helpful, harmless, and honest AI assistant.";
+        
         let updatedMessages: MessageProps[];
         if (regenerate) {
             updatedMessages = messages.slice(0, -1); // Remove the last response
@@ -216,6 +222,18 @@ export async function sendConversation(
                 },
             ];
         }
+        
+        // Prepend the system prompt if it's not already included
+        const hasSystemMessage = updatedMessages.some(msg => msg.role === "system");
+        const messagesWithSystem = hasSystemMessage 
+            ? updatedMessages 
+            : [
+                {
+                    role: "system",
+                    content: [{ type: "text", text: systemPromptContent }]
+                },
+                ...updatedMessages
+            ];
 
         const response = await fetch(
             `${serverUrl}/v1/chat/completions?stream=true`,
@@ -226,7 +244,7 @@ export async function sendConversation(
                     "x-api-key": apiKey || "",
                 },
                 body: JSON.stringify({
-                    messages: updatedMessages,
+                    messages: messagesWithSystem,
                     stream: true,
                 }),
                 signal: abortSignal,
