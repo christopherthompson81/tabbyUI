@@ -16,6 +16,7 @@ import LoRAsDialog from "./LoRAsDialog";
 import TemplatesDialog from "./TemplatesDialog";
 import TokenizationDialog from "./TokenizationDialog";
 import SamplerOverridesDialog from "./SamplerOverridesDialog";
+import SystemPromptsDialog from "./SystemPromptsDialog";
 
 // Local Imports
 import { useReducerContext } from "../reducers/ReducerContext";
@@ -48,6 +49,7 @@ export default function AppHeader() {
     const [showTemplates, setShowTemplates] = React.useState(false);
     const [showTokenization, setShowTokenization] = React.useState(false);
     const [showSamplerOverrides, setShowSamplerOverrides] = React.useState(false);
+    const [showSystemPrompts, setShowSystemPrompts] = React.useState(false);
     const [serverStatus, setServerStatus] = useState<
         "checking" | "online" | "offline" | "no_model"
     >("checking");
@@ -175,6 +177,14 @@ export default function AppHeader() {
                         <MenuItem
                             onClick={() => {
                                 mainMenuClose();
+                                setShowSystemPrompts(true);
+                            }}
+                        >
+                            System Prompts
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                mainMenuClose();
                                 setShowHelp(true);
                             }}
                         >
@@ -285,6 +295,7 @@ export default function AppHeader() {
             />
             <TokenizationDialog open={showTokenization} onClose={() => setShowTokenization(false)} />
             <SamplerOverridesDialog open={showSamplerOverrides} onClose={() => setShowSamplerOverrides(false)} />
+            <SystemPromptsDialog open={showSystemPrompts} onClose={() => setShowSystemPrompts(false)} />
         </>
     );
 }
